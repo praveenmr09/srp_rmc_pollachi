@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="rental_fleet_vehicle_view_form_inherited" model="ir.ui.view">
+            <field name="name">fleet.vehicle.form.inherited.rental</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[1]" position="before">
+                    <page string="Rental Contract Lines">
+                        <field name="rental_reservation_line" readonly="1" force_save="1">
+                            <tree editable="bottom" create="0" delete="0">
+                                <field name="name_of_rental_purpose" readonly="1" force_save="1"/>
+                                <field name="start_date" readonly="1" force_save="1"/>
+                                <field name="end_date" readonly="1" force_save="1"/>
+                                <field name="trips_starts_from" readonly="1" force_save="1"/>
+                                <field name="trips_ends_at" readonly="1" force_save="1"/>
+                                <field name="name_of_goods" readonly="1" force_save="1"/>
+                                <field name="duration" readonly="1" force_save="1"/>
+                                <field name="vehicle" readonly="1" force_save="1"/>
+                                <field name="driver_id" readonly="1" force_save="1"/>
+                                <field name="duration" readonly="1" force_save="1" invisible="1"/>
+                                <field name="rate_per_km" readonly="1" force_save="1" invisible="1"/>
+                                <field name="total_km" readonly="1" force_save="1" invisible="1"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

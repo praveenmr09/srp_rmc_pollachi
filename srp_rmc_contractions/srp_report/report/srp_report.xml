@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo xmlns:border="http://www.w3.org/1999/xhtml">
+
+    <data>
+        <record id="paper_format_srp" model="report.paperformat">
+            <field name="name">SRP RMC and Constructions</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">40</field>
+            <field name="margin_bottom">15</field>
+            <field name="margin_left">3</field>
+            <field name="margin_right">3</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report
+                id="srp_details_menu"
+                model="account.move"
+                string="SRP Invoice Report"
+                report_type="qweb-pdf"
+                name="srp_report.srp_constructions_template"
+                file="srp_report.srp_constructions_template"
+                paperformat="srp_report.paper_format_srp"
+                print_report_name='"SRP Invoice Report"'
+                menu="True"
+        />
+        <template id="srp_constructions_template">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="watermark"
+                         style="margin: 300px 80px 100px 150px;position:absolute;opacity:0.15;z-index:1000;transform:rotate(00deg);-webkit-transform:rotate(00deg);transform: rotate(-20deg);">
+                        <img src='/web/binary/company_logo' style="width:600px"/>
+                    </div>
+                    <t t-foreach="docs" t-as="o">
+                        <div class="header">
+                            <div class="row">
+                                <td>
+                                    <img src='/web/binary/company_logo' class="img-fluid img-thumbnail"
+                                         style="width:300px;"/>
+                                </td>
+                                <td style="vertical-align: left;text-align: right;padding-right: 2px;">
+                                    <strong style="font-size: 17px" t-esc="res_company.street"/>
+                                    <strong style="font-size: 17px" t-esc="res_company.street2"/>
+                                    <br/>
+                                    <strong style="font-size: 17px" t-esc="res_company.city"/>
+                                    <strong style="font-size: 17px" t-esc="res_company.state_id.name"/>
+                                    <strong style="font-size: 17px" t-esc="res_company.country_id.name"/>
+                                    <strong style="font-size: 17px" t-esc="res_company.phone"/>
+                                </td>
+                            </div>
+                        </div>
+                        <style>
+                            .table-container {
+                            display: flex;
+                            flex-direction: column;
+                            }
+
+                            .table {
+                            border: 1px solid black;
+                            margin-bottom: 0px;
+                            }
+                        </style>
+                        <table class="table table-sm table-bordered" style="border:1px solid black">
+                            <td align="center" colspan="6">
+                                <h4>
+                                    <strong>
+                                        SRP RMC AND CONSTRUCTIONS
+                                    </strong>
+                                </h4>
+                            </td>
+                            <strong>
+                                <tr>
+                                    <td colspan="6" align="center" style="color:blue;">
+                                        <strong>
+                                            GSTIN:33ACNFS4051Q1ZK
+                                        </strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="3" colspan="2" align="center"
+                                        style="color:blue; font-size:25px;vertical-align:middle;text-align:center;">
+                                        <strong>
+                                            INVOICE
+                                        </strong>
+                                    </td>
+                                    <td colspan="3" style="color:red;">
+                                        original for recipient
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="color:red;">
+                                        Duplicate ofr Supplier/Transporter
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="color:red;">
+                                        Duplicate ofr Supplier
+                                    </td>
+                                </tr>
+                            </strong>
+                            <tr>
+                                <td>
+                                    CODE
+                                </td>
+                                <td>
+                                    <span t-field="o.name"/>
+                                </td>
+                                <td style="white-space: nowrap;">
+                                    Transportation Mode
+                                </td>
+                                <td>
+                                    :
+                                </td>
+                                <td>
+                                    <span t-field="o.transport_mode"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Invoice No
+                                </td>
+                                <td>
+                                    <span t-field="o.payment_reference"/>
+                                </td>
+                                <td>
+                                    Vechile Number
+                                </td>
+                                <td>
+                                    :
+                                </td>
+                                <td>
+                                    <span t-field="o.vehicle_id"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Invoice Date
+                                </td>
+                                <td>
+                                    <span t-field="o.invoice_date"/>
+                                </td>
+                                <td>
+                                    Date of Supply
+                                </td>
+                                <td>
+                                    :
+                                </td>
+                                <td>
+                                    <span t-field="o.invoice_date_due"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    State
+                                </td>
+                                <td>
+                                    <span t-field="res_company.state_id.name"/>
+                                </td>
+                                <td>
+                                    Place of Supply
+                                </td>
+                                <td>
+                                    :
+                                </td>
+                                <td>
+                                    <span t-field="o.l10n_in_state_id"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5">
+                                    <center>
+                                        State code:
+                                        <span t-field="o.l10n_in_state_id.l10n_in_tin"/>
+                                    </center>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5"></td>
+                            </tr>
+                            <tr></tr>
+                        </table>
+                        <table class="table table-sm table-bordered" style="border:1px solid black">
+                            <tr>
+                                <td colspan="2">
+                                    <center>
+                                        Details of receiver / Billed To:
+                                    </center>
+                                </td>
+                                <td colspan="2">
+                                    <center>
+                                        Details of consignee / Shipped To:
+                                    </center>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>NAME</td>
+                                <td>
+                                    <strong>
+                                        <span t-field="o.partner_id.name"/>
+                                    </strong>
+                                </td>
+                                <td>NAME</td>
+                                <td>
+                                    <strong>
+                                        <span t-field="o.partner_id.name"/>
+                                    </strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>GSTIN</td>
+                                <td>
+                                    <span style="font-size:14px;" t-esc="res_company.vat"/>
+                                </td>
+                                <td>GSTIN</td>
+                                <td>
+                                    <span style="font-size:14px;" t-esc="res_company.vat"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>STATE</td>
+                                <td>
+                                    <span class="px-1" style="font-size:14px;" t-esc="res_company.state_id.name"/>
+                                </td>
+                                <td>STATE</td>
+                                <td>
+                                    <span class="px-1" style="font-size:14px;" t-esc="res_company.state_id.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <center>
+                                        State code:
+                                        <span t-field="o.l10n_in_state_id.l10n_in_tin"/>
+                                    </center>
+                                </td>
+                                <td colspan="2">
+                                    <center>
+                                        State code:
+                                        <span t-field="o.l10n_in_state_id.l10n_in_tin"/>
+                                    </center>
+                                </td>
+                            </tr>
+                            <tr></tr>
+                        </table>
+
+                        <table class="table table-sm table-bordered" style="border:1px solid black">
+                            <thead class="thead-light p-3 mb-2" style="text-align: center;">
+                                <tr>
+                                    <td colspan="9" style="font-weight:bold;color:white;background-color:#4aa832;">
+                                        <center>TRANSPORTATION DETAILS</center>
+                                    </td>
+                                </tr>
+                                <!--                                    #SERIAL NUMBER-->
+
+                                <th class="text-center bg-secondary text-black"
+                                    style="width: 3%;font-weight:bold">
+                                    S.NO
+                                </th>
+
+
+                                <th colspan="2" class="text-center bg-secondary text-black"
+                                    style="width: 10%;font-weight:bold">
+                                    LABEL
+                                </th>
+                                <th class="text-center bg-secondary text-black"
+                                    style="width: 10%;font-weight:bold">
+                                    TRIP FROM
+                                </th>
+                                <th class="text-center bg-secondary text-black"
+                                    style="width: 10%;font-weight:bold">
+                                    TRIP TO
+                                </th>
+                                <th class="text-center bg-secondary text-black"
+                                    style="width: 10%;font-weight:bold">
+                                    TOTAL KM
+                                </th>
+                                <th class="text-center bg-secondary text-black"
+                                    style="width: 10%;font-weight:bold">
+                                    RATE/KM
+                                </th>
+                                <th class="text-center bg-secondary text-black"
+                                    style="width: 10%;font-weight:bold">
+                                    TAXES
+                                </th>
+                                <th class="text-center bg-secondary text-black"
+                                    style="width: 10%;font-weight:bold">
+                                    SUBTOTAL
+                                </th>
+                            </thead>
+
+                            <tbody style="border: 1px solid color;text-align: center;">
+                                <tr t-foreach="o.invoice_line_ids" t-as="l">
+                                    <t colspan="2">
+                                        <td width="3%" class="padding_all tbottom ttop text-center">
+                                            <span t-esc="l_index+1"/>
+                                        </td>
+                                        <t t-if="l.product_id.name">
+                                            <td colspan="2" width="14%"
+                                                class="padding_all tleft tbottom ttop text-left">
+                                                <span t-field="l.product_id.name"/>
+                                            </td>
+                                        </t>
+                                        <t t-else="">
+                                            <td colspan="2" width="14%"
+                                                class="padding_all tleft tbottom ttop text-center">
+                                                <span>-</span>
+                                            </td>
+                                        </t>
+                                        <t t-if="l.trips_starts_from">
+                                            <td width="14%" class="padding_all" align="left">
+                                                <span t-field="l.trips_starts_from"/>
+                                            </td>
+                                        </t>
+                                        <t t-else="">
+                                            <td width="14%" class="padding_all tleft tbottom ttop text-center">
+                                                <span>-</span>
+                                            </td>
+                                        </t>
+                                        <t t-if="l.trips_ends_at">
+                                            <td width="14%" class="padding_all" align="left">
+                                                <span t-field="l.trips_ends_at"/>
+                                            </td>
+                                        </t>
+                                        <t t-else="">
+                                            <td width="14%" class="padding_all tleft tbottom ttop text-center">
+                                                <span>-</span>
+                                            </td>
+                                        </t>
+                                        <t t-if="l.quantity">
+                                            <td width="14%" class="padding_all" align="right">
+                                                <span t-field="l.quantity"/>
+                                            </td>
+                                        </t>
+                                        <t t-else="">
+                                            <td width="14%" class="padding_all tleft tbottom ttop text-center">
+                                                <span>-</span>
+                                            </td>
+                                        </t>
+                                        <t t-if="l.price_unit">
+                                            <td width="14%" class="padding_all" align="right">
+                                                <span t-field="l.price_unit"/>
+                                            </td>
+                                        </t>
+                                        <t t-else="">
+                                            <td width="14%" class="padding_all tleft tbottom ttop text-center">
+                                                <span>-</span>
+                                            </td>
+                                        </t>
+                                        <t t-if="l.tax_ids">
+                                            <td width="14%" class="padding_all tleft tbottom ttop text-center">
+                                                <span t-field="l.tax_ids"/>
+                                            </td>
+                                        </t>
+                                        <t t-else="">
+                                            <td width="14%" class="padding_all tleft tbottom ttop text-center">
+                                                <span>-</span>
+                                            </td>
+                                        </t>
+                                        <t t-if="l.price_subtotal">
+                                            <td width="14%" class="padding_all" align="right">
+                                                <span t-field="l.price_subtotal"/>
+                                            </td>
+                                        </t>
+                                        <t t-else="">
+                                            <td width="14%" class="padding_all tleft tbottom ttop text-center">
+                                                <span>-</span>
+                                            </td>
+                                        </t>
+                                    </t>
+                                </tr>
+                                <tr>
+                                    <td colspan="9"></td>
+                                </tr>
+                                <tr></tr>
+                            </tbody>
+                        </table>
+                        <div style="page-break-inside: avoid;">
+                            <table class="table table-sm table-bordered" style="border:1px solid black;">
+                                <t t-set="tax_totals" t-value="o.tax_totals"/>
+                                <t t-foreach="tax_totals['subtotals']" t-as="subtotal">
+                                    <tr class="border-black o_subtotal">
+                                        <td rowspan="999"
+                                            style="width: 55%; vertical-align:middle;text-align:center; font-size: 15px;">
+                                            <strong>
+                                                Total Invoice Amount In words:
+                                            </strong>
+                                            <span t-field="o.number_to_words"/>
+                                        </td>
+                                        <td>
+                                            <strong t-esc="subtotal['name']"/>
+                                        </td>
+
+                                        <td class="text-end">
+                                            <span
+                                                    t-att-class="oe_subtotal_footer_separator"
+                                                    t-esc="subtotal['formatted_amount']"
+                                            />
+                                        </td>
+                                    </tr>
+
+                                    <t t-set="subtotal_to_show" t-value="subtotal['name']"/>
+                                    <t t-call="account.tax_groups_totals"/>
+                                </t>
+
+                                <t t-set="has_rounding" t-value="'formatted_amount_total_rounded' in tax_totals"/>
+                                <!--Total amount with all taxes-->
+                                <tr class="border-black o_total">
+                                    <t t-if="has_rounding">
+                                        <td>Total</td>
+                                    </t>
+                                    <t t-else="">
+                                        <td>
+                                            <strong>Total</strong>
+                                        </td>
+                                    </t>
+                                    <td class="text-end">
+                                        <span t-esc="tax_totals['formatted_amount_total']"/>
+                                    </td>
+                                </tr>
+                                <tr t-if="has_rounding">
+                                    <td>
+                                        <strong>Total Rounded</strong>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-esc="tax_totals['formatted_amount_total_rounded']"/>
+                                    </td>
+                                </tr>
+                                <tr></tr>
+                            </table>
+                            <table class="table table-sm table-bordered" style="border:1px solid black;">
+                                <tr></tr>
+                                <tr>
+                                    <td colspan="3">BANK Details</td>
+                                    <td colspan="2" style="white-space: nowrap;">SRP RMC &amp; CONSTRUCTIONS</td>
+                                    <td colspan="5" rowspan="4" style="color:grey;white-space: nowrap;">For SRP RMC
+                                        &amp;
+                                        CONSTRUCTIONS
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">Account Number:</td>
+                                    <td colspan="2">C/AC-123456789098</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">IFSC Code:</td>
+                                    <td colspan="2">CUB0000045698</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5">Terms and Conditions:</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

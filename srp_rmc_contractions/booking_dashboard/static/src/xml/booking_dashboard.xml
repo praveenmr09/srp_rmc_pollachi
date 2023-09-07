@@ -1,0 +1,102 @@
+<templates>
+    <t t-name="BookingGeneralTemp">
+        <div class="dash_board_page">
+            <div>
+                <div class="filter_view_tb"></div>
+            </div>
+            <div>
+                <div class="table_view_tb"></div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="FilterView">
+        <div class="row">
+
+            <div class="form-page">
+                <div class="dashboard_header_div text-center">
+                    <h2 class="dashboard_header">Vehicle Booking DashBoard</h2>
+                </div>
+                <article class="part card-details col-6">
+                    <div class="form-button mt-3 text-right">
+                        <button type="button" id="apply_filter"
+                                class="btn btn-outline-info submit">Apply
+                            <i class="fa fa-arrow-circle-right mx-4"></i>
+                        </button>
+                    </div>
+                    <div class="form-body">
+                        <form>
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="start_date" class="form-label">Start Date</label>
+                                    <input id="start_date" class="form-control" type="date" name="start_date"
+                                           placeholder="Start Date" required="True"
+                                           aria-label="Start Date"/>
+                                </div>
+
+                                <div class="col-6">
+                                    <label for="end_date" class="form-label">End Date</label>
+                                    <input id="end_date" type="date" class="form-control" name="end_date"
+                                           placeholder="End Date"
+                                           aria-label="End Date" required="True"/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </article>
+                <div class="part bg col-5 card_image p-0">
+                    <div class="ban_image">
+                        <img class="img_right img-thumbnail m-0 p-0" src="/booking_dashboard/static/src/img/banner_4.png"
+                             alt="CAR"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </t>
+    <t t-name="TableCon">
+        <div>
+            <table class="table">
+                <thead style="background-color: #ffd633;">
+                    <tr class="table_header_row">
+                        <t t-foreach="data['summary_header']" t-as="header">
+                            <th class="table_header" style="text-align:center;">
+                                <t t-esc="header"/>
+                            </th>
+                        </t>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="data['vehicle_data']" t-as="data">
+                        <tr>
+                            <td class="table_row_colum" style="background-color: #1748a3;">
+                                <t t-esc="data['vehicle_name']"/>
+                            </td>
+                            <t t-foreach="data['value']" t-as="box">
+                                <t t-if="box['state'] == 'Free'">
+                                    <td class="table_free" style="background-color: #00cc00;"
+                                        t-att-data="box['vehicle']"
+                                        t-att-box_date="box['box_date']">
+                                        <t t-esc="box['state']"/>
+                                    </td>
+                                </t>
+                                <t t-if="box['state'] == 'Reserved'">
+                                    <td class="table_reserved" style="background-color: #ff1a1a;"
+                                        t-att-data="box['vehicle']"
+                                        t-att-rental_id="box['rental']"
+                                        t-att-box_date="box['box_date']">
+                                        <t t-esc="box['state']"/>
+                                    </td>
+                                </t>
+                            </t>
+
+                        </tr>
+                    </t>
+
+                </tbody>
+            </table>
+        </div>
+
+    </t>
+
+</templates>

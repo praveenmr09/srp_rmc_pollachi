@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="booking_wizard" model="ir.ui.view">
+        <field name="name">booking.wizard.wizard</field>
+        <field name="model">booking.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="alert alert-success mb-4" role="alert">
+                        Rent Vehicle Booking DashBoard
+                    </div>
+                    <group>
+                        <group string="New Customer Information">
+                            <field name="customer_type" required="1" widget="radio"
+                                   options="{'horizontal': true}"/>
+                            <field name="new_customer_name"
+                                   attrs="{'invisible': ['|',('customer_type', '==', 'regular'),
+                           ('generate_new_customer', '!=', False)],
+                           'required': [('customer_type', '!=', 'regular')]}"/>
+                            <field name="new_customer_phone_number"
+                                   attrs="{'invisible': [('customer_type', '!=', 'walk_in')]}"/>
+                            <field name="generate_new_customer" widget="boolean_toggle"
+                                   attrs="{'invisible': ['|',('customer_type', '!=', 'walk_in'),
+                           ('customer_id', '!=', False)]}"/>
+                            <field name="customer_id" placeholder="Select Customer" string="Customer" options="{'no_create': True}"
+                                   attrs="{'invisible': [('customer_type', '!=', 'regular')]}"/>
+                            <field name="name_of_rental_purpose" placeholder="Mention Purpose of Rental Contract"
+                                   attrs="{'invisible': [('customer_type', '!=', 'regular')]}"/>
+                            <field name="name_of_goods" placeholder="Name of Goods"
+                                   attrs="{'invisible': [('customer_type', '!=', 'regular')]}"/>
+                             <label for="duration" string="Duration Hrs"/>
+                                <div  name="Duration Hrs">
+                                    <field name="duration" class="oe_inline"
+                                           attrs="{'invisible': [('customer_type', '!=', 'regular')]}"/>
+                                    <span> Hrs-Mints</span>
+                                </div>
+                             <label for="rental_duration_days" string="No of Days"/>
+                                <div>
+                                    <field name="rental_duration_days" class="oe_inline" readonly="1"
+                                           attrs="{'invisible': [('customer_type', '!=', 'regular')]}"/>
+                                    <span> Days</span>
+                                </div>
+                        </group>
+                        <group>
+                            <!--                            <field name="date"/>-->
+                            <separator string="Fleet Rental and Registration Info" colspan="4"
+                                       attrs="{'invisible': [('customer_type', '!=', 'regular')]}"/>
+                            <label for="rent_start_date" string="Period"
+                                   attrs="{'invisible': [('customer_type', '!=', 'regular')]}"/>
+                            <div class="o_row" name="rent_start_date">
+                                <field name="rent_start_date" class="oe_inline"
+                                       attrs="{'invisible': [('customer_type', '!=', 'regular')]}"/>
+                                <field name="rent_end_date" class="oe_inline"
+                                       attrs="{'invisible': [('customer_type', '!=', 'regular')]}"/>
+                            </div>
+                            <label for="from_date" string="Trip Information"
+                                   attrs="{'invisible': [('customer_type', '!=', 'regular')]}"/>
+                            <div class="o_row no-gutters d-flex">
+                                <field name="from_date" class="oe_inline"
+                                       placeholder="Source" attrs="{'invisible': [('customer_type', '!=', 'regular')]}"/>
+                                <field name="to_date" class="oe_inline" placeholder="Destination"
+                                       attrs="{'invisible': [('customer_type', '!=', 'regular')]}"/>
+                            </div>
+                            <!--                            <field name="vehicle_state"/>-->
+                            <!--                            <field name="driver_state"/>-->
+                            <field name="vehicle" placeholder="Select Vehicle" required="1"/>
+                            <field name="driver_id" placeholder="Select Driver" required="1"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button
+                                name="tick_ok"
+                                string="Register"
+                                type="object"
+                                class="btn btn-success"
+                        />
+                        <button
+                                string="Cancel"
+                                icon="fa-close"
+                                class="btn btn-danger"
+                                special="cancel"
+                        />
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<odoo>
+    <data>
+        <!--   ODOMETER WIZARD FORM VIEW-->
+        <record id="view_odometer_wizard_form_view" model="ir.ui.view">
+            <field name="name">odometer.wizard.form</field>
+            <field name="model">odometer.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="rent_contract_ref" readonly="1" force_save="1"/>
+                            <field name="vehicle_id"  readonly="1" force_save="1"/>
+                            <field name="last_odometer" readonly="1"/>
+                            <field name="difference" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="is_default_remark"/>
+                            <field name="remarks" required="1"
+                                   placeholder="Please enter the Rental Alter Charges remarks..."/>
+                            <field name="exact_odometer"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="update_current_odometer" string="Submit" icon="fa-dashboard"
+                                type="object" default_focus="1" class="btn btn-success"/>
+                        <button string="Cancel" class="btn-default" special="cancel" icon="fa-times"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!--ACTION FOR ODOMETER WIZARD-->
+        <record id="view_odometer_wizard_action" model="ir.actions.act_window">
+            <field name="name">Odometer Update</field>
+            <field name="res_model">odometer.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

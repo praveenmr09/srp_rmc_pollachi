@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--        FUEL TANK MONITORING REPORT PAPER FORMAT-->
+        <record id="view_fuel_tank_monitoring_report" model="report.paperformat">
+            <field name="name">Fuel Tank Monitoring Report</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">35</field>
+            <field name="margin_bottom">15</field>
+            <field name="margin_left">3</field>
+            <field name="margin_right">3</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">30</field>
+            <field name="dpi">90</field>
+        </record>
+
+
+        <!--       FUEL TANK MONITORING REPORT RECORD FORMAT-->
+        <report
+                id="view_fuel_tank_monitoring_report_record_menu"
+                model="fleet.vehicle"
+                string="Fuel Tank Monitoring Report"
+                report_type="qweb-pdf"
+                name="apps_fleet_rental.view_fuel_tank_monitoring_report_template"
+                file="apps_fleet_rental.view_fuel_tank_monitoring_report_template"
+                paperformat="apps_fleet_rental.view_fuel_tank_monitoring_report"
+                print_report_name='"Fuel Tank Monitoring Report"'
+                menu="True"
+        />
+        <!--        FUEL TANK MONITORING REPORT TEMPLATE FORMAT-->
+        <template id="view_fuel_tank_monitoring_report_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="rec">
+                    <t t-call="web.external_layout">
+                        <div class="watermark"
+                             style="margin: 300px 80px 100px 150px;position:absolute;opacity:0.15;z-index:1000;transform:rotate(00deg);-webkit-transform:rotate(00deg);transform: rotate(-20deg);">
+                            <img src='/web/binary/company_logo' style="width:600px"/>
+                        </div>
+                        <t t-foreach="docs" t-as="o">
+
+                            <div align="center">
+                                <h4>
+                                    <strong>
+                                        Fuel Tank Monitoring Report
+                                    </strong>
+                                </h4>
+                            </div>
+
+                            <br/>
+                            <div class="row">
+                                <div class="col-4">
+                                    <strong class="px-1" style="font-size:17px;">Model</strong>
+                                    <strong class="px-2" style="font-size:17px;">:</strong>
+                                    <span style="font-size:17px;" t-field="o.model_id"/>
+                                </div>
+                                <div class="col-4">
+                                    <strong class="px-1" style="font-size:17px;">Last Odometer</strong>
+                                    <strong class="px-2" style="font-size:17px;">:</strong>
+                                    <span t-esc="'%.2f' % o.odometer" style="font-size: 17px;"/>
+                                    Km
+                                </div>
+                                <div class="col-4">
+                                    <strong class="px-1" style="font-size:17px;">Fleet Manager</strong>
+                                    <strong class="px-2" style="font-size:17px;">:</strong>
+                                    <span style="font-size:17px;" t-field="o.manager_id"/>
+                                </div>
+                            </div>
+                            <br/>
+                            <br/>
+
+                            <div align="center">
+                                <h5 style="background-color: #18449B; color: white; text-align:center; font-weight: bold;letter-spacing: 0.5px;">
+                                    <strong>
+                                        Fuel Details
+                                    </strong>
+                                </h5>
+                            </div>
+
+                            <div class="row" style="margin-left:100px">
+                                <div class="col-5">
+                                    <strong class="px-1" style="font-size:17px;">Content</strong>
+                                    <strong class="px-2" style="font-size:17px;">:</strong>
+                                    <span style="font-size:17px;" t-field="o.content"/>
+                                </div>
+                                <div class="col-5">
+                                    <strong class="px-1" style="font-size:17px;">Tank Capacity</strong>
+                                    <strong class="px-2" style="font-size:17px;">:</strong>
+                                    <span t-esc="'%.2f' % o.tank_capacity" style="font-size: 17px;"/>
+                                    Litres
+                                </div>
+                            </div>
+
+
+                            <div class="row" style="margin-left:100px">
+                                <div class="col-5">
+                                    <strong class="px-1" style="font-size:17px;">Fuel</strong>
+                                    <strong class="px-2" style="font-size:17px;">:</strong>
+                                    <span t-esc="'%.2f' % o.total_fuel_litres" style="font-size: 17px;"/>
+                                    Litres
+                                </div>
+                                <div class="col-5">
+                                    <strong class="px-1" style="font-size:17px;">Date</strong>
+                                    <strong class="px-2" style="font-size:17px;">:</strong>
+                                    <span style="font-size:17px;" t-field="o.fuel_tank_monitoring_date"/>
+                                </div>
+                            </div>
+                            <br/>
+
+                            <div align="center">
+                                <h5 style="background-color: #18449B; color: white; text-align:center; font-weight: bold;letter-spacing: 0.5px;">
+                                    <strong>
+                                        Fuel History
+                                    </strong>
+                                </h5>
+                            </div>
+
+                            <table class="table table-sm table-bordered" style="border:1px solid black">
+                                <thead class="thead-light p-3 mb-2" style="text-align: center;">
+                                    <tr style="font-size: 14px; color: white; background-color: #C81F26;">
+                                        <th class="text-center bg-secondary text-white"
+                                            style="width: 3%;font-weight:bold">
+                                            S.NO
+                                        </th>
+                                        <th colspan="2" class="text-center bg-secondary text-white"
+                                            style="width: 10%;font-weight:bold">
+                                            Filling Date
+                                        </th>
+                                        <th class="text-center bg-secondary text-white"
+                                            style="width: 10%;font-weight:bold">
+                                            Last Odometer / km
+                                        </th>
+                                        <th class="text-center bg-secondary text-white"
+                                            style="width: 10%;font-weight:bold">
+                                            Fueled By
+                                        </th>
+                                        <th class="text-center bg-secondary text-white"
+                                            style="width: 10%;font-weight:bold">
+                                            Fuel / Ltr
+                                        </th>
+                                        <th class="text-center bg-secondary text-white"
+                                            style="width: 10%;font-weight:bold">
+                                            Fuel Cost
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody style="border: 1px solid color;text-align: center;">
+                                    <tr t-foreach="o.fuel_history_ids" t-as="l">
+                                        <t colspan="2">
+
+                                            <td width="3%" class="padding_all tbottom ttop text-center">
+                                                <span t-esc="l_index+1"/>
+                                            </td>
+
+                                            <t t-if="l.filling_date">
+                                                <td colspan="2" width="14%"
+                                                    class="padding_all tleft tbottom ttop text-left">
+                                                    <span t-field="l.filling_date"/>
+                                                </td>
+                                            </t>
+                                            <t t-else="">
+                                                <td colspan="2" width="14%"
+                                                    class="padding_all tleft tbottom ttop text-center">
+                                                    <span>-</span>
+                                                </td>
+
+                                            </t>
+
+                                            <t t-if="l.last_odometer">
+                                                <td width="14%" class="padding_all" align="right">
+                                                    <span t-esc="'%.2f' % l.last_odometer" style="font-size: 17px;"/>
+
+                                                </td>
+                                            </t>
+                                            <t t-else="">
+                                                <td width="14%" class="padding_all tleft tbottom ttop text-center">
+                                                    <span>-</span>
+                                                </td>
+                                            </t>
+
+                                            <t t-if="l.fueled_by">
+                                                <td width="14%" class="padding_all" align="left">
+                                                    <span t-field="l.fueled_by"/>
+                                                </td>
+                                            </t>
+                                            <t t-else="">
+                                                <td width="14%" class="padding_all tleft tbottom ttop text-center">
+                                                    <span>-</span>
+                                                </td>
+                                            </t>
+
+                                            <t t-if="l.fuel">
+                                                <td width="14%" class="padding_all" align="right">
+                                                    <span t-esc="'%.2f' % l.fuel" style="font-size: 17px;"/>
+                                                </td>
+                                            </t>
+                                            <t t-else="">
+                                                <td width="14%" class="padding_all tleft tbottom ttop text-center">
+                                                    <span>-</span>
+                                                </td>
+                                            </t>
+
+
+                                            <t t-if="l.fuel_cost">
+                                                <td width="14%" class="padding_all" align="right">
+                                                    <t t-esc="l.fleet_vehicle_id.company_id.currency_id.symbol"/>
+                                                    <span t-esc="'%.2f' % l.fuel_cost" style="font-size: 17px;"/>
+                                                </td>
+                                            </t>
+                                            <t t-else="">
+                                                <td width="14%" class="padding_all tleft tbottom ttop text-center">
+                                                    <span>-</span>
+                                                </td>
+                                            </t>
+                                        </t>
+                                    </tr>
+                                </tbody>
+                                <body class="thead-light p-3 mb-2" style="text-align:right">
+
+                                    <th class="bg-secondary text-black;" colspan="5"
+                                        style="font-weight:bold; text-align:right;">
+                                        <strong class="px-1" style="font-size:17px;">Total</strong>
+                                    </th>
+
+                                    <th class="bg-secondary text-black; " colspan="1"
+                                        style="font-weight:bold;  text-align:right;">
+                                        <span t-esc="'%.2f' % o.total_fuel_litres" style="font-size: 17px;"/>
+                                    </th>
+
+                                    <th class="bg-secondary text-black; " colspan="1"
+                                        style="font-weight:bold;  text-align:right;">
+                                        <t t-esc="l.fleet_vehicle_id.company_id.currency_id.symbol"/>
+                                        <span t-esc="'%.2f' % o.total_fuel_cost" style="font-size: 17px;"/>
+                                    </th>
+                                </body>
+
+                            </table>
+
+
+                        </t>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

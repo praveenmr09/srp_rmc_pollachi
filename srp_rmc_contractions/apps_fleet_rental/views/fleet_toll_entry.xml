@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+
+        <!--        RENTAL CONTRACT FLEET TOLL ENTRY FORM VIEW-->
+        <record model="ir.ui.view" id="fleet_toll_entry_form_view">
+            <field name="name">fleet.toll.entry.form</field>
+            <field name="model">fleet.toll.entry</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Fleet Toll Entry">
+                    <sheet>
+                        <group>
+                            <group string="Fleet Toll Details">
+                                <field name="rent_contract_ref"/>
+                                <field name="entry_date"/>
+                                <field name="entry_name"/>
+                                <field name="exit_name"/>
+                                <!--                                <label for="entry_lat" string="" invisible="1"/>-->
+                                <!--                                <div class="row pr-4 oe_edit_only">-->
+                                <!--                                    <label for="entry_lat" string="Lat"-->
+                                <!--                                           class="col-2 pr-2 m-0 text-right font-weight-bold"/>-->
+                                <!--                                    <field name="entry_lat" class="col-4"/>-->
+                                <!--                                    <label for="entry_lng" string="Lng"-->
+                                <!--                                           class="col-2 pr-2 m-0 text-right font-weight-bold"/>-->
+                                <!--                                    <field name="entry_lng" class="col-4"/>-->
+                                <!--                                </div>-->
+                                <!--                                <field name="exit_name"/>-->
+                                <!--                                <label for="exit_lat" string="" invisible="1"/>-->
+                                <!--&lt;!&ndash;                                <div class="row pr-4 oe_edit_only">&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                    <label for="exit_lat" string="Lat"&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                           class="col-2 pr-2 m-0 text-right font-weight-bold"/>&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                    <field name="exit_lat" class="col-4"/>&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                    <label for="exit_lng" string="Lng"&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                           class="col-2 pr-2 m-0 text-right font-weight-bold"/>&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                    <field name="exit_lng" class="col-4"/>&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                </div>&ndash;&gt;-->
+                                <label for="distance"/>
+                                <div class="o_row">
+                                    <field name="distance"/>
+                                    <!--                                <field name="odometer_unit"/>-->
+                                </div>
+                                <field name="cost_amount" widget="monetary"/>
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                            <group class="m-0">
+                                <group string="Vehicle Details">
+                                    <field name="vehicle_id"/>
+                                    <field name="purchaser_id"/>
+
+                                    <separator string="Additional Details"/>
+
+                                    <field name="vendor_id"/>
+                                    <field name="inv_ref"/>
+                                    <field name="description" invisible="1"/>
+                                </group>
+                            </group>
+                        </group>
+                        <notebook>
+
+                            <page string="Notes">
+                                <field name="notes" placeholder="Write here any other information"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!--        RENTAL CONTRACT FLEET TOLL ENTRY TREE VIEW-->
+        <record model="ir.ui.view" id="fleet_toll_entry_tree_view">
+            <field name="name">fleet.toll.entry.tree</field>
+            <field name="model">fleet.toll.entry</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Fleet Toll Entries">
+                    <field name="entry_date"/>
+                    <field name="vehicle_id"/>
+                    <field name="vendor_id"/>
+                    <field name="entry_name"/>
+                    <field name="exit_name"/>
+                    <field name="distance" sum="Distance"/>
+                    <field name="cost_amount" widget="monetary" sum="Cost"/>
+                    <field name="create_date" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="inv_ref" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <!--        RENTAL CONTRACT FLEET TOLL ENTRY GRAPH VIEW-->
+        <record id="fleet_toll_entry_view_graph" model="ir.ui.view">
+            <field name="name">fleet.toll.entry.graph</field>
+            <field name="model">fleet.toll.entry</field>
+            <field name="arch" type="xml">
+                <graph string="Fleet Tolls Per Month" stacked="True">
+                    <field name="entry_date" interval="month" type="row"/>
+                    <field name="vehicle_id" type="col"/>
+                    <field name="cost_amount" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <!--        RENTAL CONTRACT FLEET TOLL ENTRY SEARCH VIEW-->
+        <record id="fleet_toll_entry_view_search" model="ir.ui.view">
+            <field name="name">fleet.toll.entry.search</field>
+            <field name="model">fleet.toll.entry</field>
+            <field name="arch" type="xml">
+                <search string="Vehicles Tolls">
+                    <field name="entry_name"
+                           filter_domain="['|', ('entry_name','ilike',self), ('exit_name','ilike',self)]"/>
+                    <field name="vehicle_id"/>
+                    <filter string="Non-invoiced" name="non_invoiced" domain="[('inv_ref','=',False)]"/>
+                    <filter string="Have note" name="have_note" domain="[('notes','!=',False)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Vendor" name="groupby_vendor" context="{'group_by': 'vendor_id'}"/>
+                        <filter string="Vehicle" name="groupby_vehicle" context="{'group_by': 'vehicle_id'}"/>
+                        <separator/>
+                        <filter string="Date" name="groupby_date" context="{'group_by': 'entry_date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!--        ACTION FOR RENTAL CONTRACT FLEET TOLL ACTION-->
+        <record id="action_fleet_toll_entry" model="ir.actions.act_window">
+            <field name="name">Fleet Road Toll</field>
+            <field name="res_model">fleet.toll.entry</field>
+            <field name="view_mode">tree,graph,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">Create a new road fleet toll</p>
+                <p>Here you can add toll road entries for all vehicles.</p>
+            </field>
+        </record>
+
+
+        <!--        MENU FOR RENTAL CONTRACT FLEET TOLL-->
+        <menuitem action="action_fleet_toll_entry"
+                  parent="fleet.fleet_vehicles"
+                  id="fleet_tls_toll_menu"
+                  groups="fleet.fleet_group_user"
+                  sequence="64"/>
+
+        <!--        INHERITED FLEET TOLL-->
+        <record id="fleet_vehicle_view_form_toll_inherited" model="ir.ui.view">
+            <field name="name">fleet.vehicle.form.inherit.fleet.toll.entry</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+            <field name="arch" type="xml">
+                <!-- SMART BUTTON -->
+                <xpath expr="//form/sheet/div[hasclass('oe_button_box')]" position="inside">
+                    <button name="get_toll_entry_details_count" type="object"
+                            class="oe_stat_button" icon="fa-road"
+                            help="Show the road tolls for this vehicle">
+                        <field name="vehicle_toll_count" widget="statinfo" string="Tolls"/>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

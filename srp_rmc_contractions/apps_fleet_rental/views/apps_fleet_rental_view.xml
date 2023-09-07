@@ -1,0 +1,726 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data noupdate="1">
+        <!--        SEQUENCE FOR CAR RENTAL SEQUENCE-->
+        <record id="sequence_car_rental" model="ir.sequence">
+            <field name="name">Car Rental Sequence</field>
+            <field name="code">car.rental.sequence</field>
+            <field name="prefix">SRP/%(y)s/</field>
+            <!--            <field name="prefix">SRP/RMC/RENT/%(y)s/</field>-->
+            <field eval="1" name="number_next"/>
+            <field eval="1" name="number_increment"/>
+            <field eval="True" name="use_date_range"/>
+            <field name="padding">4</field>
+        </record>
+    </data>
+
+    <!--    &lt;!&ndash;    CRON SCHEDULER FOR FLEET&ndash;&gt;-->
+    <!--    <data>-->
+    <!--        <record id="cron_scheduler_for_fleet" model="ir.cron">-->
+    <!--            <field name="name">Fleet scheduler</field>-->
+    <!--            <field name="model_id" ref="apps_fleet_rental.model_car_rental_contract"/>-->
+    <!--            <field name="state">code</field>-->
+    <!--            <field name="code">model.fleet_scheduler()</field>-->
+    <!--            <field name="active" eval="True"/>-->
+    <!--            <field name="user_id" ref="base.user_root"/>-->
+    <!--            <field name="interval_number">1</field>-->
+    <!--            <field name="interval_type">days</field>-->
+    <!--            <field name="numbercall">-1</field>-->
+    <!--            <field name="doall" eval="False"/>-->
+    <!--        </record>-->
+
+    <!--        INHERIT FLEET VEHICLE-->
+    <record model="ir.ui.view" id="rental_fleet_vehicle_inherit_form_view">
+        <field name="name">fleet.vehicle.form.inherit.view</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+        <field name="arch" type="xml">
+            <field name="car_value" position="after">
+                <field name="rental_check_availability" invisible="1"/>
+                <field name="rental_reserved_time" invisible="1"/>
+            </field>
+            <field name="color" position="replace">
+                <field name="color"/>
+            </field>
+            <xpath expr="//group[@col=2]//group[1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[1]" position="before">
+                <!-- PAGE FUEL TANK MONITORING -->
+                <page string="Registration Info">
+                    <group>
+                        <group string="Registry Information">
+                            <field name="registration_date"/>
+                            <field name="fc_registry_date"/>
+                            <field name="permit_registry_date"/>
+                            <field name="insurance_registry_date"/>
+                            <field name="national_permit_registry_date"/>
+                            <field name="tn_permit_registry_date"/>
+                            <field name="pollution_registry_date_1"/>
+                            <field name="pollution_registry_date_2"/>
+                        </group>
+                        <group string="Expiry Information">
+
+                            <label for="fc_expiry_date" string="FC Expiry Date"/>
+                            <div class="o_row">
+                                <field name="vehicle_fc_eligible_period" class="oe_inline"/>
+                                <span>/Month</span>
+                                <field name="fc_expiry_date" class="oe_inline"/>
+                            </div>
+
+                            <label for="permit_expiry_date" string="Permit Expiry Date"/>
+                            <div class="o_row">
+                                <field name="vehicle_permit_eligible_period" class="oe_inline"/>
+                                <span>/Month</span>
+                                <field name="permit_expiry_date" class="oe_inline"/>
+                            </div>
+
+                            <label for="insurance_expiry_date" string="Insurance Expiry Date"/>
+                            <div class="o_row">
+                                <field name="vehicle_insurance_eligible_period" class="oe_inline"/>
+                                <span>/Month</span>
+                                <field name="insurance_expiry_date" class="oe_inline"/>
+                            </div>
+
+                            <label for="national_permit_expiry_date" string="NA Permit Expiry Date"/>
+                            <div class="o_row">
+                                <field name="vehicle_national_permit_eligible_period" class="oe_inline"/>
+                                <span>/Month</span>
+                                <field name="national_permit_expiry_date" class="oe_inline"/>
+                            </div>
+
+
+                            <label for="tn_permit_expiry_date" string="TN Permit Expiry Date"/>
+                            <div class="o_row">
+                                <field name="vehicle_tn_permit_eligible_period" class="oe_inline"/>
+                                <span>/Month</span>
+                                <field name="tn_permit_expiry_date" class="oe_inline"/>
+                            </div>
+
+                            <label for="pollution_expiry_date_1" string="Pollution Expiry Date 1"/>
+                            <div class="o_row">
+                                <field name="vehicle_pollution_1_eligible_period" class="oe_inline"/>
+                                <span>/Month</span>
+                                <field name="pollution_expiry_date_1" class="oe_inline"/>
+                            </div>
+
+                            <label for="pollution_expiry_date_2" string="Pollution Expiry Date 2"/>
+                            <div class="o_row">
+                                <field name="vehicle_pollution_2_eligible_period" class="oe_inline"/>
+                                <span>/Month</span>
+                                <field name="pollution_expiry_date_2" class="oe_inline"/>
+                            </div>
+
+
+                        </group>
+                    </group>
+                </page>
+                <page string="Fuel Tank Monitoring">
+                    <group>
+                        <group string="Tank Details">
+                            <field name="title" placeholder="Mention the Title"/>
+                            <field name="mounting_type" placeholder="Select the Mounting Type"/>
+                            <field name="tank_location" placeholder="Mention the Tank Location"/>
+                            <field name="fuel_tank_monitoring_date"/>
+                        </group>
+                        <group string="Fuel Details">
+                            <field name="content"/>
+
+                            <label for="tank_capacity" string="Tank Capacity"/>
+                            <div>
+                                <field name="tank_capacity" class="oe_inline"/>
+                                <field name="fuel_unit" class="oe_inline"/>
+                            </div>
+
+                            <label for="fuel" string="Fuel"/>
+                            <div>
+                                <field name="fuel" class="oe_inline"/>
+                                <field name="fuel_unit" class="oe_inline"/>
+                            </div>
+                            <label for="fuel" string="Fuel cost"/>
+                            <div>
+                                <field name="fuel_cost" class="oe_inline"/>
+                                <span>Rupees</span>
+                            </div>
+
+                            <div>
+                                <strong class="px-2" style="font-size:17px;"/>
+                                <field name="total_filling_fuel" invisible="0"
+                                       widget="percentpie"/>
+                                <strong class="px-2" style="font-size:17px;"/>
+                                <strong class="px-2" style="font-size:17px;"/>
+                                <strong class="px-2" style="font-size:17px;"/>
+                                <strong class="px-2" style="font-size:17px;"/>
+                                <strong class="px-2" style="font-size:17px;"/>
+                            </div>
+                            <button name="add_fuel_history_details" type="object" string="Add Fuel"
+                                    class="oe_highlight"/>
+                        </group>
+                    </group>
+                    <separator string="Fuel History"/>
+                    <field name="fuel_history_ids">
+                        <tree editable="bottom" create="0" delete="0">
+                            <field name="reference" readonly="1" force_save="1"/>
+                            <field name="filling_date" readonly="1" force_save="1"/>
+                            <field name="fueled_by" readonly="1" force_save="1"/>
+                            <field name="last_odometer" readonly="1" force_save="1"/>
+                            <field name="unit" readonly="1" force_save="1"/>
+                            <field name="fuel" readonly="1" force_save="1" sum="fuel"/>
+                            <field name="fuel_cost" readonly="1" force_save="1" sum="fuel_cost"/>
+                            <field name="fuel_receipt" readonly="1" force_save="1"/>
+                        </tree>
+                    </field>
+                </page>
+                <page string="Empty Trip Details">
+                    <separator string="Odometer Details"/>
+                    <field name="empty_trip_details_ids">
+                        <tree editable="bottom" create="0" delete="0">
+                            <field name="current_date" readonly="1" force_save="1"/>
+                            <field name="user_id" readonly="1" force_save="1"/>
+                            <field name="last_odometer" readonly="1" force_save="1"/>
+                            <field name="current_odometer" readonly="1" force_save="1"/>
+                            <field name="difference" readonly="1" force_save="1"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!--        CAR RENTAL CONTRACT FORM VIEW-->
+    <record id="car_rental_contract_form_view" model="ir.ui.view">
+        <field name="name">car.contract.result.form</field>
+        <field name="model">car.rental.contract</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="car_result">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object"
+                            attrs="{'invisible': [('state', '!=', 'draft')]}" class="oe_highlight"/>
+                    <!--                        <button name="action_run" string="Run" type="object"-->
+                    <!--                                attrs="{'invisible': [('state', '!=', 'reserved')]}" class="oe_highlight"/>-->
+                    <button name="action_cancel" string="Cancel" type="object"
+                            attrs="{'invisible': [('state', '!=', 'draft')]}" class="oe_highlight"/>
+                    <!--                                attrs="{'invisible': [('state', 'not in', ('draft', 'reserved'))]}"-->
+                    <!--                                class="oe_highlight"/>-->
+                    <button name="create_invoice" string="Create Invoice"
+                            attrs="{'invisible': ['|',('state', '!=', 'checking'), ('invoice_count', '!=', 0)]}"
+                            type="object"
+                            class="oe_highlight"/>
+                    <!--                        <button name="force_checking" string="Force Checking"-->
+                    <!--                                attrs="{'invisible': ['|',('state','!=','running'),-->
+                    <!--                                ('first_invoice_created','=',False)]}" type="object" class="oe_highlight"/>-->
+                    <button name="set_to_done" string="Set to Done"
+                            states="invoice" type="object" class="oe_highlight"/>
+                    <button name="rent_contract_alter_charges_apply" string="Apply Alter Charges"
+                            states="running" type="object" class="oe_highlight"/>
+                    <button string="Allocate" type="object"
+                            name="action_run" states="reserved"
+                            class="oe_highlight"/>
+                    <button name="add_fuel_history_details" type="object" string="Add Fuel"
+                            class="oe_highlight" invisible="0" states="reserved"/>
+                    <!--                            attrs="{'invisible': [('state', 'in', ['draft', 'done'])]}"/>-->
+
+                    <field name="state" widget="statusbar" statusbar_visible="draft,running,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <!--                            <button name="action_view_invoice"-->
+                        <!--                                    class="oe_stat_button"-->
+                        <!--                                    icon="fa-money"-->
+                        <!--                                    attrs="{'invisible': [('invoice_count', '=', 0)]}"-->
+                        <!--                                    type="object">-->
+                        <!--                                <field name="invoice_count" widget="statinfo"-->
+                        <!--                                       options="{'reload_on_button': true}"/>-->
+                        <!--                            </button>-->
+
+                        <button name="payment_smart_button"
+                                class="oe_stat_info"
+                                icon="fa-list-alt"
+                                type="object">
+                            <field name="create_payment_count" widget="statinfo"/>
+                        </button>
+                        <button name="rental_driver_history_record"
+                                class="oe_stat_button"
+                                icon="fa-book"
+                                type="object" attrs=" {'invisible': [('rental_driver_history_count','==',0)]}">
+                            <field name="rental_driver_history_count" widget="statinfo"
+                                   options="{'reload_on_button': true}"/>
+                        </button>
+                        <button name="get_invoice_details"
+                                class="oe_stat_info"
+                                icon="fa-list-alt"
+                                type="object"
+                                attrs="{'invisible':[('invoice_count','=',0)]}">
+                            <field name="invoice_count" widget="statinfo"/>
+                        </button>
+                        <button name="get_toll_entry_details_count"
+                                class="oe_stat_info"
+                                icon="fa-road"
+                                type="object"
+                                attrs="{'invisible':[('toll_entry_count','=',0)]}">
+                            <field name="toll_entry_count" widget="statinfo"/>
+                        </button>
+                        <!--                            <button name="rental_vehicle_history_record"-->
+                        <!--                                    class="oe_stat_button"-->
+                        <!--                                    icon="fa-book"-->
+                        <!--                                    type="object" attrs=" {'invisible': [('rental_vehicle_history_count','==',0)]}">-->
+                        <!--                                <field name="rental_vehicle_history_count" widget="statinfo"-->
+                        <!--                                       options="{'reload_on_button': true}"/>-->
+                        <!--                            </button>-->
+                    </div>
+                    <div style="display:flex;justify-content: center;">
+                        <field name="delivery_status" nolabel="1" readonly="1" force_save="1"
+                               style="margin-left: 400px;width:100%;color: #CC0000;font-weight: bold;font-size:20px"/>
+                    </div>
+                    <field name="image" widget='image' class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="New Customer Information">
+                            <field name="customer_type" required="1" widget="radio" options="{'horizontal': true}"
+                                   attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                            <field name="new_customer_name"
+                                   attrs="{'invisible': ['|',('customer_type', '==', 'regular'),
+                           ('generate_new_customer', '!=', False)],
+                           'required': [('customer_type', '!=', 'regular')]}"/>
+                            <field name="new_customer_phone_number"
+                                   attrs="{'invisible': [('customer_type', '!=', 'walk_in')]}"/>
+                            <field name="generate_new_customer" widget="boolean_toggle"
+                                   attrs="{'invisible': ['|',('customer_type', '!=', 'walk_in'),
+                           ('customer_id', '!=', False)]}"/>
+                        </group>
+                        <group>
+
+                        </group>
+                        <!--                            <separator string="Contract and Customer Information" colspan="4"/>-->
+                        <group string="Rental and Customer Information">
+                            <field name="customer_id" required="1" string="Customer" placeholder="Select Customer"
+                                   attrs="{'readonly': [('state','!=','draft')]}" options="{'no_create': True}"/>
+                            <field name="customer_contact"/>
+                            <field name="rental_type"/>
+                            <field name="vehicle_customer"/>
+                            <separator string="Fleet Rental and Load Information" colspan="4"/>
+                            <label for="rent_start_date" string="Period"/>
+                            <div class="o_row" name="rent_start_date">
+                                <field name="rent_start_date" class="oe_inline"
+                                       attrs="{'readonly': [('state','!=','draft')]}"/>
+                                <field name="rent_end_date" class="oe_inline"
+                                       attrs="{'readonly': [('state','!=','draft')]}"/>
+                            </div>
+                            <field name="name_of_rental_purpose" placeholder="Mention the Purpose of Rental Contract"/>
+                            <field name="name_of_goods" placeholder="Mention the Name of Goods"
+                                   attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                            <field name="transport_mode" placeholder="Select Transport Mode"
+                                   attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                            <label for="from_date" string="Trip Information"
+                                   attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                            <div class="o_row no-gutters d-flex">
+                                <field name="from_date" class="oe_inline"
+                                       attrs="{
+                            'readonly': [('state','not in',('draft'))]}"
+                                       placeholder="From"/>
+                                <field name="to_date" class="oe_inline"
+                                       attrs="{'readonly': [('state','not in',('draft'))]}"
+                                       placeholder="To"/>
+                                <button string="+" name="action_update_rental_information" type="object"
+                                        class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
+                            </div>
+                            <label for="rental_duration" string="Duration Hrs"/>
+                            <div class="o_row" name="Duration Hrs">
+                                <field name="rental_duration" class="oe_inline"
+                                       attrs="{'readonly': [('state','!=','draft')]}"/>
+                                <span>Hrs-Mints</span>
+                            </div>
+                            <label for="rental_duration_days" string="Duration Days"/>
+                            <div class="o_row" name="Duration Hrs">
+                                <field name="rental_duration_days" class="oe_inline"
+                                       attrs="{'readonly': [('state','!=','draft')]}"/>
+                                <!--                                    <span>Days</span>-->
+                            </div>
+                            <!--                                <field name="rate_per_km"/>-->
+                            <field name="journal_type" invisible="1"/>
+                            <!--                                <field name="check_verify" invisible="1"/>-->
+                            <field name="sales_person" attrs="{'readonly': [('state','!=','draft')]}"/>
+                        </group>
+                        <group string="Driver and Vehicle Information">
+                            <field name="external_driver" attrs="{'invisible': [('rental_type','=','internal')]}"/>
+                            <field name="external_vehicle" attrs="{'invisible': [('rental_type','=','internal')]}"/>
+                            <label for="driver_id" attrs="{'invisible': [('rental_type','=','external')]}"/>
+                            <div attrs="{'invisible': [('rental_type','=','external')]}">
+                                <field name="driver_id" placeholder="Select Driver" class="oe_inline"
+                                       options="{'no_open': True,'no_create':True, 'no_edit':True}"
+                                       attrs="{'readonly': [('state','!=','draft')]}"/>
+                                <field name="driver_image" widget="image" style='height:70px;width:70px;'/>
+                            </div>
+                            <field name="driver_state" invisible="1"/>
+                            <field name="driver_licence_registration_date" invisible="1"
+                                   attrs="{'invisible': [('rental_type','=','external')]}"/>
+                            <field name="driver_licence_no" invisible="1"
+                                   attrs="{'invisible': [('rental_type','=','external')]}"/>
+                            <field name="driver_licence_expire_date" invisible="1"
+                                   attrs="{'invisible': [('rental_type','=','external')]}"/>
+                            <field name="type_of_vehicle" attrs="{'invisible': [('rental_type','=','external')]}"/>
+                            <field name="vehicle_category" invisible="1"
+                                   attrs="{'invisible': [('rental_type','=','external')]}"/>
+                            <field name="model_id" invisible="1"
+                                   attrs="{'invisible': [('rental_type','=','external')]}"/>
+                            <label for="vehicle_id" string="Vehicle List"/>
+                            <div>
+                                <field name="vehicle_id" required="1" placeholder="Select Vehicle" class="oe_inline"
+                                       domain="[('rental_check_availability','=',True),
+                                ('state_id.name','!=','Inactive')]"
+                                       options="{'no_create': True}"
+                                       attrs="{'invisible': [('rental_type','=','external')]}"/>
+                                <button name="add_odometer_details" type="object" string="Record Empty Trips"
+                                        class="oe_highlight" icon="fa-arrow-circle-o-up"
+                                        attrs="{'invisible': [('state', 'in', ['draft', 'done'])]}"/>
+                                <!--                                        attrs="{'invisible': [('state', '=', 'draft'), ('state', '=', 'done')]}"/>-->
+
+
+                            </div>
+                            <field name="vehicle_image" widget="image" style='height:70px;width:70px;'
+                                   attrs="{'invisible': [('rental_type','=','external')]}"/>
+                            <field name="vehicle_state" invisible="1"/>
+                            <separator string="Vehicle Odometers Information" colspan="4"/>
+                            <field name="car_brand"/>
+                            <field name="lr_number" placeholder="Mention Lr Number"/>
+                            <!--                            <label for="starting_km" readonly="1" force_save="1"-->
+                            <!--                                   attrs="{'invisible': [('update_odometer','!=',False)]}"/>-->
+                            <!--                            <div>-->
+                            <!--                                <field name="starting_km" class="oe_inline"-->
+                            <!--                                       attrs="{'readonly': [('state','!=','draft')],-->
+                            <!--                                       'invisible': [('update_odometer','!=',False)]}"/>-->
+                            <!--                                &lt;!&ndash;                                <span>/ Kms</span>&ndash;&gt;-->
+                            <!--                            </div>-->
+                            <field name="starting_km" class="oe_inline" readonly="1" force_save="1"
+                                   attrs="{'readonly': [('state','!=','draft')],
+                                       'invisible': [('update_odometer','!=',False)]}"/>
+                            <field name="exact_starting_km" readonly="1" force_save="1"
+                                   attrs="{'invisible': [('update_odometer','=',False)]}"/>
+                            <label for="ending_km"/>
+                            <div>
+                                <field name="ending_km" class="oe_inline"
+                                       attrs="{'readonly': [('update_odometer','!=',False)]}"/>
+                                <!--                                <span>/ Kms</span>-->
+                                <button string="Update Odometers" icon="fa-hand-o-right" type="object"
+                                        name="rental_vehicle_update_odometer"
+                                        class="oe_highlight"
+                                        attrs="{'invisible': [('update_odometer','!=',False)]}"/>
+                                <field name="update_odometer" invisible="1" readonly="1" force_save="1"/>
+                            </div>
+                            <label for="total_km"/>
+                            <div>
+                                <field name="total_km" class="oe_inline" readonly="1" force_save="1"/>
+                                <!--                                <span>/ Kms</span>-->
+                            </div>
+                            <field name="rate_per_km"/>
+                            <separator string="Fleet Rental Invoice Information" colspan="4" invisible="1"/>
+                            <field name="total_rent" invisible="1"/>
+                            <field name="r_rent" invisible="1"/>
+                            <field name="mode_of_payment" placeholder="Select Payment Mode" required="0"
+                                   options="{'no_create': True}"/>
+                            <field name="date_of_received" invisible="1"/>
+                            <field name="first_invoice_created" invisible="1"/>
+                            <field name="remarks" invisible="1"/>
+                            <field name="account_type" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="notes" placeholder="Mention Details and Notes"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <!-- PAGE RENTAL CONTRACT LINES -->
+                        <page string="Rental Contract Lines">
+                            <field name="rental_contract_line_ids"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}">
+                                <tree editable="bottom" create="0" delete="0">
+                                    <field name="name_of_rental_purpose" readonly="1" force_save="1"/>
+                                    <field name="start_date" readonly="1" force_save="1"/>
+                                    <field name="end_date" readonly="1" force_save="1"/>
+                                    <field name="trips_starts_from" readonly="1" force_save="1"/>
+                                    <field name="trips_ends_at" readonly="1" force_save="1"/>
+                                    <field name="name_of_goods" readonly="1" force_save="1"/>
+                                    <field name="duration" readonly="1" force_save="1"/>
+                                    <field name="trip_alter_charges" readonly="1" force_save="1"/>
+                                    <field name="trip_alter_charges_remarks" readonly="1" force_save="1"/>
+                                    <field name="rent_date" readonly="1" force_save="1" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Toll Entry">
+                            <field name="fleet_toll_entry_ids">
+                                <tree>
+                                    <field name="rent_contract_ref"/>
+                                    <field name="entry_date"/>
+                                    <field name="entry_name"/>
+                                    <field name="exit_name"/>
+                                    <field name="distance"/>
+                                    <field name="cost_amount"/>
+                                    <field name="vehicle_id"/>
+                                    <field name="purchaser_id"/>
+                                    <field name="vendor_id"/>
+                                    <field name="inv_ref"/>
+                                </tree>
+                            </field>
+                        </page>
+
+
+                        <!--                            <page string="Goods List Information">-->
+                        <!--                                <field name="goods_line_ids" mode="tree">-->
+                        <!--                                    <tree string="Fleet Goods Items" editable="bottom"-->
+                        <!--                                          colors="#0b7a35:payment_info=='paid';#f20b07:payment_info!='paid'">-->
+                        <!--                                        <field name="product_id" sum="product_id"/>-->
+                        <!--                                        <field name="instruction"/>-->
+                        <!--                                        <field name="quantity" sum="quantity"/>-->
+                        <!--                                        <field name="unit_price" sum="unit_price"/>-->
+                        <!--                                        <field name="subtotal" sum="subtotal"/>-->
+                        <!--                                    </tree>-->
+                        <!--                                </field>-->
+                        <!--                            </page>-->
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!--        CAR RENTAL CONTRACT TREE VIEW-->
+    <record model="ir.ui.view" id="car_contract_tree_view">
+        <field name="name">car_contract_tree_view.tree</field>
+        <field name="model">car.rental.contract</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="car_contract_result" decoration-info="state == 'draft'">
+                <field name="name"/>
+                <field name="customer_id" string="Customer"/>
+                <field name="vehicle_id"/>
+                <field name="cost"/>
+                <field name="car_brand"/>
+                <field name="car_color"/>
+                <field name="rent_start_date"/>
+                <field name="rent_end_date"/>
+                <field name="state"/>
+                <field name="delivery_status"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- INHERITED ACTION FOR HR EMPLOYEE-->
+    <record id="hr.open_view_employee_list_my" model="ir.actions.act_window">
+        <field name="name">Employees</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">kanban,tree,form,activity</field>
+        <field name="domain">[('fleet_rental_driver','=',False)]</field>
+        <field name="context">{'chat_icon': True}</field>
+        <field name="view_id" eval="False"/>
+        <field name="search_view_id" ref="hr.view_employee_filter"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a new employee
+            </p>
+            <p>
+                With just a quick glance on the Odoo employee screen, you
+                can easily find all the information you need for each person;
+                contact data, job position, availability, etc.
+            </p>
+        </field>
+    </record>
+
+
+    <!--        ACTION FOR CAR RENTAL CONTRACT-->
+    <record id="action_car_rental_contract" model="ir.actions.act_window">
+        <field name="name">Rental Contract</field>
+        <field name="res_model">car.rental.contract</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!--        MENU FOR FLEET RENTAL-->
+    <menuitem name="Fleet Rental" id="fleet.menu_root" sequence="115" groups="fleet.fleet_group_user"
+              web_icon="fleet,static/description/icon.png"/>
+
+    <!--        MENU FOR RENTAL MANAGEMENT-->
+    <menuitem id="menu_car_parent" sequence="2" name="Rental Management" parent="fleet.menu_root"/>
+
+    <!--        MENU FOR FLEET FROM BASE (SEQUENCE CHANGED)-->
+    <menuitem name="Fleet" parent="fleet.menu_root" id="fleet.fleet_vehicles" sequence="3"
+              groups="fleet.fleet_group_user"/>
+
+    <!--        MENU FOR RENTAL CONTRACT-->
+    <menuitem id="menu_car_rental_contract" parent="menu_car_parent" name="Rental Contract"
+              action="action_car_rental_contract" sequence="1"/>
+
+    <!--EMPLOYEE INHERITED AND INCLUDED DRIVER OPTIONS-->
+    <record id="view_employee_form" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.hr.fleet</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='employee_type']" position="after">
+                <field name="fleet_rental_driver" readonly="1" force_save="1"/>
+                <field name="driver_licence_registration_date"/>
+                <field name="driver_licence_no"/>
+                <field name="driver_licence_expire_date"/>
+                <field name="driver_state"/>
+                <field name="driver_position"/>
+            </xpath>
+
+            <xpath expr="//field[@name='department_id']" position="before">
+                <field name="fleet_manager"/>
+                <!--                       attrs="{'invisible': [('fleet_rental_driver','=',False)]}"/>-->
+            </xpath>
+        </field>
+    </record>
+
+    <!--        ACTION FOR HR EMPLOYEE IN FLEET RENTAL DRIVER-->
+    <record id="hr_employee_fleet_rental_driver" model="ir.actions.act_window">
+        <field name="name">Driver</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">kanban,tree,form,activity</field>
+        <field name="domain">[('fleet_rental_driver','=',True)]</field>
+        <field name="context">{'chat_icon': True, 'default_fleet_rental_driver': True, 'default_driver_state':
+            'un_reserved','default_job_title':'Driver'}
+        </field>
+        <field name="view_id" eval="False"/>
+        <field name="search_view_id" ref="hr.view_employee_filter"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a new driver
+            </p>
+            <p>
+                With just a quick glance on the Odoo driver screen, you
+                can easily find all the information you need for each person;
+                contact data, job position, availability, etc.
+            </p>
+        </field>
+    </record>
+
+    <!--        MENU FOR DRIVER-->
+    <menuitem id="employee_fleet_driver_menu"
+              name="Driver"
+              parent="hr.menu_hr_employee_payroll"
+              action="hr_employee_fleet_rental_driver"
+              sequence="4"/>
+
+    <!--        INHERIT FLEET VEHICLE FORM VIEW-->
+    <record model="ir.ui.view" id="fleet_vehicle_view_form_inherited">
+        <field name="name">fleet.vehicle.form.inherited</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='horsepower_tax']" position="after">
+                <field name="check_availability" invisible="0"/>
+                <field name="vehicle_state"/>
+                <field name="vehicle_position"/>
+            </xpath>
+            <xpath expr="//field[@name='category_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//label[@for='tag_ids']" position="before">
+                <label for="vehicle_category_id" string="Vehicle Category"/>
+                <field name="vehicle_category_id"/>
+                <field name="vehicle_category" invisible="1" force_save="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!--        INHERIT FLEET VEHICLE MODEL FORM VIEW-->
+    <record id='fleet_vehicle_model_form_view_inherited' model='ir.ui.view'>
+        <field name="name">fleet.vehicle.model.form.inherited</field>
+        <field name="model">fleet.vehicle.model</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_model_view_form"/>
+        <field name="arch" type="xml">
+            <field name="vehicle_type" position="replace">
+                <field name="vehicle_type" invisible="1"/>
+                <field name="vehicle_category_id"/>
+            </field>
+            <field name="default_fuel_type" position="replace">
+                <field name="default_fuel_type"/>
+            </field>
+        </field>
+    </record>
+
+
+    <!--        INHERIT FLEET VEHICLE MODEL TREE VIEW-->
+    <record id='fleet_vehicle_model_tree_view_inherited' model='ir.ui.view'>
+        <field name="name">fleet.vehicle.model.tree.inherited</field>
+        <field name="model">fleet.vehicle.model</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_model_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="vehicle_type" position="replace">
+                <field name="vehicle_type" invisible="1"/>
+                <field name="vehicle_category_id"/>
+            </field>
+        </field>
+    </record>
+
+
+    <!--        <record id="fleet_vehicle_assignation_log_view_list_inherited" model="ir.ui.view">-->
+    <!--            <field name="name">fleet.vehicle.assignation.log.view.tree.inherited</field>-->
+    <!--            <field name="model">fleet.vehicle.assignation.log</field>-->
+    <!--            &lt;!&ndash;            <field name="mode">primary</field>&ndash;&gt;-->
+    <!--            <field name="inherit_id" ref="fleet.fleet_vehicle_assignation_log_view_list"/>-->
+    <!--            <field name="arch" type="xml">-->
+    <!--                <field name="vehicle_id" position="after">-->
+    <!--                    <field name="rental_contract_reference"/>-->
+    <!--                    <field name="vehicle_customer"/>-->
+    <!--                </field>-->
+    <!--                <field name="date_end" position="after">-->
+    <!--                    <field name="transport_mode"/>-->
+    <!--                    <field name="rate_per_km"/>-->
+    <!--                    <field name="purpose_of_rental_contract"/>-->
+    <!--                    <field name="name_of_goods"/>-->
+    <!--                    <field name="duration"/>-->
+    <!--                    <field name="total_km"/>-->
+    <!--                </field>-->
+    <!--            </field>-->
+    <!--        </record>-->
+
+
+    <!-- INHERIT DRIVER HISTORY LOG VIEW FOR FLEET-->
+    <record id="view_fleet_vehicle_assignation_log_view_list_inherited" model="ir.ui.view">
+        <field name="name">fleet.vehicle.assignation.log.view.tree.inherited</field>
+        <field name="model">fleet.vehicle.assignation.log</field>
+        <field name="inherit_id" ref="hr_fleet.fleet_vehicle_assignation_log_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vehicle_id']" position="before">
+                <field name="rental_contract_reference"/>
+                <field name="rental_contract_id"/>
+                <field name="vehicle_customer"/>
+            </xpath>
+            <xpath expr="//field[@name='date_end']" position="after">
+                <field name="transport_mode"/>
+                <field name="purpose_of_rental_contract"/>
+                <field name="name_of_goods"/>
+                <field name="duration"/>
+                <field name="starting_km"/>
+                <field name="total_km"/>
+                <field name="rate_per_km"/>
+                <field name="source_city"/>
+                <field name="destination_city"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!--                  INHERIT DRIVER HISTORY LOG VIEW ACTION -->
+    <record id="view_fleet_vehicle_assignation_log_view_action" model="ir.actions.act_window">
+        <field name="name">Driver History Log View</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fleet.vehicle.assignation.log</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_fleet_vehicle_assignation_log_view_list_inherited"/>
+    </record>
+
+    <menuitem id="fleet_vehicle_assignation_log_view_menu"
+              name="Driver History Log View"
+              parent="fleet.fleet_configuration"
+              action="view_fleet_vehicle_assignation_log_view_action"
+              sequence="2"/>
+
+</odoo>

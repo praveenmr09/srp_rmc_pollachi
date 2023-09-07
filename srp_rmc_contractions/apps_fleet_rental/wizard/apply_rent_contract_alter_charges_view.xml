@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- create a wizard for get supplier and value of order lines-->
+    <record id="view_rent_alter_charges_form" model="ir.ui.view">
+        <field name="name">rent.alter.charges.form</field>
+        <field name="model">rent.alter.charges</field>
+        <field name="arch" type="xml">
+            <form string="Update Rental Alter Charges">
+                <group>
+                    <group>
+                        <field name="rent_contract_ref" readonly='1'/>
+                        <field name="alter_charges_amount" required="1"/>
+                    </group>
+                    <group>
+                        <field name="is_default_remark"/>
+                        <!--                        <field name="default_remark"/>-->
+                        <field name="remarks" required="1"
+                               placeholder="Please enter the Rental Alter Charges remarks..."/>
+                    </group>
+                    <div class="alert alert-success mb-4" role="alert"
+                         style="margin-right: 350px; margin-left: 350px;">
+                        <span style="display: block; text-align: center;">Apply Contract Vehicle Alter Charges!!!...
+                        </span>
+                    </div>
+                    <field name="order_lines" create="0">
+                        <tree string="Trip Lines" editable="bottom" create="0">
+                            <field name="start_date" readonly="1" force_save="1"/>
+                            <field name="end_date" readonly="1" force_save="1"/>
+                            <field name="trips_starts_from" readonly="1" force_save="1"/>
+                            <field name="trips_ends_at" readonly="1" force_save="1"/>
+                            <field name="name_of_goods" readonly="1" force_save="1"/>
+                            <field name="duration" readonly="1" force_save="1"/>
+                            <field name="trip_alter_charges" required="1"/>
+                            <field name="trip_alter_charges_remarks" required="1"/>
+                            <field name="rent_date" readonly="1" force_save="1" invisible="1"/>
+                        </tree>
+                    </field>
+                </group>
+                <footer>
+                    <button string='Apply Alter Charges' name='update_trip_alter_charges' type='object'
+                            class='btn-primary'/>
+                    <button string='Cancel' class='btn-default' special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!--    WIZARD FORM FOR RENT ALTER CHARGES-->
+    <record id="open_rent_alter_charges_action" model="ir.actions.act_window">
+        <field name="name">Update Rental Alter Charges</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">rent.alter.charges</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_rent_alter_charges_form"/>
+    </record>
+</odoo>
+
+
+

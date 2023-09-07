@@ -1,0 +1,126 @@
+<?xml version="1.0" ?>
+<odoo>
+    <data>
+        <!--        DRIVER VEHICLE HISTORY WIZARD FOR VIEW-->
+        <record id="driver_vehicle_history__wizard_form" model="ir.ui.view">
+            <field name="name">driver.vehicle.history.wizard.form</field>
+            <field name="model">driver.vehicle.history.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Vehicle Driver History Report">
+                    <group attrs="{'invisible':[('report_printed','=',True)]}">
+                        <group>
+                            <field name="start_date" required="1"/>
+                            <field name="vehicle_list" readonly="0" widget="many2many_tags"
+                                   options="{'no_create_edit': True,'no_open':True}"/>
+                        </group>
+                        <group>
+                            <field name="end_date" required="1"/>
+                            <field name="driver_name" widget="many2many_tags"
+                                   options="{'no_create_edit': True,'no_open':True}"/>
+                        </group>
+                        <group>
+                            <field name="type_of_vehicle"/>
+                            <field name="user_id" readonly="1" invisible="1"/>
+                            <field name="requested" readonly="1" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="vehicle_category"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="report_printed" invisible="1"/>
+                        <group attrs="{'invisible':[('report_printed','=',False)]}">
+                            <field name="file_name" invisible="1"/>
+                            <field name="summary_file" readonly="1" filename="file_name"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button string='EXCEL Report' name="action_get_driver_vehicle_history_report"
+                                type="object" class="btn btn-success"
+                                    icon="fa-file-text"/>
+<!--                                attrs="{'invisible':[('report_printed','=',True)]}"/>-->
+                        <button name="print_driver_history_wizard_pdf"  class="btn btn-danger" icon="fa-file-pdf-o"
+                                string="PDF Report" type="object" />
+
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+        <!--  ACTION FOR DRIVER VEHICLE HISTORY WIZARD-->
+        <record model="ir.actions.act_window" id="action_four_wheeler_usage_report">
+            <field name="name">Vehicle Driver History Report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">driver.vehicle.history.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="driver_vehicle_history__wizard_form"/>
+            <field name="target">new</field>
+        </record>
+
+        <!--  MENU FOR RENTAL VEHICLE DRIVER HISTORY REPORT -->
+        <menuitem action="action_four_wheeler_usage_report" id="menu_action_four_wheeler_usage_report"
+                  name="Vehicle Driver History Report"
+                  parent="fleet.menu_fleet_reporting" sequence="41"/>
+
+
+        <!--   ADD FUEL HISTORY WIZARD FORM VIEW-->
+        <record id="view_add_fuel_history_wizard_form_view" model="ir.ui.view">
+            <field name="name">driver.vehicle.history.wizard.form</field>
+            <field name="model">add.fuel.history.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="hide_status" invisible="1"/>
+                            <field name="vehicle_id" readonly="1" force_save="1"/>
+                            <field name="rent_contract_ref" readonly="1" force_save="1"
+                                   attrs="{'invisible': [('hide_status', '=', 'hide_in_fleet_vehicle')]}"/>
+                            <label for="last_odometer" string="Last Odometer"/>
+                            <div>
+                                <field name="last_odometer"  class="oe_inline"/>
+                                <field name="unit" class="oe_inline"/>
+                            </div>
+                            <label for="fuel" string="Fuel"/>
+                            <div>
+                                <field name="fuel" class="oe_inline"/>
+                                <span>Litres</span>
+                            </div>
+                            <field name="fuel_receipt"/>
+                        </group>
+                        <group>
+                            <label for="fuel_cost" string="Fuel Cost"/>
+                            <div>
+                                <field name="fuel_cost" class="oe_inline"/>
+                                <span>Rupees</span>
+                            </div>
+                            <field name="fueled_by" required="1"/>
+                            <field name="filling_date" required="1"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="add_fuel" string="Add Fuel" icon="fa-fire-extinguisher"
+                                type="object" default_focus="1" class="btn btn-danger"
+                                attrs="{'invisible': [('hide_status', '=', 'hide_in_car_rental')]}"/>
+                        <button name="add_fuel_in_rental_contract" string="Add Fuel" icon="fa-fire-extinguisher"
+                                type="object" default_focus="1" class="btn btn-success"
+                                attrs="{'invisible': [('hide_status', '=', 'hide_in_fleet_vehicle')]}"/>
+                        <button string="Cancel" class="btn-default" special="cancel" icon="fa-times"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!--ACTION FOR ADD FUEL HISTORY WIZARD-->
+        <record id="view_add_fuel_history_wizard_action" model="ir.actions.act_window">
+            <field name="name">Fuel History</field>
+            <field name="res_model">add.fuel.history.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

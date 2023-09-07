@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<odoo>
+    <data>
+        <!--   VEHICLE REGISTRATION INFO WIZARD FORM VIEW-->
+        <record id="view_vehicle_registration_info_wizard_form_view" model="ir.ui.view">
+            <field name="name">vehicle.registration.info.wizard.form</field>
+            <field name="model">vehicle.registration.info.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="start_date" invisible="1"/>
+                            <field name="vehicle_type" invisible="1"/>
+                            <field name="vehicle_category_id"/>
+                        </group>
+                        <group>
+<!--                            <field name="end_date"/>-->
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="print_vehicle_registration_pdf" class="btn btn-danger" icon="fa-file-pdf-o"
+                                string="PDF Report"
+                                type="object"/>
+
+                        <button string="Cancel" class="btn-default" special="cancel" icon="fa-times"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!--ACTION FOR VEHICLE REGISTRATION INFO WIZARD-->
+        <record id="view_vehicle_registration_info_wizard_action" model="ir.actions.act_window">
+            <field name="name">Vehicle Registration Info</field>
+            <field name="res_model">vehicle.registration.info.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <!--  MENU FOR VEHICLE REGISTRATION INFO WIZARD -->
+        <menuitem action="view_vehicle_registration_info_wizard_action"
+                  id="menu_vehicle_registration_info_wizard_report"
+                  name="Vehicle Registration Report"
+                  parent="fleet.menu_fleet_reporting" sequence="46"/>
+
+
+    </data>
+</odoo>

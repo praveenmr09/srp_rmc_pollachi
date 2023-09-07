@@ -1,0 +1,22 @@
+<odoo>
+    <data>
+
+
+<!--        <menuitem id="menu_vehicle_reservation" web_icon="booking_dashboard,static/src/img/hotel_booking.png"-->
+<!--                  name="Booking Dashboard" sequence="1"/>-->
+
+
+
+        <record id="booking_dashboard_action" model="ir.actions.client">
+            <field name="name">Booking</field>
+            <field name="tag">booking_dashboard</field>
+        </record>
+
+          <menuitem id="booking_dashboard_menu" sequence="1"
+                  name="Rental Booking"
+                  action="booking_dashboard_action"
+                  parent="fleet.menu_root"/>
+
+
+    </data>
+</odoo>

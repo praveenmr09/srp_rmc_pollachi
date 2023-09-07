@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<odoo>
+    <data>
+        <!--   RENTAL VEHICLE TRIP WIZARD FORM VIEW-->
+        <record id="view_rental_vehicle_trip_wizard_form_view" model="ir.ui.view">
+            <field name="name">rental.vehicle.trip.wizard</field>
+            <field name="model">rental.vehicle.trip.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="start_date"/>
+                        </group>
+                        <group>
+                            <field name="end_date"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="print_rental_vehicle_trip_pdf" class="btn btn-danger" icon="fa-file-pdf-o"
+                                string="PDF Report"
+                                type="object"/>
+                        <!--                        <button name="add_fuel_in_rental_contract" string="Add Fuel" icon="fa-fire-extinguisher"-->
+                        <!--                                type="object" default_focus="1" class="btn btn-success"-->
+                        <!--                                attrs="{'invisible': [('hide_status', '=', 'hide_in_fleet_vehicle')]}"/>-->
+                        <button string="Cancel" class="btn-default" special="cancel" icon="fa-times"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!--ACTION FOR RENTAL VEHICLE TRIP WIZARD-->
+        <record id="view_rental_vehicle_trip_wizard_action" model="ir.actions.act_window">
+            <field name="name">Vehicle Trip</field>
+            <field name="res_model">rental.vehicle.trip.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <!--  MENU FOR RENTAL VEHICLE TRIP WIZARD REPORT -->
+        <menuitem action="view_rental_vehicle_trip_wizard_action" id="menu_action_rental_vehicle_trip_wizard_report"
+                  name="Rental Vehicle Trip Report"
+                  parent="fleet.menu_fleet_reporting" sequence="42"/>
+
+
+    </data>
+</odoo>

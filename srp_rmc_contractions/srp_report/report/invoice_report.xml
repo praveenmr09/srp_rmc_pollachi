@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo xmlns:border="http://www.w3.org/1999/xhtml">
+
+    <data>
+        <record id="paper_format_invoice" model="report.paperformat">
+            <field name="name">SRP RMC and Constructions</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">80</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">3</field>
+            <field name="margin_right">3</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">80</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report
+                id="invoice_details_menu"
+                model="account.move"
+                string="Invoice Report"
+                report_type="qweb-html"
+                name="srp_report.invoice_constructions_template"
+                file="srp_report.invoice_constructions_template"
+                paperformat="srp_report.paper_format_invoice"
+                print_report_name='"srp constructions"'
+                menu="True"
+        />
+
+        <template id="invoice_constructions_template">
+            <t t-call="web.html_container">
+                <t t-call="web.basic_layout">
+                    <t t-foreach="docs" t-as="o">
+
+                        <div class="header">
+                            <div width="50%" align="left" style="margin-left:1000px">
+                                <img src='/web/binary/company_logo' class="img-fluid img-thumbnail"
+                                     style="width:300px;"/>
+                                <br/>
+                                <span class="px-1" style="font-size:14px;" t-esc="res_company.street"/>
+                                <br/>
+                                <span class="px-1" style="font-size:14px;" t-esc="res_company.street2"/>
+                                <br/>
+                                <span class="px-1" style="font-size:14px;" t-esc="res_company.city"/>
+                                <span class="px-1" style="font-size:14px;" t-esc="res_company.state_id.name"/>
+                                <span style="font-size:14px;" t-esc="res_company.country_id.name"/>
+                                <br/>
+                                <span class="px-1">
+                                    Cell:
+                                <span style="font-size:14px;" t-esc="res_company.mobile"/>
+                                </span>
+                                <br/>
+                                <span class="px-1">
+                                    Ph:
+                                <span style="font-size:14px;" t-esc="res_company.phone"/>
+                                </span>
+                                <br/>
+                                <span class="px-1">
+                                    GSTIN:
+                                <span style="font-size:14px;" t-esc="res_company.vat"/>
+                                </span>
+                            </div>
+
+                        </div>
+                        <table class="table table-sm table-bordered" style="border:2px solid black">
+                            <tr>
+                                <td align="center"
+                                    style="background-color:#01360f;color:white;font-size:25px;vertical-align:middle;text-align:center;">
+                                    INVOICE
+                                </td>
+                            </tr>
+                        </table>
+                        <table class="table table-sm table-bordered" style="border:2px solid black">
+                            <tr>
+                                <td>
+                                    <b>Clint</b>
+
+                                </td>
+                                <td>
+                                    <span t-field="o.partner_id.name"/>
+                                </td>
+                                <td>Bill No</td>
+                                <td>
+                                    <span t-field="o.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td rowspan="3">Address:</td>
+                                <td rowspan="3">
+                                    <span t-field="o.partner_id.street"/>,
+                                    <br/>
+                                    <span t-field="o.partner_id.street2"/>,
+                                    <br/>
+                                    <span t-field="o.partner_id.city"/>,
+                                    <span t-field="o.partner_id.state_id"/>,
+                                    <span t-field="o.partner_id.zip"/>,
+                                    <br/>
+                                    <span t-field="o.partner_id.country_id"/>.
+                                </td>
+                                <td>Bill Date</td>
+                                <td><span t-field="o.invoice_date"/>
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td>Pan No</td>
+                                <td> - </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    GSTIN
+                                </td>
+                                <td>
+                                    <span t-esc="res_company.vat"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    GSTIN
+                                </td>
+                                <td>
+                                    <span t-field="o.partner_id.vat"/>
+                                </td>
+                                <td>
+                                    Vechicle
+                                </td>
+                                <td> - </td>
+                            </tr>
+                        </table>
+                        <table class="table table-sm table-bordered" style="border:2px solid black">
+                            <tr>
+                                <td colspan="11" align="center"
+                                    style="color:white;background-color:#264a2f; font-size:25px;vertical-align:middle;text-align:center;">
+                                    TRANSPORTATION
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>S.NO</b>
+                                </td>
+                                <td>
+                                    <b>I.R.NO/DATE</b>
+                                </td>
+                                <td>
+                                    <b>INV &amp; DC.NO/DATE</b>
+                                </td>
+                                <td>
+                                    <b>ORGIN</b>
+                                </td>
+                                <td>
+                                    <b>DESTINATION</b>
+                                </td>
+                                <td style="white-space: nowrap;">
+                                    <b>DATE OF DELIVERY</b>
+                                </td>
+                                <td style="white-space: nowrap;">
+                                    <b>VECHICLE NO</b>
+                                </td>
+                                <td>
+                                    <b>ITEMS</b>
+                                </td>
+                                <td>
+                                    <b>ATE/UNIT</b>
+                                </td>
+                                <td>
+                                    <b>AMOUNT</b>
+                                </td>
+                                <td>
+                                    <b>REMARKS</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>2345/09/10/21</td>
+                                <td>123456 &amp;0990/30/09/21</td>
+                                <td>G12,ssipl,Irungattukottai</td>
+                                <td>walajabad</td>
+                                <td>6/12/2021</td>
+                                <td>TN41AV1234</td>
+                                <td>PLANT</td>
+                                <td>1000/Trip</td>
+                                <td>1000</td>
+                                <td>40 Feet Trailer</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>2345/09/10/21</td>
+                                <td>123456 &amp;0990/30/09/21</td>
+                                <td>G12,ssipl,Irungattukottai</td>
+                                <td>walajabad</td>
+                                <td>6/12/2021</td>
+                                <td>TN41AV1234</td>
+                                <td>PLANT</td>
+                                <td>1000/Trip</td>
+                                <td>1000</td>
+                                <td>40 Feet Trailer</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>2345/09/10/21</td>
+                                <td>123456 &amp;0990/30/09/21</td>
+                                <td>G12,ssipl,Irungattukottai</td>
+                                <td>walajabad</td>
+                                <td>6/12/2021</td>
+                                <td>TN41AV1234</td>
+                                <td>PLANT</td>
+                                <td>1000/Trip</td>
+                                <td>1000</td>
+                                <td>40 Feet Trailer</td>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="color:white;background-color:#3d5442;">
+                                    <strong>GST will be under by client</strong>
+                                </td>
+                                <td colspan="2">
+                                    <b>TOTAL AMOUNT</b>
+                                </td>
+                                <td>3000</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan="11">
+                                    THREE THOUSAND ONLY
+                                </td>
+                            </tr>
+                        </table>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
+
