@@ -47,31 +47,41 @@ class VehicleRegistrationInfoWizardParser(models.AbstractModel):
         end_date = data['e_date']
         vehicle_category_id = data['vehicle_category_id']
 
-        vehicle_list = self.env['fleet.vehicle'].sudo().search([
-            ('vehicle_category_id.name', '=', vehicle_category_id),
-        ], order='model_id asc')
+        if vehicle_category_id:
+            vehicle_list = self.env['fleet.vehicle'].sudo().search([
+                ('vehicle_category_id.name', '=', vehicle_category_id),
+            ], order='model_id asc')
 
-        brand = self.env['fleet.vehicle.model'].search([])
+            brand = self.env['fleet.vehicle.model'].search([])
 
-        data = []
-        for i in brand:
-            if i.vehicle_category_id.name == vehicle_category_id:
-                val = []
-                for j in vehicle_list:
-                    if i.vehicle_category_id.name == j.vehicle_category_id.name:
-                        val.append(j)
-                data.append({
-                    str(i.name): val
-                })
-            #
-            # else:
-            #     val = []
-            #     for j in vehicle_list:
-            #         if i.vehicle_category_id.name == j.vehicle_category_id.name:
-            #             val.append(j)
-            #     data.append({
-            #         str(i.name): val
-            #     })
+            data = []
+            for i in brand:
+                if i.vehicle_category_id.name == vehicle_category_id:
+                    val = []
+                    for j in vehicle_list:
+                        if i.vehicle_category_id.name == j.vehicle_category_id.name:
+                            val.append(j)
+                    data.append({
+                        str(i.name): val
+                    })
+
+        else:
+            vehicle_list = self.env['fleet.vehicle'].sudo().search([
+            ], order='model_id asc')
+
+            brand = self.env['fleet.vehicle.model'].search([
+            ])
+
+            data = []
+            for i in brand:
+                if i.vehicle_count >= 1:
+                    val = []
+                    for j in vehicle_list:
+                        if i.brand_id.name == j.f_brand_id.name:
+                            val.append(j)
+                    data.append({
+                        str(i.name): val
+                    })
 
         # Header For Attendance List
         cols_heads = ['S.No', 'Vehicle No', 'Vehicle Type', 'Registration Date', 'FC Ex Date', 'Permit',

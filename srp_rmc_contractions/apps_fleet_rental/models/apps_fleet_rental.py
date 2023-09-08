@@ -917,7 +917,8 @@ class FleetVehicle(models.Model):
         ("litre", "Litres"),
         ("kg", "Kg"),
     ], string='Unit', default="litre")
-    vehicle_category_id = fields.Many2one('fleet.vehicle.model.category', string='Vehicle Type')
+    vehicle_category_id = fields.Many2one('fleet.vehicle.model.category', related='model_id.vehicle_category_id',
+                                          string='Vehicle Type')
 
     # PAGE FUEL TANK MONITORING
     tank_capacity = fields.Float(string='Tank Capacity')
