@@ -10,7 +10,7 @@
     'author': 'AppsComp Widgets Pvt Ltd',
     'company': 'AppsComp Widgets Pvt Ltd',
     'website': "www.appscomp.com",
-    'depends': ['base', 'account', 'fleet', 'mail', 'hr', 'contacts'],
+    'depends': ['base', 'account', 'fleet', 'mail', 'hr', 'contacts', 'om_hr_payroll'],
     'data': [
         'data/fleet_rental_data.xml',
         'security/rental_security.xml',
@@ -31,6 +31,7 @@
         # 'views/fleet_rental_tools_view.xml',
         'views/account_move_view.xml',
         'views/fleet_toll_entry.xml',
+        'views/hr_payslip_extended.xml',
 
     ],
     'demo': [

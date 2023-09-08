@@ -98,6 +98,8 @@ class HrPayslip(models.Model):
                                      states={'draft': [('readonly', False)]})
     payslip_count = fields.Integer(compute='_compute_payslip_count',
                                    string="Payslip Computation Details")
+
+
     # # Add the missing 'message_follower_ids' field
     # message_follower_ids = fields.Many2many(
     #     comodel_name='mail.followers',
