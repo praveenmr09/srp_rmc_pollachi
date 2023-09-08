@@ -7,3 +7,5 @@ from . import driver_vehicle_history_wizard_pdf
 from . import rental_vehice_trip_wizard
 from . import odometer_wizard
 from . import vehicle_registration_info_wizard
+from . import rental_fleet_tax_optional
+from . import rental_budget_info

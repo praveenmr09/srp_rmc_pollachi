@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- create a wizard for get rental budgets info-->
+        <record id="view_rent_budgets_info_form" model="ir.ui.view">
+            <field name="name">rent.budgets.info.form</field>
+            <field name="model">rent.budgets.info</field>
+            <field name="arch" type="xml">
+                <form string="Rental Budgets Info">
+                    <group>
+                        <group string="Vehicle &amp; Rental Partner Info">
+                            <field name="vehicle_id"/>
+                            <field name="vehicle_no"/>
+                            <field name="vehicle_image" widget="image" style='height:70px;width:70px;'/>
+                            <field name="vehicle_departure"/>
+                            <field name="vehicle_departure"/>
+                            <field name="vehicle_destination"/>
+                            <field name="starting_km"/>
+                            <field name="closing_km"/>
+                            <field name="total_km"/>
+                            <field name="total_km"/>
+                        </group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="partner_mobile"/>
+                            <field name="driver_id"/>
+                            <field name="driver_image" widget="image" style='height:70px;width:70px;'/>
+                            <field name="date"/>
+                            <field name="expense_detail"/>
+                            <field name="expense_detail"/>
+                            <field name="content"/>
+                            <field name="export_import_commission"/>
+                            <field name="toll_expense"/>
+                        </group>
+                        <group>
+                            <field name="beta_expense"/>
+                            <field name="broker_charges"/>
+                            <field name="commissions"/>
+                            <field name="other_charges"/>
+                            <field name="food_charges"/>
+                        </group>
+                        <group>
+                            <field name="existing_expense"/>
+                            <field name="srp_income"/>
+                            <field name="rental_income"/>
+                            <field name="spend_expense"/>
+                            <field name="expenditure_balance"/>
+                            <field name="total_spend_expense"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <!--    WIZARD FORM FOR RENT BUDGETS INFO-->
+        <record id="open_rent_budgets_info_form_action" model="ir.actions.act_window">
+            <field name="name">Rental Budgets Info</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">rent.budgets.info</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_rent_budgets_info_form"/>
+        </record>
+    </data>
+</odoo>

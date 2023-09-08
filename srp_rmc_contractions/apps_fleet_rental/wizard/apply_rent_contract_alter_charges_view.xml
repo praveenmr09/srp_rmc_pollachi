@@ -6,7 +6,7 @@
         <field name="name">rent.alter.charges.form</field>
         <field name="model">rent.alter.charges</field>
         <field name="arch" type="xml">
-            <form string="Update Rental Alter Charges">
+            <form string="Update Rental Halter Charges">
                 <group>
                     <group>
                         <field name="rent_contract_ref" readonly='1'/>
@@ -16,11 +16,11 @@
                         <field name="is_default_remark"/>
                         <!--                        <field name="default_remark"/>-->
                         <field name="remarks" required="1"
-                               placeholder="Please enter the Rental Alter Charges remarks..."/>
+                               placeholder="Please enter the Rental Halter Charges remarks..."/>
                     </group>
                     <div class="alert alert-success mb-4" role="alert"
                          style="margin-right: 350px; margin-left: 350px;">
-                        <span style="display: block; text-align: center;">Apply Contract Vehicle Alter Charges!!!...
+                        <span style="display: block; text-align: center;">Apply Contract Vehicle Halter Charges!!!...
                         </span>
                     </div>
                     <field name="order_lines" create="0">
@@ -38,7 +38,7 @@
                     </field>
                 </group>
                 <footer>
-                    <button string='Apply Alter Charges' name='update_trip_alter_charges' type='object'
+                    <button string='Apply Halter Charges' name='update_trip_alter_charges' type='object'
                             class='btn-primary'/>
                     <button string='Cancel' class='btn-default' special="cancel"/>
                 </footer>
@@ -46,9 +46,9 @@
         </field>
     </record>
 
-    <!--    WIZARD FORM FOR RENT ALTER CHARGES-->
+    <!--    WIZARD FORM FOR RENT Halter CHARGES-->
     <record id="open_rent_alter_charges_action" model="ir.actions.act_window">
-        <field name="name">Update Rental Alter Charges</field>
+        <field name="name">Update Rental Halter Charges</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">rent.alter.charges</field>
         <field name="view_mode">form</field>

@@ -31,6 +31,7 @@
         'views/hr_payroll_report.xml',
         'wizard/hr_payroll_contribution_register_report_views.xml',
         'views/res_config_settings_views.xml',
+        'views/working_dasy_config_view.xml',
         'views/report_contribution_register_templates.xml',
         'views/report_payslip_templates.xml',
         'views/report_payslip_details_templates.xml',

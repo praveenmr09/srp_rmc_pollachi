@@ -18,7 +18,7 @@
                         <group>
                             <field name="is_default_remark"/>
                             <field name="remarks" required="1"
-                                   placeholder="Please enter the Rental Alter Charges remarks..."/>
+                                   placeholder="Please enter the Rental Halter Charges remarks..."/>
                             <field name="exact_odometer"/>
                         </group>
                     </group>

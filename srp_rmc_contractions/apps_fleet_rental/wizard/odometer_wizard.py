@@ -15,7 +15,7 @@ class RentalVehicleTripWizard(models.TransientModel):
     is_default_remark = fields.Boolean('Enable Default Remark')
     remarks = fields.Text('Remarks')
     default_remark = fields.Text('Default Remark',
-                                 default='Rental Contract Alter Charges Approval '
+                                 default='Rental Contract Halter Charges Approval '
                                          'get confirmed Without Remarks')
     exact_odometer = fields.Float(string='Exact Odometer')
 

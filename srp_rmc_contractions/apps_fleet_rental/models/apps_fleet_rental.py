@@ -392,6 +392,7 @@ class FleetRentalContract(models.Model):
                     'duration': rent.duration,
                     'quantity': rent.rent_contract_id.total_km,
                     'account_id': 39,
+                    'tax_ids': False,
                     'price_unit': rent.rent_contract_id.rate_per_km,
                 }))
             account_move.sudo().create({
@@ -402,6 +403,53 @@ class FleetRentalContract(models.Model):
                 'date_of_supply': self.create_date,
                 'vehicle_id': self.vehicle_id.id,
                 'payment_reference': self.name,
+                'journal_id': 1,
+                'l10n_in_gst_treatment': 'unregistered',
+                'invoice_date': fields.Date.today(),
+                'invoice_line_ids': order_line,
+            })
+            self.write({
+                'state': 'invoice',
+            })
+
+            return True
+
+    # BUTTON FUNCTION TO GENERATE THE RENTAL taz INVOICE
+    def create_tax_invoice(self):
+        # if not self.rate_per_km and self.total_km:
+        #     raise ValidationError("Alert, Mr. %s.\nThe Rental Rate Per KM & Total Km is Zero. it should be Greater "
+        #                           "than Zero, Kindly Check it" % self.env.user.name)
+        if self.rate_per_km <= 0.00:
+            raise ValidationError("Alert, Mr. %s.\nThe Rental Rate Per KM, it should be Greater "
+                                  "than Zero, Kindly Check it" % self.env.user.name)
+        if self.total_km <= 0.00:
+            raise ValidationError("Alert, Mr. %s.\nThe Rental Total Km is Zero. it should be Greater "
+                                  "than Zero Or Starting KM, Kindly Check it" % self.env.user.name)
+
+        else:
+            account_move = self.env["account.move"]
+            order_line = [(5, 0, 0)]
+            for rent in self.rental_contract_line_ids:
+                order_line.append((0, 0, {
+                    'product_id': 1,
+                    # 'name': f"{self.name_of_rental_purpose} ({self.name_of_goods})",
+                    # 'name': f"{self.name_of_rental_purpose + self.name_of_goods}",
+                    'trips_starts_from': rent.trips_starts_from,
+                    'trips_ends_at': rent.trips_ends_at,
+                    'duration': rent.duration,
+                    'quantity': rent.rent_contract_id.total_km,
+                    'account_id': 39,
+                    'price_unit': rent.rent_contract_id.rate_per_km,
+                }))
+            account_move.sudo().create({
+                'move_type': 'out_invoice',
+                'ref': self.name,
+                'partner_id': self.customer_id.id,
+                'transport_mode': self.transport_mode,
+                'date_of_supply': self.create_date,
+                'vehicle_id': self.vehicle_id.id,
+                'payment_reference': self.name,
+                'journal_id': 9,
                 'l10n_in_gst_treatment': 'unregistered',
                 'invoice_date': fields.Date.today(),
                 'invoice_line_ids': order_line,
@@ -451,7 +499,7 @@ class FleetRentalContract(models.Model):
     def action_run(self):
         self.state = 'running'
 
-    # BUTTON (APPLY ALTER CHARGES) TO APPLY ALTER CHARGES IN RENTAL CONTRACT LINE
+    # BUTTON (APPLY Halter CHARGES) TO APPLY Halter CHARGES IN RENTAL CONTRACT LINE
     def rent_contract_alter_charges_apply(self):
         action = self.env.ref('apps_fleet_rental.open_rent_alter_charges_action')
         result = action.read()[0]
@@ -471,6 +519,35 @@ class FleetRentalContract(models.Model):
                 'default_rent_contract_ref': self.name,
                 'default_order_lines': order_line,
             }
+        return result
+
+    # BUTTON (RENTAL BUDGETS)
+    def rental_open_rent_budgets_info_form_action(self):
+        action = self.env.ref('apps_fleet_rental.open_rent_budgets_info_form_action')
+        result = action.read()[0]
+        result['context'] = {
+            'default_rent_contract_ref': self.name,
+            'default_vehicle_id': self.vehicle_id.id,
+            'default_partner_id': self.customer_id.id,
+            'default_mobile': self.customer_contact,
+            'default_starting_km': self.starting_km,
+            'default_closing_km': self.ending_km,
+            'default_total_km': self.total_km,
+            'default_driver_id': self.driver_id.id,
+        }
+        return result
+
+        # BUTTON (APPLY Tax Options)
+
+    def rent_contract_tax_options_apply(self):
+        action = self.env.ref('apps_fleet_rental.open_rent_invoice_options_action')
+        result = action.read()[0]
+        result['context'] = {
+            'default_rent_contract_ref': self.name,
+            'default_partner_id': self.customer_id.id,
+            'default_mobile': self.customer_contact,
+            'default_tax_options': 'include_tax',
+        }
         return result
 
     # BUTTON (SET TO DONE) TO CHANGE THE STATE INTO DONE
@@ -872,6 +949,9 @@ class HrEmployee(models.Model):
     driver_licence_expire_date = fields.Date('Licence Expire Date')
     driver_licence_no = fields.Char('Licence No')
     fleet_manager = fields.Many2one('res.users', string='Fleet Manager')
+    emergency_contact_one = fields.Char(string="Emergency Contact")
+    emergency_contact_two = fields.Char(string="Alternative Emergency Contact")
+    contract_employee = fields.Boolean(string='Contract Employee', default=True)
 
 
 # INHERIT FLEET VEHICLE
@@ -1156,9 +1236,9 @@ class FleetRentalContractLine(models.Model):
     duration = fields.Float(string="Duration")
     rent_date = fields.Date(string="Rent Date")
     start_date = fields.Date(string="Start Date")
-    trip_alter_charges = fields.Float(string='Alter Charges')
+    trip_alter_charges = fields.Float(string='Halter Charges')
     trip_alter_charges_remarks = fields.Text(string='Charges Remarks',
-                                             placeholder='Alter Charges Remarks')
+                                             placeholder='Halter Charges Remarks')
     end_date = fields.Date(string="End Date")
     rent_contract_id = fields.Many2one('car.rental.contract', string="Rental Lines")
     name_of_goods = fields.Text(string='Name of Goods')

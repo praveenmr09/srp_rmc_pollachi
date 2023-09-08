@@ -30,9 +30,9 @@ class AccountMoveLine(models.Model):
     duration = fields.Float(string="Duration")
     rent_date = fields.Date(string="Rent Date")
     start_date = fields.Date(string="Start Date")
-    trip_alter_charges = fields.Float(string='Rental Alter Charges')
-    trip_alter_charges_remarks = fields.Text(string='Alter Charges Remarks',
-                                             placeholder='Alter Charges Remarks')
+    trip_alter_charges = fields.Float(string='Rental Halter Charges')
+    trip_alter_charges_remarks = fields.Text(string='Halter Charges Remarks',
+                                             placeholder='Halter Charges Remarks')
     rate_per_km = fields.Float(string='Rate/Km')
     end_date = fields.Date(string="End Date")
     name_of_goods = fields.Text(string='Name of Goods')

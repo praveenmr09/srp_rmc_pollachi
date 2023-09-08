@@ -93,7 +93,7 @@ class FleetVehicleLine(models.Model):
     trips_ends_at = fields.Char(string="To")
     rent_date = fields.Date(string="Rent Date")
     start_date = fields.Date(string="Start Date")
-    trip_alter_charges = fields.Float(string='Alter Charges')
+    trip_alter_charges = fields.Float(string='Halter Charges')
     end_date = fields.Date(string="End Date")
     trips_starts_from = fields.Char(string="From")
     name_of_goods = fields.Text(string='Name of Goods')

@@ -12,6 +12,9 @@
                     <field name="payslip_count" widget="statinfo"/>
                 </button>
             </xpath>
+            <xpath expr="//field[@name='department_id']" position="before">
+                <field name="date_of_joining" invisible="0"/>
+            </xpath>
         </field>
     </record>
 

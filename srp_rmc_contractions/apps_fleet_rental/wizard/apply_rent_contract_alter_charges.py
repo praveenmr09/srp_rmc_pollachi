@@ -6,16 +6,16 @@ from odoo import api, fields, models, _
 from datetime import datetime
 
 
-# WIZARD CLASS RENT ALTER CHARGES
+# WIZARD CLASS RENT Halter CHARGES
 class ApplyRentAlterCharges(models.TransientModel):
     _name = "rent.alter.charges"
-    _description = 'Apply Rent Alter Charges'
+    _description = 'Apply Rent Halter Charges'
 
     remarks = fields.Text('Remarks')
-    alter_charges_amount = fields.Float(string='Alter Charges')
+    alter_charges_amount = fields.Float(string='Halter Charges')
     is_default_remark = fields.Boolean('Enable Default Remark')
     default_remark = fields.Text('Default Remark',
-                                 default='Rental Contract Alter Charges Approval '
+                                 default='Rental Contract Halter Charges Approval '
                                          'get confirmed Without Remarks')
     rent_contract_ref = fields.Char(string="Reference")
     order_lines = fields.One2many('rent.alter.charges.line', 'line_order_id', string='Order Lines')
@@ -57,19 +57,19 @@ class ApplyRentAlterCharges(models.TransientModel):
             })
 
 
-# WIZARD CLASS RENT ALTER CHARGES LINE
+# WIZARD CLASS RENT Halter CHARGES LINE
 class ApplyRentAlterChargesLine(models.TransientModel):
     _name = "rent.alter.charges.line"
-    _description = 'Apply Rent Alter Charges Line'
+    _description = 'Apply Rent Halter Charges Line'
 
     trips_starts_from = fields.Char(string="From")
     trips_ends_at = fields.Char(string="To")
     duration = fields.Float(string="Duration")
     rent_date = fields.Date(string="Rent Date")
     start_date = fields.Date(string="Start Date")
-    trip_alter_charges = fields.Float(string='Rental Alter Charges')
-    trip_alter_charges_remarks = fields.Text(string='Alter Charges Remarks',
-                                             placeholder='Alter Charges Remarks')
+    trip_alter_charges = fields.Float(string='Rental Halter Charges')
+    trip_alter_charges_remarks = fields.Text(string='Halter Charges Remarks',
+                                             placeholder='Halter Charges Remarks')
     end_date = fields.Date(string="End Date")
     name_of_goods = fields.Text(string='Name of Goods')
     line_order_id = fields.Many2one('rent.alter.charges')

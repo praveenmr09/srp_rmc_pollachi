@@ -205,15 +205,25 @@
                     <!--                                class="oe_highlight"/>-->
                     <button name="create_invoice" string="Create Invoice"
                             attrs="{'invisible': ['|',('state', '!=', 'checking'), ('invoice_count', '!=', 0)]}"
-                            type="object"
+                            type="object" invisible="1"
+                            class="oe_highlight"/>
+                    <button name="create_tax_invoice" string="Create Invoice"
+                            attrs="{'invisible': ['|',('state', '!=', 'checking'), ('invoice_count', '!=', 0)]}"
+                            type="object" invisible="1"
                             class="oe_highlight"/>
                     <!--                        <button name="force_checking" string="Force Checking"-->
                     <!--                                attrs="{'invisible': ['|',('state','!=','running'),-->
                     <!--                                ('first_invoice_created','=',False)]}" type="object" class="oe_highlight"/>-->
                     <button name="set_to_done" string="Set to Done"
                             states="invoice" type="object" class="oe_highlight"/>
-                    <button name="rent_contract_alter_charges_apply" string="Apply Alter Charges"
+                    <button name="rental_open_rent_budgets_info_form_action" string="Budgets Calculations"
+                            states="invoice" type="object" class="oe_highlight"/>
+                    <button name="rent_contract_alter_charges_apply" string="Apply Halter Charges"
                             states="running" type="object" class="oe_highlight"/>
+                    <button name="rent_contract_tax_options_apply" string="Select Tax Option?"
+                            attrs="{'invisible': ['|',('state', '!=', 'checking'), ('invoice_count', '!=', 0)]}"
+                            type="object"
+                            class="oe_highlight"/>
                     <button string="Allocate" type="object"
                             name="action_run" states="reserved"
                             class="oe_highlight"/>
@@ -562,6 +572,9 @@
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='work_email']" position="after">
+                <field name="contract_employee"/>
+            </xpath>
             <xpath expr="//field[@name='employee_type']" position="after">
                 <field name="fleet_rental_driver" readonly="1" force_save="1"/>
                 <field name="driver_licence_registration_date"/>
@@ -570,8 +583,7 @@
                 <field name="driver_state"/>
                 <field name="driver_position"/>
             </xpath>
-
-            <xpath expr="//field[@name='department_id']" position="before">
+            <xpath expr="//field[@name='coach_id']" position="after">
                 <field name="fleet_manager"/>
                 <!--                       attrs="{'invisible': [('fleet_rental_driver','=',False)]}"/>-->
             </xpath>
@@ -623,9 +635,8 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//label[@for='tag_ids']" position="before">
-                <label for="vehicle_category_id" string="Vehicle Category"/>
-                <field name="vehicle_category_id"/>
-                <field name="vehicle_category" invisible="1" force_save="1"/>
+                <label for="vehicle_category" string="Vehicle Category"/>
+                <field name="vehicle_category" readonly="1" force_save="1"/>
             </xpath>
         </field>
     </record>
@@ -637,8 +648,7 @@
         <field name="inherit_id" ref="fleet.fleet_vehicle_model_view_form"/>
         <field name="arch" type="xml">
             <field name="vehicle_type" position="replace">
-                <field name="vehicle_type" invisible="1"/>
-                <field name="vehicle_category_id"/>
+                <field name="vehicle_type"/>
             </field>
             <field name="default_fuel_type" position="replace">
                 <field name="default_fuel_type"/>

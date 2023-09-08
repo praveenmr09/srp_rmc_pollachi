@@ -18,13 +18,26 @@
         <field name="model">hr.contract</field>
         <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='job_id']" position="after">
-                <field name="struct_id" required="1"/>
-                <field name="type_id" required="1"/>
+            <xpath expr="//field[@name='state']" position="before">
+                <button name="employee_contract_setup_validate"
+                        type="object" string="Validate" class="oe_highlight"/>
+                <!--                        groups="om_hr_payroll.group_emp_contract_access"/>-->
             </xpath>
             <xpath expr="//field[@name='job_id']" position="before">
                 <field name="company_id" groups="base.group_multi_company"/>
                 <field name="currency_id" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <widget name="web_ribbon" title="Success" bg_color="bg-success"
+                        attrs="{'invisible': ['|',('amount_settlment_diff', '!=', 0),('compute_contract_valdiate', '=', False)]}"/>
+                <widget name="web_ribbon" title="Failed" bg_color="bg-danger"
+                        attrs="{'invisible': [('amount_settlment_diff', '==', 0),('compute_contract_valdiate', '=', True)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='date_end']" position="before">
+                <field name="date_start" readonly="1" force_save="1"/>
+            </xpath>
+            <xpath expr="//field[@name='date_start']" position="attributes">
+                <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//field[@name='resource_calendar_id']" position="after">
                 <field name="schedule_pay"/>
@@ -33,45 +46,125 @@
             <xpath expr="//page[@name='information']" position="after">
                 <page name="other" position="move"/>
             </xpath>
-
-            <xpath expr="//group[@name='salary_info']" position="after">
+            <xpath expr="//group[@name='salary_info']" position="before">
                 <group string="Monthly Advantages in Cash" name='allowances'>
-                    <label for="hra"/>
-                    <div class="o_row">
-                        <field name="hra" nolabel="1"/>
-                        <span>/ month</span>
-                    </div>
-                    <label for="da"/>
-                    <div class="o_row">
-                        <field name="da" nolabel="1"/>
-                        <span>/ month</span>
-                    </div>
-                    <label for="travel_allowance"/>
-                    <div class="o_row">
-
-                        <field name="travel_allowance" nolabel="1"/>
-                        <span>/ month</span>
-                    </div>
-                    <label for="meal_allowance"/>
-                    <div class="o_row">
-
-                        <field name="meal_allowance" nolabel="1"/>
-                        <span>/ month</span>
-                    </div>
-                    <label for="medical_allowance"/>
-                    <div class="o_row">
-
-                        <field name="medical_allowance" nolabel="1"/>
-                        <span>/ month</span>
-                    </div>
-                    <label for="other_allowance"/>
-                    <div class="o_row">
-
-                        <field name="other_allowance" nolabel="1"/>
-                        <span>/ month</span>
-                    </div>
+                    <group name="ctc_salary">
+                        <label for="manual_ctc"/>
+                        <div class="o_row no-gutters d-flex" name="manual_ctc">
+                            <field name="manual_ctc" class="oe_inline" nolabel="1" force_save="1"/>
+                            <span>/ month</span>
+                        </div>
+                        <field name="salary_hike_enabled" invisible="1"/>
+                        <label for="ctc"/>
+                        <div class="o_row no-gutters d-flex" name="ctc">
+                            <field name="ctc" class="oe_inline" nolabel="1" readonly="1" force_save="1"/>
+                            <button name="clear_contract_amount_setup" string="Re-calculate"
+                                    type="object" class="oe_inline btn-primary"/>
+                            <!--                                    groups="om_hr_payroll.group_emp_contract_access"/>-->
+                        </div>
+                        <field name="basic_percentage"
+                        />
+                        <field name="basic_allowance" force_save="1" invisible="1"/>
+                        <!--                        <field name="contract_amount_settlement" readonly="1" force_save="1" invisible="1"/>-->
+                        <!--                        <field name="contract_deduction_settlement" readonly="1" force_save="1" invisible="1"/>-->
+                        <field name="amount_settlment_diff" class="opt_required" readonly="1" force_save="1"
+                               decoration-danger="amount_settlment_diff != 0"
+                               decoration-success="amount_settlment_diff != 1"/>
+                        <field name="contract_amount_settlement" readonly="1" force_save="1" invisible="1"/>
+                        <field name="contract_deduction_settlement" readonly="1" force_save="1" invisible="1"/>
+                        <!--                        <label for="wage"/>-->
+                        <!--                        <div class="o_row" name="wage">-->
+                        <!--                            <field name="wage" readonly="1" force_save="1" nolabel="1"/>-->
+                        <!--                            <span>/ month</span>-->
+                        <!--                        </div>-->
+                    </group>
+                    <group name="allowances_salary" string="Allowances">
+                        <field name="hra_percentage"/>
+                        <label for="house_rent_allowance"/>
+                        <div class="o_row" name="house_rent_allowance">
+                            <field name="house_rent_allowance" readonly="1" force_save="1"/>
+                            <span>/ month</span>
+                        </div>
+                        <field name="house_allowance" invisible="1"/>
+                        <!--                        <field name="convenyance_allowance"/>-->
+                        <field name="special_allowance"/>
+                        <field name="health_insurance"/>
+                        <field name="amount_settlement_diff" invisible="1"/>
+                        <field name="compute_contract_validate" invisible="1"/>
+                    </group>
                 </group>
             </xpath>
+            <xpath expr="//group[@name='salary_info']" position="after">
+                <group>
+                    <group name="deduction_salary" string="Deductions">
+                        <field name="other_deduction"/>
+                        <field name="advance_salary"/>
+                        <field name="loan_deduction" readonly="1"/>
+                        <!--                        <field name="unpaid_leave_amount_deduction" readonly="1" invisible="1"/>-->
+                        <!--                        <field name="tds" readonly="0"/>-->
+                        <!--                        <field name="professional_tax" readonly="0"/>-->
+                        <!--                                            <field name="esi" readonly="0"/>-->
+                        <!--                    <field name="pf_amount"/>-->
+                        <field name="compute_contract_valdiate" invisible="1"/>
+                    </group>
+
+                    <group>
+                        <field name="weekly_incentive" readonly="0" invisible="1"/>
+                        <field name="monthly_incentive" readonly="0" invisible="1"/>
+                        <field name="special_incentive" readonly="0" invisible="1"/>
+                    </group>
+                </group>
+            </xpath>
+            <!--            <xpath expr="//group[@name='salary_info']" position="after">-->
+            <!--                <group name="ctc_salary">-->
+            <!--                    <label for="ctc"/>-->
+            <!--                    <div class="o_row no-gutters d-flex" name="manual_ctc">-->
+            <!--                        <field name="ctc" class="oe_inline" nolabel="1" force_save="1"/>-->
+            <!--                        <span>/ month</span>-->
+            <!--                    </div>-->
+            <!--                    &lt;!&ndash;                    <field name="salary_hike_enabled" invisible="1"/>&ndash;&gt;-->
+            <!--                    <label for="ctc"/>-->
+            <!--                    <div class="o_row no-gutters d-flex" name="ctc">-->
+            <!--                        <field name="ctc" class="oe_inline" nolabel="1" readonly="1" force_save="1"/>-->
+            <!--                    </div>-->
+            <!--                </group>-->
+            <!--                <group string="Monthly Advantages in Cash" name='allowances'>-->
+            <!--                    <label for="hra"/>-->
+            <!--                    <div class="o_row">-->
+            <!--                        <field name="hra" nolabel="1"/>-->
+            <!--                        <span>/ month</span>-->
+            <!--                    </div>-->
+            <!--                    <label for="da"/>-->
+            <!--                    <div class="o_row">-->
+            <!--                        <field name="da" nolabel="1"/>-->
+            <!--                        <span>/ month</span>-->
+            <!--                    </div>-->
+            <!--                    <label for="travel_allowance"/>-->
+            <!--                    <div class="o_row">-->
+
+            <!--                        <field name="travel_allowance" nolabel="1"/>-->
+            <!--                        <span>/ month</span>-->
+            <!--                    </div>-->
+            <!--                    <label for="meal_allowance"/>-->
+            <!--                    <div class="o_row">-->
+
+            <!--                        <field name="meal_allowance" nolabel="1"/>-->
+            <!--                        <span>/ month</span>-->
+            <!--                    </div>-->
+            <!--                    <label for="medical_allowance"/>-->
+            <!--                    <div class="o_row">-->
+
+            <!--                        <field name="medical_allowance" nolabel="1"/>-->
+            <!--                        <span>/ month</span>-->
+            <!--                    </div>-->
+            <!--                    <label for="other_allowance"/>-->
+            <!--                    <div class="o_row">-->
+
+            <!--                        <field name="other_allowance" nolabel="1"/>-->
+            <!--                        <span>/ month</span>-->
+            <!--                    </div>-->
+            <!--                </group>-->
+            <!--            </xpath>-->
         </field>
     </record>
 
@@ -123,9 +216,9 @@
     </record>
 
     <menuitem
-        id="hr_contract_advantage_template_menu_action"
-        action="hr_contract_advantage_template_action"
-        parent="menu_hr_payroll_configuration"
-        sequence="50"/>
+            id="hr_contract_advantage_template_menu_action"
+            action="hr_contract_advantage_template_action"
+            parent="menu_hr_payroll_configuration"
+            sequence="50"/>
 
 </odoo>
