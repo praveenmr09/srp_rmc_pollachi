@@ -5,6 +5,10 @@ from datetime import datetime, date, timedelta
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, Warning, ValidationError
 from dateutil.relativedelta import relativedelta
+# ~ from dateutil import relativedelta
+from odoo.tools import float_compare, float_is_zero
+import num2words
+from num2words import num2words
 
 
 # CLASS HR PAYSLIP
@@ -29,12 +33,12 @@ class HrPayslip(models.Model):
     employee_final_present_days = fields.Integer(string="Employee Final Present Days")
     employee_balance_days = fields.Float(string="Employee Balance Days")
     date_months = fields.Char(string="Month")
-    date_year = fields.Char(string="Year")
+    date_year = fields.Char(string="Year", compute='_compute_date_year', store=True)
     leave_paid_timeoff = fields.Float(string="Paid Leave ")
     final_payslip_calcualte_amount = fields.Float(string="Final Pay")
     number_working_of_days = fields.Float(string="Number of working Days ")
     total_number_of_days = fields.Float(string="Total Number of Days ")
-    number_of_leave = fields.Float(string="Public Leave's and Sunday's ")
+    number_of_leave = fields.Float(string="Saturday's and Sunday's ")
     total_days_of_month = fields.Float(string="Total Days in Month ")
     employee_final_lop_total_days = fields.Integer(string="Employee Final LOP Days")
     allowance_amount_total = fields.Float(string="Allowance Amount")
@@ -59,34 +63,8 @@ class HrPayslip(models.Model):
         ('December', 'December'),
     ], string="Month/Year")
     pay_date = fields.Date(string='Pay Date')
-    select_year = fields.Many2one('hr.payroll.year', string='Year')
-    select_month = fields.Selection([
-        ('January', 'January'),
-        ('February', 'February'),
-        ('March', 'March'),
-        ('April', 'April'),
-        ('May', 'May'),
-        ('June', 'June'),
-        ('July', 'July'),
-        ('August', 'August'),
-        ('September', 'September'),
-        ('October', 'October'),
-        ('November', 'November'),
-        ('December', 'December'),
-    ], string="Month/Year")
-
-    @api.onchange('select_year', 'select_month')
-    def _onchange_select_year_month(self):
-        if self.select_year and self.select_month:
-            year = self.select_year.name
-            month = self.select_month
-            last_day_of_month = (
-                    datetime(int(year), self.select_month_to_number(month), 1) + relativedelta(day=31)).date()
-            self.date_from = datetime(int(year), self.select_month_to_number(month), 1).date()
-            self.date_to = last_day_of_month
-        else:
-            self.date_from = fields.Date.to_string(datetime.today().replace(day=1))
-            self.date_to = fields.Date.to_string((datetime.now() + relativedelta(months=+1, day=1, days=-1)).date())
+    total_amount = fields.Float(string='Total Amount')
+    amount_words = fields.Char(string='Amount in Words', compute='_compute_num2words')
 
     def select_month_to_number(self, month):
         months_dict = {
@@ -105,6 +83,9 @@ class HrPayslip(models.Model):
         }
         return months_dict.get(month, 1)
 
+    def _compute_num2words(self):
+        self.amount_words = 'Rupees ' + str.title(num2words(round(self.total_amount))).replace(',', '') + ' ' + 'Only'
+
     @api.onchange('select_year', 'select_month')
     def _onchange_select_year_month(self):
         if self.select_year and self.select_month:
@@ -117,30 +98,114 @@ class HrPayslip(models.Model):
         else:
             self.date_from = fields.Date.to_string(datetime.today().replace(day=1))
             self.date_to = fields.Date.to_string((datetime.now() + relativedelta(months=+1, day=1, days=-1)).date())
-
-    def select_month_to_number(self, month):
-        months_dict = {
-            'January': 1,
-            'February': 2,
-            'March': 3,
-            'April': 4,
-            'May': 5,
-            'June': 6,
-            'July': 7,
-            'August': 8,
-            'September': 9,
-            'October': 10,
-            'November': 11,
-            'December': 12,
-        }
-        return months_dict.get(month, 1)
 
     _sql_constraints = [
         ('unique_payslip', 'UNIQUE(date_from)', 'Alert!, The payslip already generated')
     ]
+
+    def get_payroll_year_working_days(self):
+        num_of_days = self.env['hr.payroll.year'].search([('name', '=', self.date_year)])
+        if num_of_days:
+            num_of_days.get_number_of_working_days()
+
+    def employee_year_month_button(self):
+        num_of_days = self.env['hr.payroll.year'].search([('name', '=', self.date_year)])
+        for record in self:
+            if num_of_days.day_and_month:
+                approved_month = False
+                for line in num_of_days.day_and_month:
+                    if int(line.select_month) == record.date_from.month:
+                        if line.boolen_leave:
+                            approved_month = True
+                            break
+                        else:
+                            raise ValidationError(
+                                _("Alert!,The selected Payslip Period - %s-%s,The Number of working days setup has "
+                                  "been done, but it hasn't been approved.\n"
+                                  "SO, Please, approve the configuration and generate it.") % (
+                                    record.date_months, record.date_year))
+                if approved_month:
+                    record.get_payroll_year_working_days()
+                else:
+                    raise ValidationError(
+                        _("Alert!,The selected Payslip Period doesn't have an approved Number of Working Days setup "
+                          "for - %s-%s.\n"
+                          "SO, Please create it in the configuration and generate it.") % (
+                            record.date_months, record.date_year))
+            else:
+                raise ValidationError(
+                    _("Alert!,The selected Payslip Period doesn't have any Number of Working Days setup for any month "
+                      "of this year %s.\n"
+                      "SO, Please configure it and generate it.") % (
+                        record.date_year))
+
+    @api.onchange('employee_id', 'date_from', 'date_to')
+    def compute_days(self):
+        import calendar
+        import datetime
+        date = datetime.datetime.now()
+        month_current = calendar.monthrange(date.year, date.month)[1]
+        # self.number_working_of_days = month_current - self.employee_final_present_days
+        if self.date_from.month == self.date_to.month:
+            date_fr = self.date_from.month and self.date_to.month
+            daten = datetime.datetime(1, int(date_fr), 1).strftime("%B")
+            self.date_months = daten
+        if self.date_from.year == self.date_to.year:
+            date_yr = self.date_from.year and self.date_to.year
+            # daten = datetime.datetime(1, int(date_fr), 1).strftime("%B")
+            self.date_year = date_yr
 
     @api.onchange('employee_id')
     def _compute_contract(self):
         if self.employee_id:
             self.contract_id = self.employee_id.contract_id.name
 
+    def get_employee_details(self):
+        employee_contract = self.env['hr.contract'].search([('employee_id', '=', self.employee_id.id)])
+
+        # Calculation related to Gross and lop_days_amount
+        for rec in self.line_ids:
+            if rec.category_id.name == 'Gross':
+                onedayamount = rec.amount
+                total_wage_contract = self.contract_id.ctc / 30
+                lop_days_amount = total_wage_contract * self.employee_loptotal_days
+                self.employee_one_day_salary = round(total_wage_contract)
+                total_unpaid_amount = (self.employee_balance_days + self.employee_loptotal_days) * total_wage_contract
+                self.employee_final_lop_total_days = self.employee_balance_days + self.employee_loptotal_days
+                self.employee_final_present_days = self.employee_present_days + self.number_of_leave
+                self.total_amount = self.employee_final_present_days * self.employee_one_day_salary
+                try:
+                    profitpercentday = (employee_contract.wage / 30)
+                except ZeroDivisionError:
+                    self.employee_one_day_salary = profitpercentday
+                    self.write({'employee_one_day_salary': round(total_wage_contract),
+                                'unpaid_deduction': round(total_unpaid_amount)})
+                self.allowance_amount_deduction = abs(lop_days_amount)
+        import calendar
+        import datetime
+        date = datetime.datetime.now()
+        diff = calendar.monthrange(date.year, date.month)[1]
+        # Calculate profitpercentday
+        try:
+            profitpercentday = (employee_contract.wage / diff)
+        except ZeroDivisionError:
+            self.employee_one_day_salary = profitpercentday
+        return True
+
+    def compute_sheet(self):
+        for payslip in self:
+            number = payslip.number or self.env['ir.sequence'].next_by_code('salary.slip')
+            # delete old payslip lines
+            payslip.line_ids.unlink()
+            # set the list of contract for which the rules have to be applied
+            # if we don't give the contract, then the rules to apply should be for all current contracts of the employee
+            contract_ids = payslip.contract_id.ids or \
+                           self.get_contract(payslip.employee_id, payslip.date_from, payslip.date_to)
+            if not contract_ids:
+                raise ValidationError(
+                    _("No running contract found for the employee: %s or no contract in the given period" % payslip.employee_id.name))
+            lines = [(0, 0, line) for line in self._get_payslip_lines(contract_ids, payslip.id)]
+            payslip.write({'line_ids': lines, 'number': number})
+            payslip.employee_year_month_button()
+            payslip.get_employee_details()
+        return True

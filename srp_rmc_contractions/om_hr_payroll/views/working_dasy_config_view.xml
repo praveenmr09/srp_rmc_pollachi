@@ -60,7 +60,7 @@
                                     <field name="select_month"/>
                                     <field name="week_off" readonly="1"/>
                                     <!--                                <field name="public_holiday_id" widget="many2many_tags"/>-->
-                                    <field name="holiday_public" force_save="1" readonly="1"/>
+                                    <!--                                    <field name="holiday_public" force_save="1" readonly="1"/>-->
                                     <!--                                <field name="holiday_date"/>-->
                                     <field name="public_holiday_count" force_save="1" readonly="1"/>
                                     <field name="sunday" force_save="1" readonly="1"/>
