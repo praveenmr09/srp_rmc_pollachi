@@ -107,6 +107,19 @@
                         <!--                    <field name="pf_amount"/>-->
                         <field name="compute_contract_valdiate" invisible="1"/>
                     </group>
+                    <group name="expense" string="Expense">
+                        <field name="beta_expense"/>
+                        <field name="broker_charges"/>
+                        <field name="commissions"/>
+                        <field name="other_charges"/>
+                        <field name="food_charges"/>
+                        <field name="existing_expense"/>
+                        <field name="srp_income"/>
+                        <field name="rental_income"/>
+                        <field name="spend_expense"/>
+                        <field name="expenditure_balance"/>
+                        <field name="total_spend_expense"/>
+                    </group>
 
                     <group>
                         <field name="weekly_incentive" readonly="0" invisible="1"/>

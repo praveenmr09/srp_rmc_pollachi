@@ -12,10 +12,10 @@
                 <xpath expr="//group[1]" position="after">
                     <group>
                         <group string="Employee Attendance Info">
-                            <field name="employee_present_days" readonly="1" force_save="1"/>
+                            <field name="employee_present_days" readonly="0" force_save="1"/>
                             <field name="number_of_leave" readonly="1" force_save="1"/>
-                            <field name="leave_paid_timeoff" readonly="1" force_save="1"/>
-                            <field name="employee_balance_days" invisible="0" readonly="1" force_save="1"/>
+<!--                            <field name="leave_paid_timeoff" readonly="1" force_save="1"/>-->
+<!--                            <field name="employee_balance_days" invisible="0" readonly="1" force_save="1"/>-->
                             <field name="employee_final_present_days" force_save="1" readonly="1"/>
                             <field name="allowance_amount_total" force_save="1" readonly="1" invisible="1"/>
                             <field name="allowance_amount_deduction" force_save="1" readonly="1"/>

@@ -47,3 +47,19 @@ class RentalBudgetsInfo(models.TransientModel):
     vehicle_image = fields.Binary(string='Vehicle Image', related='vehicle_id.image_128')
     driver_image = fields.Binary(string='Driver Image', related='driver_id.image_1920')
 
+    def add_budget_in_rental_contract(self):
+        if self.driver_id:
+            existing_record = self.driver_id.contract_id
+            existing_record.write({
+                'beta_expense': existing_record.beta_expense + self.beta_expense,
+                'broker_charges': existing_record.broker_charges + self.broker_charges,
+                'commissions': existing_record.commissions + self.commissions,
+                'other_charges': existing_record.other_charges + self.other_charges,
+                'food_charges': existing_record.food_charges + self.food_charges,
+                'existing_expense': existing_record.existing_expense + self.existing_expense,
+                'srp_income': existing_record.srp_income + self.srp_income,
+                'rental_income': existing_record.rental_income + self.rental_income,
+                'spend_expense': existing_record.spend_expense + self.spend_expense,
+                'expenditure_balance': existing_record.expenditure_balance + self.expenditure_balance,
+                'total_spend_expense': existing_record.total_spend_expense + self.total_spend_expense,
+            })

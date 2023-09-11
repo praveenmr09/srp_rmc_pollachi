@@ -49,6 +49,13 @@
                             <field name="total_spend_expense"/>
                         </group>
                     </group>
+                    <footer>
+                        <button name="add_budget_in_rental_contract" class="btn btn-danger"
+                                string="Add Budget"
+                                type="object"/>
+
+                        <button string="Cancel" class="btn-default" special="cancel" icon="fa-times"/>
+                    </footer>
                 </form>
             </field>
         </record>

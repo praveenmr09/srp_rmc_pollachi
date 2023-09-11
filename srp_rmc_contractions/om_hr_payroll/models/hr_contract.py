@@ -63,6 +63,18 @@ class HrContract(models.Model):
     amount_settlement_diff = fields.Boolean(string="")
     compute_contract_validate = fields.Boolean(string="")
 
+    beta_expense = fields.Float(string='Beta Expense')
+    broker_charges = fields.Float(string='Broker Expense')
+    commissions = fields.Float(string='Commissions')
+    other_charges = fields.Float(string='Other Expense')
+    food_charges = fields.Float(string='Food Expense')
+    existing_expense = fields.Float(string='Existing Expense')
+    srp_income = fields.Float(string='SRP Expense')
+    rental_income = fields.Float(string='Rental Expense')
+    spend_expense = fields.Float(string='Spend Expense')
+    expenditure_balance = fields.Float(string='Expenditure Balance')
+    total_spend_expense = fields.Float(string='Total Expense Spent')
+
     @api.onchange('wage', 'hra_percentage', 'basic_percentage', 'ctc', 'manual_ctc')
     def hra_allowance(self):
         for record in self:

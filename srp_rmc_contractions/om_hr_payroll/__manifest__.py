@@ -23,6 +23,7 @@
         'data/hr_payroll_category.xml',
         'data/hr_payroll_data.xml',
         'wizard/hr_payroll_payslips_by_employees_views.xml',
+        'wizard/hr_payroll_excel_report.xml',
         'views/hr_contract_type_views.xml',
         'views/hr_contract_views.xml',
         'views/hr_salary_rule_views.xml',

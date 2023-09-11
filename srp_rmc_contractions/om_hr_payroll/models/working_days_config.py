@@ -126,18 +126,18 @@ class HRPayrollYears(models.Model):
                 except ValueError:
                     continue
 
-    # def get_number_of_working_days(self):
-    #     hr_payslips = self.env['hr.payslip'].search([('date_year', '=', self.name)])
-    #     for payslip in hr_payslips:
-    #         for record in self.day_and_month:
-    #             convert_select_month = datetime(1, int(record.select_month), 1).strftime("%B")
-    #             if payslip.date_months == convert_select_month:
-    #                 payslip.write({
-    #                     'number_working_of_days': record.number_of_days,
-    #                     'number_of_leave': record.public_holiday_count + record.sunday,
-    #                     'total_days_of_month': record.total_number_of_days,
-    #
-    #                 })
+    def get_number_of_working_days(self):
+        hr_payslips = self.env['hr.payslip'].search([('date_year', '=', self.name)])
+        for payslip in hr_payslips:
+            for record in self.day_and_month:
+                convert_select_month = datetime(1, int(record.select_month), 1).strftime("%B")
+                if payslip.date_months == convert_select_month:
+                    payslip.write({
+                        'number_working_of_days': record.number_of_days,
+                        'number_of_leave': record.public_holiday_count + record.sunday,
+                        'total_days_of_month': record.total_number_of_days,
+
+                    })
 
 
 class MonthYears(models.Model):

@@ -18,3 +18,4 @@ access_hr_contract_type_manager,hr.contract.type.manager,model_hr_contract_type,
 access_hr_payroll_month,hr.payroll.month,model_hr_payroll_month,,1,1,1,1
 access_hr_payroll_year,hr.payroll.year,model_hr_payroll_year,,1,1,1,1
 access_hr_payroll_year_line,hr.payroll.year.line,model_hr_payroll_year_line,,1,1,1,1
+access_hr_payroll_excel_report_wizard,hr.payroll.excel.report.wizard,model_hr_payroll_excel_report_wizard,,1,1,1,1
