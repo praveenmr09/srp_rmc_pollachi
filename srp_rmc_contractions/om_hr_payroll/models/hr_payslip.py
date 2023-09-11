@@ -69,7 +69,6 @@ class HrPayslip(models.Model):
                                      copy=False, states={'draft': [('readonly', False)]})
     payslip_count = fields.Integer(compute='_compute_payslip_count', string="Payslip Computation Details")
 
-
     def _compute_details_by_salary_rule_category(self):
         for payslip in self:
             payslip.details_by_salary_rule_category = payslip.mapped('line_ids').filtered(lambda line: line.category_id)

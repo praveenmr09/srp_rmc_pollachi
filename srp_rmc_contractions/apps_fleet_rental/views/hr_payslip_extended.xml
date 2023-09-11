@@ -30,6 +30,8 @@
 
                 <xpath expr="//field[@name='struct_id']" position="after">
                     <field name="pay_date" placeholder="Select Pay Date" force_save="1"/>
+                    <field name="date_year" invisible="1"/>
+                    <field name="date_months" invisible="1"/>
                 </xpath>
                 <xpath expr="//group[1]" position="after">
                     <group>
@@ -58,6 +60,8 @@
                             <field name="monthly_incentive" force_save="1"/>
                             <field name="special_incentive" force_save="1"/>
                             <field name="gross_amount" force_save="1" invisible="1"/>
+                            <field name="total_amount" force_save="1" readonly="1"/>
+                            <field name="amount_words" force_save="1" readonly="1"/>
                         </group>
                     </group>
                 </xpath>
