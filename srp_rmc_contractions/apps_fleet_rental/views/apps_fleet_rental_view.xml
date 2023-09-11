@@ -324,7 +324,7 @@
                             <field name="name_of_rental_purpose" placeholder="Mention the Purpose of Rental Contract"/>
                             <field name="name_of_goods" placeholder="Mention the Name of Goods"
                                    attrs="{'readonly': [('state','not in',('draft'))]}"/>
-                            <field name="transport_mode" placeholder="Select Transport Mode"
+                            <field name="transport_mode"
                                    attrs="{'readonly': [('state','not in',('draft'))]}"/>
                             <label for="from_date" string="Trip Information"
                                    attrs="{'readonly': [('state','not in',('draft'))]}"/>

@@ -1256,7 +1256,7 @@ class FleetVehicleAssignationLog(models.Model):
         ('railways', 'Railways'),
         ('airways', 'Airways'),
         ('waterways', 'Waterways')],
-        'Transportation Mode', tracking=True)
+        'Transportation Mode', default="roadways", tracking=True, )
     rate_per_km = fields.Float(string='Rate/Km')
     purpose_of_rental_contract = fields.Char(string='Purpose of Rental Contract')
     name_of_goods = fields.Text(string='Name of Goods')

@@ -98,3 +98,4 @@ access_stock_picking_xls_report,access_stock_picking_xls_report,model_stock_pick
 access_excel_fleet_report,access_excel_fleet_report,model_excel_fleet_report,base.group_user,1,1,1,1
 access_print_fleet_history,access_print_fleet_history,model_print_fleet_history,base.group_user,1,1,1,1
 access_work_order_reports,access_work_order_reports,model_work_order_reports,base.group_user,1,1,1,1
+access_update_color,access_update_color,model_update_color,,1,1,1,1

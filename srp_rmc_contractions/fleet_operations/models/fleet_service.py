@@ -23,7 +23,7 @@ class ServiceCategory(models.Model):
     def check_name(self):
         for category in self:
             if self.search_count(
-                [("id", "!=", category.id), ("name", "in", category.name.strip())]
+                    [("id", "!=", category.id), ("name", "in", category.name.strip())]
             ):
                 msg = _("Service Category with " "this name already exists!")
                 raise UserError(msg)
@@ -94,12 +94,12 @@ class FleetVehicleLogServices(models.Model):
                         "name": ustr(
                             service.service_type_id and service.service_type_id.name
                         )
-                        + " - Service Cost",
+                                + " - Service Cost",
                         "price_unit": service.amount,
                         "account_id": service.vehicle_id
-                        and service.vehicle_id.income_acc_id
-                        and service.vehicle_id.income_acc_id.id
-                        or False,
+                                      and service.vehicle_id.income_acc_id
+                                      and service.vehicle_id.income_acc_id.id
+                                      or False,
                     },
                 )
             ]
@@ -110,9 +110,9 @@ class FleetVehicleLogServices(models.Model):
                     "price_unit": line.price_unit or 0.00,
                     "quantity": line.qty,
                     "account_id": service.vehicle_id
-                    and service.vehicle_id.income_acc_id
-                    and service.vehicle_id.income_acc_id.id
-                    or False,
+                                  and service.vehicle_id.income_acc_id
+                                  and service.vehicle_id.income_acc_id.id
+                                  or False,
                 }
                 inv_ser_line.append((0, 0, inv_line_values))
             inv_values = {
@@ -182,8 +182,8 @@ class FleetVehicleLogServices(models.Model):
                     )
                     raise UserError(msg)
                 elif (
-                    work_order.vehicle_id.state == "draft"
-                    or work_order.vehicle_id.state == "complete"
+                        work_order.vehicle_id.state == "draft"
+                        or work_order.vehicle_id.state == "complete"
                 ):
                     msg = _(
                         "Confirm work order can only "
@@ -211,8 +211,8 @@ class FleetVehicleLogServices(models.Model):
                 {
                     "work_order_id": work_order.id,
                     "vehicle_id": work_order.vehicle_id
-                    and work_order.vehicle_id.id
-                    or False,
+                                  and work_order.vehicle_id.id
+                                  or False,
                 }
             )
             if work_order.vehicle_id:
@@ -326,8 +326,8 @@ class FleetVehicleLogServices(models.Model):
                     {
                         "state": "complete",
                         "last_service_by_id": work_order.team_id
-                        and work_order.team_id.id
-                        or False,
+                                              and work_order.team_id.id
+                                              or False,
                         "last_service_date": fields.Date.today(),
                         "next_service_date": next_service_date,
                         "due_odometer": odometer_increment,
@@ -339,12 +339,12 @@ class FleetVehicleLogServices(models.Model):
                 if work_order.already_closed:
                     for repair_line in work_order.repair_line_ids:
                         for (
-                            pending_repair_line
+                                pending_repair_line
                         ) in work_order.vehicle_id.pending_repair_type_ids:
                             if (
-                                repair_line.repair_type_id.id
-                                == pending_repair_line.repair_type_id.id
-                                and work_order.name == pending_repair_line.name
+                                    repair_line.repair_type_id.id
+                                    == pending_repair_line.repair_type_id.id
+                                    and work_order.name == pending_repair_line.name
                             ):
                                 if repair_line.complete is True:
                                     pending_repair_line.unlink()
@@ -403,8 +403,8 @@ class FleetVehicleLogServices(models.Model):
             for t_part in team_trip.allocate_part_ids:
                 if t_part.product_id.id in wo_part_dict.keys():
                     new_wo_encode_qty = (
-                        wo_part_dict[t_part.product_id.id]["wo_en_qty"]
-                        - wo_part_dict[t_part.product_id.id]["qty"]
+                            wo_part_dict[t_part.product_id.id]["wo_en_qty"]
+                            - wo_part_dict[t_part.product_id.id]["qty"]
                     )
                     wo_part_history_vals = {
                         "team_id": team_trip.id,
@@ -488,25 +488,25 @@ class FleetVehicleLogServices(models.Model):
                 vals.update(
                     {
                         "fmp_id": work_order.vehicle_id
-                        and work_order.vehicle_id.name
-                        or "",
+                                  and work_order.vehicle_id.name
+                                  or "",
                         "vechical_type_id": work_order.vehicle_id
-                        and work_order.vehicle_id.vechical_type_id
-                        and work_order.vehicle_id.vechical_type_id.id
-                        or False,
-                        "purchaser_id": work_order.vehicle_id
-                        and work_order.vehicle_id.driver_id
-                        and work_order.vehicle_id.driver_id.id
-                        or False,
+                                            and work_order.vehicle_id.vechical_type_id
+                                            and work_order.vehicle_id.vechical_type_id.id
+                                            or False,
+                        # "purchaser_id": work_order.vehicle_id
+                        #                 and work_order.vehicle_id.driver_id
+                        #                 and work_order.vehicle_id.driver_id.id
+                        #                 or False,
                         "main_type": work_order.vehicle_id.main_type,
                         "f_brand_id": work_order.vehicle_id
-                        and work_order.vehicle_id.f_brand_id
-                        and work_order.vehicle_id.f_brand_id.id
-                        or False,
+                                      and work_order.vehicle_id.f_brand_id
+                                      and work_order.vehicle_id.f_brand_id.id
+                                      or False,
                         "vehical_division_id": work_order.vehicle_id
-                        and work_order.vehicle_id.vehical_division_id
-                        and work_order.vehicle_id.vehical_division_id.id
-                        or False,
+                                               and work_order.vehicle_id.vehical_division_id
+                                               and work_order.vehicle_id.vehical_division_id.id
+                                               or False,
                     }
                 )
         return super(FleetVehicleLogServices, self).write(vals)
@@ -594,9 +594,11 @@ class FleetVehicleLogServices(models.Model):
                     raise ValidationError(msg)
 
     wono_id = fields.Integer("WONo", help="Take this field for data migration")
-    purchaser_id = fields.Many2one(
-        "res.partner", "Purchaser", related="vehicle_id.driver_id"
-    )
+    # purchaser_id = fields.Many2one(
+    #     "res.partner", "Purchaser", related="vehicle_id.driver_id"
+    # )
+    purchaser_id = fields.Many2one('hr.employee', string='Driver',
+                                   domain="[('fleet_rental_driver', '=', True),('driver_state', '=', 'un_reserved')]")
     name = fields.Char(
         "Work Order", readonly=True, translate=True, copy=False, default="New"
     )
@@ -950,9 +952,9 @@ class StockMove(models.Model):
             for rec in warehouse_pool.browse([self._context["stock_warehouse_id"]]):
                 if rec.wh_output_id_stock_loc_id:
                     location_dest_id = (
-                        rec.wh_output_id_stock_loc_id
-                        and rec.wh_output_id_stock_loc_id.id
-                        or False
+                            rec.wh_output_id_stock_loc_id
+                            and rec.wh_output_id_stock_loc_id.id
+                            or False
                     )
         return location_dest_id
 
@@ -1099,11 +1101,11 @@ class TaskLine(models.Model):
         and the time when it was issued.
         """
         if (
-            vals.get("product_id", False)
-            or vals.get("qty", False)
-            or vals.get("product_uom", False)
-            or vals.get("price_unit", False)
-            or vals.get("old_part_return") in (True, False)
+                vals.get("product_id", False)
+                or vals.get("qty", False)
+                or vals.get("product_uom", False)
+                or vals.get("price_unit", False)
+                or vals.get("old_part_return") in (True, False)
         ):
             vals.update(
                 {
@@ -1123,8 +1125,8 @@ class TaskLine(models.Model):
             current_date = datetime.now().date()
             #
             if (
-                not self.date_issued >= date_open
-                and not self.date_issued <= current_date
+                    not self.date_issued >= date_open
+                    and not self.date_issued <= current_date
             ):
                 self.date_issued = False
                 msg = _(
@@ -1159,7 +1161,7 @@ class RepairType(models.Model):
     def check_name(self):
         for repair in self:
             if self.search_count(
-                [("id", "!=", repair.id), ("name", "ilike", repair.name.strip())]
+                    [("id", "!=", repair.id), ("name", "ilike", repair.name.strip())]
             ):
                 msg = _("Repair type with this name already exists!")
                 raise UserError(msg)
@@ -1233,7 +1235,7 @@ class FleetServiceType(models.Model):
     def check_name(self):
         for service in self:
             if self.search_count(
-                [("id", "!=", service.id), ("name", "ilike", service.name.strip())]
+                    [("id", "!=", service.id), ("name", "ilike", service.name.strip())]
             ):
                 msg = _("Service type with this name already exists!")
                 raise UserError(msg)

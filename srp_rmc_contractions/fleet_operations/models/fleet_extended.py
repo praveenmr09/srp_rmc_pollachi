@@ -164,8 +164,8 @@ class FleetOperations(models.Model):
         for vehicle in self:
             if vehicle.tire_issuance_date and vehicle.battery_issuance_date:
                 if (
-                    vehicle.battery_issuance_date < vehicle.acquisition_date
-                    and vehicle.tire_issuance_date < vehicle.acquisition_date
+                        vehicle.battery_issuance_date < vehicle.acquisition_date
+                        and vehicle.tire_issuance_date < vehicle.acquisition_date
                 ):
                     msg = _(
                         "Tire Issuance Date And Battery Issuance Date Should"
@@ -173,16 +173,16 @@ class FleetOperations(models.Model):
                     )
                     raise ValidationError(msg)
             if (
-                vehicle.tire_issuance_date
-                and vehicle.tire_issuance_date < vehicle.acquisition_date
+                    vehicle.tire_issuance_date
+                    and vehicle.tire_issuance_date < vehicle.acquisition_date
             ):
                 msg = _(
                     "Tire Issuance Date Should Be " "Greater Than Registration Date."
                 )
                 raise ValidationError(msg)
             if (
-                vehicle.battery_issuance_date
-                and vehicle.battery_issuance_date < vehicle.acquisition_date
+                    vehicle.battery_issuance_date
+                    and vehicle.battery_issuance_date < vehicle.acquisition_date
             ):
                 msg = _(
                     "Battery Issuance Date Should Be " "Greater Than Registration Date."
@@ -194,8 +194,8 @@ class FleetOperations(models.Model):
         """Method to check warranty date."""
         for vehicle in self:
             if (
-                vehicle.warranty_period
-                and vehicle.warranty_period < vehicle.acquisition_date
+                    vehicle.warranty_period
+                    and vehicle.warranty_period < vehicle.acquisition_date
             ):
                 msg = _("Warranty Period Should Be " "Greater Than Registration Date.")
                 raise ValidationError(msg)
@@ -204,15 +204,15 @@ class FleetOperations(models.Model):
     def check_duplicate_driver(self):
         for vehicle in self:
             if (
-                vehicle.driver_id
-                and self.search_count(
-                    [
-                        ("driver_id", "=", vehicle.driver_id.id),
-                        ("id", "!=", vehicle.id),
-                        ("state", "!=", "write-off"),
-                    ]
-                )
-                > 1
+                    vehicle.driver_id
+                    and self.search_count(
+                [
+                    ("driver_id", "=", vehicle.driver_id.id),
+                    ("id", "!=", vehicle.id),
+                    ("state", "!=", "write-off"),
+                ]
+            )
+                    > 1
             ):
                 msg = _("Driver can be allocated to one vehicle only!")
                 raise ValidationError(msg)
@@ -316,11 +316,11 @@ class FleetOperations(models.Model):
                 if not record.license_plate:
                     lic_plate = ""
                 record.name = (
-                    record.model_id.brand_id.name
-                    + "/"
-                    + record.model_id.name
-                    + "/"
-                    + lic_plate
+                        record.model_id.brand_id.name
+                        + "/"
+                        + record.model_id.name
+                        + "/"
+                        + lic_plate
                 )
 
     name = fields.Char(compute="_compute_vehicle_name", store=True)
@@ -599,6 +599,7 @@ class ColorHistory(models.Model):
     workorder_id = fields.Many2one("fleet.vehicle.log.services", "Work Order")
 
 
+
 class EngineHistory(models.Model):
     """Model Engine History."""
 
@@ -707,10 +708,10 @@ class VehicleType(models.Model):
     def _check_unique_vehicle_type(self):
         for vehicle_type in self:
             if self.search_count(
-                [
-                    ("id", "!=", vehicle_type.id),
-                    ("name", "ilike", vehicle_type.name.strip()),
-                ]
+                    [
+                        ("id", "!=", vehicle_type.id),
+                        ("name", "ilike", vehicle_type.name.strip()),
+                    ]
             ):
                 msg = _("Vehicle type with this name already exists!")
                 raise UserError(msg)
@@ -750,7 +751,7 @@ class ColorColor(models.Model):
         """Method to check duplicate value."""
         for rec in self:
             if self.env["color.color"].search_count(
-                [("name", "ilike", rec.name.strip()), ("id", "!=", rec.id)]
+                    [("name", "ilike", rec.name.strip()), ("id", "!=", rec.id)]
             ):
                 msg = _("This color already exist")
                 raise ValidationError(msg)
@@ -849,40 +850,40 @@ class FleetWittenOff(models.Model):
                 vals.update(
                     {
                         "vin_no": fleet_witten.vehicle_id
-                        and fleet_witten.vehicle_id.vin_sn
-                        or "",
+                                  and fleet_witten.vehicle_id.vin_sn
+                                  or "",
                         "vehicle_fmp_id": fleet_witten.vehicle_id
-                        and fleet_witten.vehicle_id.name
-                        or "",
+                                          and fleet_witten.vehicle_id.name
+                                          or "",
                         "color_id": fleet_witten.vehicle_id
-                        and fleet_witten.vehicle_id.vehical_color_id
-                        and fleet_witten.vehicle_id.vehical_color_id.id
-                        or False,
+                                    and fleet_witten.vehicle_id.vehical_color_id
+                                    and fleet_witten.vehicle_id.vehical_color_id.id
+                                    or False,
                         "vehicle_plate": fleet_witten.vehicle_id
-                        and fleet_witten.vehicle_id.license_plate
-                        or "",
+                                         and fleet_witten.vehicle_id.license_plate
+                                         or "",
                         "province_id": fleet_witten.vehicle_id
-                        and fleet_witten.vehicle_id.vehicle_location_id
-                        and fleet_witten.vehicle_id.vehicle_location_id.id
-                        or False,
+                                       and fleet_witten.vehicle_id.vehicle_location_id
+                                       and fleet_witten.vehicle_id.vehicle_location_id.id
+                                       or False,
                         "division_id": fleet_witten.vehicle_id
-                        and fleet_witten.vehicle_id.vehical_division_id
-                        and fleet_witten.vehicle_id.vehical_division_id.id
-                        or False,
+                                       and fleet_witten.vehicle_id.vehical_division_id
+                                       and fleet_witten.vehicle_id.vehical_division_id.id
+                                       or False,
                         "driver_id": fleet_witten.vehicle_id
-                        and fleet_witten.vehicle_id.driver_id
-                        and fleet_witten.vehicle_id.driver_id.id
-                        or False,
+                                     and fleet_witten.vehicle_id.driver_id
+                                     and fleet_witten.vehicle_id.driver_id.id
+                                     or False,
                         "contact_no": fleet_witten.vehicle_id
-                        and fleet_witten.vehicle_id.driver_id
-                        and fleet_witten.vehicle_id.driver_id.mobile
-                        or "",
+                                      and fleet_witten.vehicle_id.driver_id
+                                      and fleet_witten.vehicle_id.driver_id.mobile
+                                      or "",
                         "odometer": fleet_witten.vehicle_id
-                        and fleet_witten.vehicle_id.odometer
-                        or 0.0,
+                                    and fleet_witten.vehicle_id.odometer
+                                    or 0.0,
                         "odometer_unit": fleet_witten.vehicle_id
-                        and fleet_witten.vehicle_id.odometer_unit
-                        or False,
+                                         and fleet_witten.vehicle_id.odometer_unit
+                                         or False,
                     }
                 )
         return super(FleetWittenOff, self).write(vals)
@@ -918,20 +919,20 @@ class FleetWittenOff(models.Model):
         if self.vehicle_id:
             vehicle = self.vehicle_id
             self.province_id = (
-                vehicle.vehicle_location_id and vehicle.vehicle_location_id.id or False
+                    vehicle.vehicle_location_id and vehicle.vehicle_location_id.id or False
             )
             self.driver_id = vehicle.driver_id and vehicle.driver_id.id or False
             self.contact_no = vehicle.driver_contact_no or ""
             self.vin_no = vehicle.vin_sn or ""
             self.vehicle_fmp_id = vehicle.name or ""
             self.color_id = (
-                vehicle.vehical_color_id and vehicle.vehical_color_id.id or False
+                    vehicle.vehical_color_id and vehicle.vehical_color_id.id or False
             )
             self.vehicle_plate = vehicle.license_plate or ""
             self.odometer = vehicle.odometer or 0.0
             self.odometer_unit = vehicle.odometer_unit or False
             self.division_id = (
-                vehicle.vehical_division_id and vehicle.vehical_division_id.id or False
+                    vehicle.vehical_division_id and vehicle.vehical_division_id.id or False
             )
 
     def cancel_writeoff(self):
@@ -1009,7 +1010,7 @@ class FleetVehicleModelBrand(models.Model):
         """Method to check duplicate damage type."""
         for model in self:
             if self.search_count(
-                [("name", "ilike", model.name.strip()), ("id", "!=", model.id)]
+                    [("name", "ilike", model.name.strip()), ("id", "!=", model.id)]
             ):
                 msg = _("Model Brand with this name already exists!")
                 raise ValidationError(msg)
@@ -1098,10 +1099,10 @@ class NextIncrementNumber(models.Model):
         next_number = self.env["next.increment.number"]
         for increment in self:
             if next_number.search_count(
-                [
-                    ("vehicle_id", "=", increment.vehicle_id.id),
-                    ("id", "!=", increment.id),
-                ]
+                    [
+                        ("vehicle_id", "=", increment.vehicle_id.id),
+                        ("id", "!=", increment.id),
+                    ]
             ):
                 msg = _(
                     "You can not add more than one odometer "
@@ -1132,7 +1133,7 @@ class NextServiceDays(models.Model):
         """Method to check last service date."""
         for service in self:
             if self.search_count(
-                [("vehicle_id", "=", service.vehicle_id.id), ("id", "!=", service.id)]
+                    [("vehicle_id", "=", service.vehicle_id.id), ("id", "!=", service.id)]
             ):
                 msg = _(
                     "You can not add more than one next "
@@ -1155,11 +1156,11 @@ class DamageTypes(models.Model):
         """Method to check duplicate damage type."""
         for damage in self:
             if self.search_count(
-                [
-                    ("name", "ilike", damage.name.strip()),
-                    ("code", "ilike", damage.code.strip()),
-                    ("id", "!=", damage.id),
-                ]
+                    [
+                        ("name", "ilike", damage.name.strip()),
+                        ("code", "ilike", damage.code.strip()),
+                        ("id", "!=", damage.id),
+                    ]
             ):
                 msg = _("You can't add duplicate" " damage types !")
                 raise ValidationError(msg)
@@ -1246,19 +1247,19 @@ class ReportHeading(models.Model):
         help="Medium-sized image of the Report. \
                                  It is automatically resized as a 128x128px \
                                 image, with aspect ratio preserved, "
-        "only when the image exceeds one of those \
-                                 sizes. Use this field in form views or \
-                                 some kanban views.",
+             "only when the image exceeds one of those \
+                                      sizes. Use this field in form views or \
+                                      some kanban views.",
     )
     image_small = fields.Binary(
         compute="_compute_get_image",
         inverse="_inverse_set_image",
         help="Small-sized image of the Report. \
                                 It is automatically "
-        "resized as a 64x64px image, \
-                                with aspect ratio preserved. "
-        "Use this field anywhere a small \
-                                image is required.",
+             "resized as a 64x64px image, \
+                                     with aspect ratio preserved. "
+             "Use this field anywhere a small \
+                                     image is required.",
     )
 
 
@@ -1279,3 +1280,15 @@ class InsuranceType(models.Model):
     _description = "Vehicle Insurance Type"
 
     name = fields.Char()
+
+
+class UpdateColor(models.Model):
+    """Model Insurance Type."""
+
+    _name = "update.color"
+    _description = "Update Color"
+
+    colour_history_id = fields.Many2one()
+    current_color_id = fields.Many2one("color.color", "New Color")
+    changed_date = fields.Date("Change Date")
+    workorder_id = fields.Many2one("fleet.vehicle.log.services", "Work Order")
