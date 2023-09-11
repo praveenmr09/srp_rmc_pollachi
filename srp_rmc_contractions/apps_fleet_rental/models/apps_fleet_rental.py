@@ -184,6 +184,7 @@ class FleetRentalContract(models.Model):
                 'default_rent_contract_ref': self.name,
                 'default_vehicle_id': self.vehicle_id.id,
                 'default_hide_status': 'hide_in_car_rental',
+                'default_last_odometer': self.starting_km,
             },
 
         }
@@ -1218,11 +1219,6 @@ class FleetVehicleModel(models.Model):
     ])
     default_fuel_type = fields.Selection(selection_add=[("petrol", "Petrol")])
     vehicle_category_id = fields.Many2one('fleet.vehicle.model.category', string='Vehicle Type')
-
-
-
-
-
 
 
 # CLASS CAR RENTAL CONTRACT LINE

@@ -58,6 +58,52 @@ class HrPayslip(models.Model):
         ('November', 'November'),
         ('December', 'December'),
     ], string="Month/Year")
+    pay_date = fields.Date(string='Pay Date')
+    select_year = fields.Many2one('hr.payroll.year', string='Year')
+    select_month = fields.Selection([
+        ('January', 'January'),
+        ('February', 'February'),
+        ('March', 'March'),
+        ('April', 'April'),
+        ('May', 'May'),
+        ('June', 'June'),
+        ('July', 'July'),
+        ('August', 'August'),
+        ('September', 'September'),
+        ('October', 'October'),
+        ('November', 'November'),
+        ('December', 'December'),
+    ], string="Month/Year")
+
+    @api.onchange('select_year', 'select_month')
+    def _onchange_select_year_month(self):
+        if self.select_year and self.select_month:
+            year = self.select_year.name
+            month = self.select_month
+            last_day_of_month = (
+                    datetime(int(year), self.select_month_to_number(month), 1) + relativedelta(day=31)).date()
+            self.date_from = datetime(int(year), self.select_month_to_number(month), 1).date()
+            self.date_to = last_day_of_month
+        else:
+            self.date_from = fields.Date.to_string(datetime.today().replace(day=1))
+            self.date_to = fields.Date.to_string((datetime.now() + relativedelta(months=+1, day=1, days=-1)).date())
+
+    def select_month_to_number(self, month):
+        months_dict = {
+            'January': 1,
+            'February': 2,
+            'March': 3,
+            'April': 4,
+            'May': 5,
+            'June': 6,
+            'July': 7,
+            'August': 8,
+            'September': 9,
+            'October': 10,
+            'November': 11,
+            'December': 12,
+        }
+        return months_dict.get(month, 1)
 
     @api.onchange('select_year', 'select_month')
     def _onchange_select_year_month(self):
@@ -92,3 +138,9 @@ class HrPayslip(models.Model):
     _sql_constraints = [
         ('unique_payslip', 'UNIQUE(date_from)', 'Alert!, The payslip already generated')
     ]
+
+    @api.onchange('employee_id')
+    def _compute_contract(self):
+        if self.employee_id:
+            self.contract_id = self.employee_id.contract_id.name
+

@@ -82,7 +82,7 @@
                                    attrs="{'invisible': [('hide_status', '=', 'hide_in_fleet_vehicle')]}"/>
                             <label for="last_odometer" string="Last Odometer"/>
                             <div>
-                                <field name="last_odometer"  class="oe_inline"/>
+                                <field name="last_odometer" readonly="1"  class="oe_inline"/>
                                 <field name="unit" class="oe_inline"/>
                             </div>
                             <label for="fuel" string="Fuel"/>
@@ -99,7 +99,7 @@
                                 <span>Rupees</span>
                             </div>
                             <field name="fueled_by" required="1"/>
-                            <field name="filling_date" required="1"/>
+                            <field name="filling_date" readonly="1"/>
                         </group>
                     </group>
                     <footer>

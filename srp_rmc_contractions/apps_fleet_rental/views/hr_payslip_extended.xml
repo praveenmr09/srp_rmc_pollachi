@@ -9,13 +9,35 @@
             <field name="model">hr.payslip</field>
             <field name="inherit_id" ref="om_hr_payroll.view_hr_payslip_form"/>
             <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='number']" position="before">
+                    <label for="select_month" string="Period"/>
+                    <div>
+                        <div class="o_row" name="select_month">
+                            <field name="select_month" placeholder="Month" class="oe_inline" required="1"/>
+                            <field name="select_year" placeholder="Year" class="oe_inline" required="1"
+                                   options="{'no_open': True,'no_create':True, 'no_edit':True}"/>
+                        </div>
+
+                        <div class="o_row">
+                            <field name="date_from" class="oe_inline"
+                                   attrs="{'invisible': ['|',('select_month','=',False), ('select_year','=',False)]}"/>
+                            <field name="date_to" class="oe_inline"
+                                   attrs="{'invisible': ['|',('select_month','=',False), ('select_year','=',False)]}"/>
+                        </div>
+                    </div>
+                </xpath>
+
+                <xpath expr="//field[@name='struct_id']" position="after">
+                    <field name="pay_date" placeholder="Select Pay Date" force_save="1"/>
+                </xpath>
                 <xpath expr="//group[1]" position="after">
                     <group>
                         <group string="Employee Attendance Info">
                             <field name="employee_present_days" readonly="0" force_save="1"/>
                             <field name="number_of_leave" readonly="1" force_save="1"/>
-<!--                            <field name="leave_paid_timeoff" readonly="1" force_save="1"/>-->
-<!--                            <field name="employee_balance_days" invisible="0" readonly="1" force_save="1"/>-->
+                            <!--                            <field name="leave_paid_timeoff" readonly="1" force_save="1"/>-->
+                            <!--                            <field name="employee_balance_days" invisible="0" readonly="1" force_save="1"/>-->
                             <field name="employee_final_present_days" force_save="1" readonly="1"/>
                             <field name="allowance_amount_total" force_save="1" readonly="1" invisible="1"/>
                             <field name="allowance_amount_deduction" force_save="1" readonly="1"/>

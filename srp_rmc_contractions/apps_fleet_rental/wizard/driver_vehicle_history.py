@@ -34,7 +34,7 @@ class AddFuelHistoryWizard(models.TransientModel):
         ('km', 'km'),
         ('m', 'm'),
     ], string='Unit', default='km')
-    filling_date = fields.Date(string='Filling Date')
+    filling_date = fields.Date(string='Filling Date', default=fields.Date.today())
     fuel = fields.Float(string='Fuel')
     fuel_receipt = fields.Binary(string="Fuel receipt")
     fuel_cost = fields.Float(string='Fuel Cost')
@@ -90,7 +90,6 @@ class AddFuelHistoryWizard(models.TransientModel):
             if update_fuel.license_plate == self.vehicle_id.license_plate:
                 rental_line = self.env['fuel.history'].create(fuel_history_line_vals)
                 update_fuel.write({'fuel_history_ids': [(4, rental_line.id)]})
-
 
 
 # WIZARD CLASS DRIVER VEHICLE HISTORY WIZARD
