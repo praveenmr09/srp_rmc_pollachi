@@ -30,8 +30,8 @@
 
                 <xpath expr="//field[@name='struct_id']" position="after">
                     <field name="pay_date" placeholder="Select Pay Date" force_save="1"/>
-                    <field name="date_year" invisible="1"/>
-                    <field name="date_months" invisible="1"/>
+                    <field name="date_year" invisible="0" force_save="1"/>
+                    <field name="date_months" invisible="0" force_save="1"/>
                 </xpath>
                 <xpath expr="//group[1]" position="after">
                     <group>

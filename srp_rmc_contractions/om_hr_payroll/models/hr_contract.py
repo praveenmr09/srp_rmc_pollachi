@@ -130,6 +130,19 @@ class HrContract(models.Model):
                     self.amount_settlment_diff))
         else:
             self.write({'compute_contract_validate': True})
+            self.write({
+                'state': 'open',
+            })
+
+    def employee_contract_setup_expire(self):
+        self.write({
+            'state': 'close',
+        })
+
+    def employee_contract_setup_cancel(self):
+        self.write({
+            'state': 'cancel',
+        })
 
     # CLEAR THE EMPLOYEE CONTRACT AMOUNT TO RE-CALCULATE
     def clear_contract_amount_setup(self):

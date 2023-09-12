@@ -18,9 +18,26 @@
         <field name="model">hr.contract</field>
         <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
         <field name="arch" type="xml">
+
+<!--            &lt;!&ndash;                        STATE SET TO NON CLICKABLE&ndash;&gt;-->
+<!--            <xpath expr="//header//field[@name='state']" position="attributes">-->
+<!--                <attribute name="options">{'clickable': 0, 'fold_field': 'fold'}</attribute>-->
+<!--            </xpath>-->
+
+
             <xpath expr="//field[@name='state']" position="before">
                 <button name="employee_contract_setup_validate"
-                        type="object" string="Validate" class="oe_highlight"/>
+                        type="object" string="Validate" class="oe_highlight"
+                        attrs="{'invisible': [('state', 'in', ['open', 'close','cancel'])]}"/>
+
+                <button name="employee_contract_setup_expire"
+                        type="object" string="Expire" class="oe_highlight" states="open"
+                />
+                <button name="employee_contract_setup_cancel"
+                        type="object" string="Cancel" class="oe_highlight" states="open,close"
+                />
+
+
                 <!--                        groups="om_hr_payroll.group_emp_contract_access"/>-->
             </xpath>
             <xpath expr="//field[@name='job_id']" position="before">
@@ -28,10 +45,12 @@
                 <field name="currency_id" invisible="1"/>
             </xpath>
             <xpath expr="//field[@name='name']" position="after">
-                <widget name="web_ribbon" title="Success" bg_color="bg-success"
-                        attrs="{'invisible': ['|',('amount_settlment_diff', '!=', 0),('compute_contract_valdiate', '=', False)]}"/>
-                <widget name="web_ribbon" title="Failed" bg_color="bg-danger"
-                        attrs="{'invisible': [('amount_settlment_diff', '==', 0),('compute_contract_valdiate', '=', True)]}"/>
+                <widget name="web_ribbon" title="Success" bg_color="bg-success" states="open"/>
+                <widget name="web_ribbon" title="Expired" bg_color="bg-danger" states="close"/>
+                <widget name="web_ribbon" title="Cancelled" bg_color="bg-warning" states="cancel"/>
+                <!--                        attrs="{'invisible': ['|',('amount_settlment_diff', '!=', 0),('compute_contract_valdiate', '=', False)]}"/>-->
+                <!--                <widget name="web_ribbon" title="Failed" bg_color="bg-danger"-->
+                <!--                        attrs="{'invisible': [('amount_settlment_diff', '==', 0),('compute_contract_valdiate', '=', True)]}"/>-->
             </xpath>
             <xpath expr="//field[@name='date_end']" position="before">
                 <field name="date_start" readonly="1" force_save="1"/>
