@@ -276,6 +276,7 @@ class HrPayslip(models.Model):
                         'amount': net
                     })
 
+
     def compute_sheet(self):
         for payslip in self:
             number = payslip.number or self.env['ir.sequence'].next_by_code('salary.slip')
