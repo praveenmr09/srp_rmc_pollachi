@@ -99,10 +99,6 @@ class HrPayslip(models.Model):
             self.date_from = fields.Date.to_string(datetime.today().replace(day=1))
             self.date_to = fields.Date.to_string((datetime.now() + relativedelta(months=+1, day=1, days=-1)).date())
 
-    _sql_constraints = [
-        ('unique_payslip', 'UNIQUE(date_from)', 'Alert!, The payslip already generated')
-    ]
-
     def get_payroll_year_working_days(self):
         num_of_days = self.env['hr.payroll.year'].search([('name', '=', self.date_year)])
         if num_of_days:
@@ -230,23 +226,55 @@ class HrPayslip(models.Model):
             self.employee_one_day_salary = profitpercentday
         return True
 
-    # def compute_sheet(self):
-    #     for payslip in self:
-    #         number = payslip.number or self.env['ir.sequence'].next_by_code('salary.slip')
-    #         # delete old payslip lines
-    #         payslip.line_ids.unlink()
-    #         # set the list of contract for which the rules have to be applied
-    #         # if we don't give the contract, then the rules to apply should be for all current contracts of the employee
-    #         contract_ids = payslip.contract_id.ids or \
-    #                        self.get_contract(payslip.employee_id, payslip.date_from, payslip.date_to)
-    #         if not contract_ids:
-    #             raise ValidationError(
-    #                 _("No running contract found for the employee: %s or no contract in the given period" % payslip.employee_id.name))
-    #         lines = [(0, 0, line) for line in self._get_payslip_lines(contract_ids, payslip.id)]
-    #         payslip.write({'line_ids': lines, 'number': number})
-    #         payslip.employee_year_month_button()
-    #         payslip.get_employee_details()
-    #     return True
+    def _payslip_calculation(self):
+        # Calculate employee_balance_days
+        self.employee_balance_days = 30 - self.number_working_of_days
+        # Initialize variables
+        allowance = 0.00
+        deduction = 0.00
+        Compensations = 0.00
+        Employerdeduction = 0.00
+        grossamount = 0.00
+        flight = 0.00
+        birthday = 0.00
+        loans = 0.00
+        unpaid = 0.00
+        adv_sal = 0.00
+        total_deduct = 0.00
+        net = 0.00
+        basic = 0.00
+        up = 0.00
+        # Calculate amounts
+        if self.employee_id:
+            for line in self.line_ids:
+                if line.category_id.name == 'Deduction':
+                    if line.name != 'Unpaid':
+                        deduction += line.amount
+                        self.deduction_amount = deduction
+                if line.category_id.name == 'Basic':
+                    basic += round(line.amount)
+                if line.category_id.name == 'Allowance':
+                    allowance += round(line.amount)
+                if line.category_id.name == 'Compensation':
+                    Compensations += round(line.amount)
+                if line.category_id.name == 'Gross':
+                    line.write({
+                        'amount': (allowance + basic + Compensations) - Employerdeduction
+                    })
+                    grossamount += round(line.amount)
+                    self.gross_amount = round(line.amount)
+
+                # if line.name == 'Unpaid':
+                #     up = self.employee_balance_days * self.employee_one_day_salary
+                #     line.write({
+                #         'amount': up
+                #     })
+                if line.category_id.name == 'Net':
+                    # net = self.total_amount if deduction > 0 else (allowance + basic)
+                    net = self.total_amount
+                    line.write({
+                        'amount': net
+                    })
 
     def compute_sheet(self):
         for payslip in self:
@@ -266,4 +294,5 @@ class HrPayslip(models.Model):
             payslip.write({'line_ids': lines, 'number': number})
             payslip.employee_year_month_button()
             payslip.get_employee_details()
+            payslip._payslip_calculation()
         return True

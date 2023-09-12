@@ -76,8 +76,13 @@
             <field name="target">new</field>
         </record>
 
+
+        <menuitem id="menu_reporting_payroll"
+                  name="Reporting"
+                  parent="om_hr_payroll.menu_hr_payroll_root" sequence="88"/>
+
         <menuitem action="action_hr_payroll_excel_report" id="menu_action_hr_payslip_excel_report"
                   name="HR Payroll Report"
-                  parent="om_hr_payroll.menu_hr_payroll_configuration" sequence="2"/>
+                  parent="om_hr_payroll.menu_reporting_payroll" sequence="1"/>
     </data>
 </odoo>

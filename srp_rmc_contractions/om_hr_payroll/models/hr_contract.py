@@ -74,6 +74,24 @@ class HrContract(models.Model):
     spend_expense = fields.Float(string='Spend Expense')
     expenditure_balance = fields.Float(string='Expenditure Balance')
     total_spend_expense = fields.Float(string='Total Expense Spent')
+    on_hand = fields.Float(string='On Hand Cash')
+    current_on_hand_cash = fields.Float(string='Remaining Hand Cash', compute='_compute_on_change_expenses')
+
+    @api.depends('beta_expense', 'broker_charges', 'commissions', 'other_charges', 'food_charges')
+    def _compute_on_change_expenses(self):
+        total_expenses = sum([
+            self.beta_expense,
+            self.broker_charges,
+            self.commissions,
+            self.other_charges,
+            self.food_charges,
+        ])
+
+        if total_expenses:
+            self.current_on_hand_cash = self.on_hand - total_expenses
+
+        else:
+            self.current_on_hand_cash = self.on_hand
 
     @api.onchange('wage', 'hra_percentage', 'basic_percentage', 'ctc', 'manual_ctc')
     def hra_allowance(self):

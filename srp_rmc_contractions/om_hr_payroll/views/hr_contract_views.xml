@@ -83,6 +83,8 @@
                         </div>
                         <field name="basic_percentage"
                         />
+                        <field name="on_hand"/>
+                        <field name="current_on_hand_cash"/>
                         <field name="basic_allowance" force_save="1" invisible="1"/>
                         <!--                        <field name="contract_amount_settlement" readonly="1" force_save="1" invisible="1"/>-->
                         <!--                        <field name="contract_deduction_settlement" readonly="1" force_save="1" invisible="1"/>-->
