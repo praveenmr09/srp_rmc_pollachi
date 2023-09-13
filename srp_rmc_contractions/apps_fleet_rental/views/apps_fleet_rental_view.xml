@@ -35,6 +35,20 @@
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
         <field name="arch" type="xml">
+
+            <!--            <xpath expr="//div[@name='button_box']" position="inside">-->
+            <!--                    <button-->
+            <!--                            name="hr_expense_smart_button"-->
+            <!--                            type="object"-->
+            <!--                            icon="fa-adjust"-->
+            <!--                            class="oe_stat_button">-->
+            <!--                        <field-->
+            <!--                                name="hr_expense"-->
+            <!--                                string="Hr Expense" widget="statinfo"/>-->
+            <!--                    </button>-->
+            <!--            </xpath>-->
+
+
             <field name="car_value" position="after">
                 <field name="rental_check_availability" invisible="1"/>
                 <field name="rental_reserved_time" invisible="1"/>
@@ -394,6 +408,19 @@
                             </div>
                             <field name="vehicle_image" widget="image" style='height:70px;width:70px;'
                                    attrs="{'invisible': [('rental_type','=','external')]}"/>
+
+
+                            <separator string="Vehicle Fuel Percentage" colspan="4"/>
+                            <div>
+                                <strong class="px-2" style="font-size:17px;"/>
+                                <field name="total_filling_fuel" invisible="0"
+                                       widget="percentpie"/>
+                                <strong class="px-2" style="font-size:17px;"/>
+                                <strong class="px-2" style="font-size:17px;"/>
+                                <strong class="px-2" style="font-size:17px;"/>
+                                <strong class="px-2" style="font-size:17px;"/>
+                                <strong class="px-2" style="font-size:17px;"/>
+                            </div>
                             <field name="vehicle_state" invisible="1"/>
                             <separator string="Vehicle Odometers Information" colspan="4"/>
                             <field name="car_brand"/>
@@ -717,6 +744,8 @@
             </xpath>
         </field>
     </record>
+
+
 
     <!--                  INHERIT DRIVER HISTORY LOG VIEW ACTION -->
     <record id="view_fleet_vehicle_assignation_log_view_action" model="ir.actions.act_window">

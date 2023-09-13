@@ -13,7 +13,7 @@
     "author": "Serpent Consulting Services Pvt. Ltd.",
     "website": "https://www.serpentcs.com",
     # Dependencies
-    "depends": ["fleet", "stock", "account","hr",],
+    "depends": ["fleet", "stock", "account","hr","hr_expense",],
     # Data
     "data": [
         "security/fleet_security.xml",

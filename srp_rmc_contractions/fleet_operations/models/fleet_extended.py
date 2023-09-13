@@ -491,6 +491,36 @@ class FleetOperations(models.Model):
     income_acc_id = fields.Many2one("account.account", "Income Account")
     expence_acc_id = fields.Many2one("account.account", "Expense Account")
 
+    hr_expense = fields.Integer(string='Hr Expense', compute='_compute_create_hr_expense_count')
+
+    # COMPUTE FUNCTION FOR HR EXPENSE
+    def _compute_create_hr_expense_count(self):
+        self.hr_expense = self.env['hr.expense'].sudo().search_count(
+            [('vehicle_id', '=', self.id)])
+
+        #  TO PASS RENTAL ADVANCE PAYMENT FUNCTION THROUGH SMART BUTTON
+
+    def hr_expense_smart_button(self):
+        self.ensure_one()
+        context = dict(self._context or {})
+        active_model = context.get('active_model')
+        form_view = self.env.ref('hr_expense.hr_expense_view_form')
+        tree_view = self.env.ref('hr_expense.view_my_expenses_tree')
+        ctx = {
+            'default_vehicle_id': self.id,
+            # 'default_ref': self.name,
+        }
+        return {
+            'name': _('Fleet Rental Hr Expense'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'hr.expense',
+            'views': [(tree_view.id, 'tree'), (form_view.id, 'form')],
+            'context': ctx,
+            'domain': [('vehicle_id', '=', self.id)],
+        }
+
     @api.model
     def default_get(self, fields):
         """Method to default get."""
@@ -597,7 +627,6 @@ class ColorHistory(models.Model):
     changed_date = fields.Date("Change Date")
     note = fields.Text("Notes", translate=True)
     workorder_id = fields.Many2one("fleet.vehicle.log.services", "Work Order")
-
 
 
 class EngineHistory(models.Model):
@@ -1292,3 +1321,13 @@ class UpdateColor(models.Model):
     current_color_id = fields.Many2one("color.color", "New Color")
     changed_date = fields.Date("Change Date")
     workorder_id = fields.Many2one("fleet.vehicle.log.services", "Work Order")
+
+
+class HrExpense(models.Model):
+    """product model."""
+
+    _inherit = "hr.expense"
+    _description = "Hr Expense"
+
+    vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle')
+    driver_id = fields.Many2one('hr.employee', string='Driver')

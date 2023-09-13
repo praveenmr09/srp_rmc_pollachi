@@ -281,6 +281,7 @@ class FleetRentalContract(models.Model):
     delivery_status = fields.Char(string="Rent Status", compute='_delivery_statys')
     rental_contract_line_ids = fields.One2many('car.rental.contract.line', 'rent_contract_id')
     fleet_toll_entry_ids = fields.One2many('fleet.toll.entry', 'car_rental_id', string='Fleet Toll Gate')
+    total_filling_fuel = fields.Integer(string='Total Filling Fuel', related='vehicle_id.total_filling_fuel')
 
     # RENTAL CURRENT STATUS DISPLAYED AS A WIDGETS ON THE FORM
     @api.onchange('state')
@@ -1045,6 +1046,36 @@ class FleetVehicle(models.Model):
 
     vehicle_pollution_2_eligible_period = fields.Integer(string='Eligible Period After', store=True, default=1)
     pollution_expiry_date_2 = fields.Date(string='Pollution Expiry Date 2')
+
+    # hr_expense = fields.Integer(string='Hr Expense', compute='_compute_create_hr_expense_count')
+    #
+    # # COMPUTE FUNCTION FOR HR EXPENSE
+    # def _compute_create_hr_expense_count(self):
+    #     self.create_payment_count = self.env['hr.expense'].sudo().search_count(
+    #         [('reference', '=', self.id)])
+    #
+    #     #  TO PASS RENTAL ADVANCE PAYMENT FUNCTION THROUGH SMART BUTTON
+    #
+    # def hr_expense_smart_button(self):
+    #     self.ensure_one()
+    #     context = dict(self._context or {})
+    #     active_model = context.get('active_model')
+    #     form_view = self.env.ref('hr_expense.hr_expense_view_form')
+    #     tree_view = self.env.ref('hr_expense.view_my_expenses_tree')
+    #     # ctx = {
+    #     #     'default_partner_id': self.customer_id.id,
+    #     #     'default_ref': self.name,
+    #     # }
+    #     return {
+    #         'name': _('Fleet Rental Hr Expense'),
+    #         'type': 'ir.actions.act_window',
+    #         'view_type': 'form',
+    #         'view_mode': 'tree,form',
+    #         'res_model': 'hr.expense',
+    #         'views': [(tree_view.id, 'tree'), (form_view.id, 'form')],
+    #         # 'context': ctx,
+    #         'domain': [('reference', '=', self.id)],
+    #     }
 
     @api.onchange('vehicle_fc_eligible_period', 'fc_registry_date' 'fc_expiry_date')
     def find_fc_eligible_date(self):

@@ -75,6 +75,10 @@ class AddFuelHistoryWizard(models.TransientModel):
                 update_fuel.write({'fuel_history_ids': [(4, fuel_history.id)]})
 
     def add_fuel_in_rental_contract(self):
+        self.vehicle_id.write({
+            'fuel': self.fuel,
+            'fuel_cost': self.fuel_cost,
+        })
         for update_fuel in self.env['fleet.vehicle'].search([]):
             fuel_history_line_vals = {
                 'fuel': self.fuel,
