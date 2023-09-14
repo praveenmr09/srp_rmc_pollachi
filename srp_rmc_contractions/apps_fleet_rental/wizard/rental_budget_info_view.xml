@@ -31,22 +31,32 @@
                             <field name="expense_detail"/>
                             <field name="content"/>
                             <field name="export_import_commission"/>
-                            <field name="toll_expense"/>
+                            <field name="toll_expense" invisible="1"/>
                         </group>
-                        <group>
+                        <group string="Driver Expense">
                             <field name="beta_expense"/>
-                            <field name="broker_charges"/>
-                            <field name="commissions"/>
-                            <field name="other_charges"/>
                             <field name="food_charges"/>
+                            <field name="spl_allowance"/>
+                            <field name="broker_charges" invisible="1"/>
+                            <field name="commissions" invisible="1"/>
+                            <field name="other_charges" invisible="1"/>
+                            <separator string="Administration Expense"/>
+                            <field name="loading_unloading"/>
+                            <field name="other_charges"/>
+                            <field name="pc_rto"/>
+                            <field name="commission"/>
                         </group>
-                        <group>
-                            <field name="existing_expense"/>
-                            <field name="srp_income"/>
-                            <field name="rental_income"/>
-                            <field name="spend_expense"/>
-                            <field name="expenditure_balance"/>
-                            <field name="total_spend_expense"/>
+                        <group string="Vehicle Expense">
+                            <field name="fuel_charges"/>
+                            <field name="toll_expense"/>
+                            <field name="maintenance_and_service"/>
+                            <field name="fright_charges_rental"/>
+                            <field name="existing_expense" invisible="1"/>
+                            <field name="srp_income" invisible="1"/>
+                            <field name="rental_income" invisible="1"/>
+                            <field name="spend_expense" invisible="1"/>
+                            <field name="expenditure_balance" invisible="1"/>
+                            <field name="total_spend_expense" invisible="1"/>
                         </group>
                     </group>
                     <footer>

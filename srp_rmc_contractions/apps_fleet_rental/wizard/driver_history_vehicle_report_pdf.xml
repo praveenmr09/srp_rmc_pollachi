@@ -233,6 +233,7 @@
                                     <td
                                             class="padding_all" align="right">
                                         <span t-esc="l['symbol']"/>
+                                        <!--                                        <span>₹</span>-->
                                         <span t-esc="'%.2f' % l['rate_km']"/>
                                     </td>
                                 </t>
@@ -247,7 +248,7 @@
                                     <td
                                             class="padding_all" align="right">
                                         <span t-esc="l['symbol']"/>
-
+                                        <!--                                        <span>₹</span>-->
                                         <span t-esc="'%.2f' % l['total_cost']"/>
                                     </td>
                                 </t>
@@ -268,6 +269,7 @@
                         <th class="bg-secondary text-black;">
                             <t t-if="l['total_subtotal']">
                                 <span t-esc="l['symbol']"/>
+                                <!--                                <span>₹</span>-->
                                 <span t-esc="'%.2f' % l['total_subtotal']"/>
                             </t>
 

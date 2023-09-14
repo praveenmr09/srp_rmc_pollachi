@@ -39,6 +39,8 @@ class AddFuelHistoryWizard(models.TransientModel):
     fuel_receipt = fields.Binary(string="Fuel receipt")
     fuel_cost = fields.Float(string='Fuel Cost')
     fueled_by = fields.Many2one('res.users', string='Fueled By')
+    fueled_by_driver = fields.Many2one('hr.employee', string='Fueled By',
+                                       domain="[('fleet_rental_driver', '=', True)]")
     fuel_history = fields.Many2one('fuel.history', string='Fuel History')
     fleet_vehicle_add_id = fields.Many2one('fleet.vehicle', string='Fuel History')
     vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle List')
@@ -63,7 +65,7 @@ class AddFuelHistoryWizard(models.TransientModel):
             fuel_history_line_vals = {
                 'fuel': self.fuel,
                 'fuel_cost': self.fuel_cost,
-                'fueled_by': self.fueled_by.id,
+                'fueled_by_driver': self.fueled_by_driver.id,
                 'last_odometer': self.last_odometer,
                 'unit': self.unit,
                 'fuel_receipt': self.fuel_receipt,
@@ -83,7 +85,7 @@ class AddFuelHistoryWizard(models.TransientModel):
             fuel_history_line_vals = {
                 'fuel': self.fuel,
                 'fuel_cost': self.fuel_cost,
-                'fueled_by': self.fueled_by.id,
+                'fueled_by_driver': self.fueled_by_driver.id,
                 'last_odometer': self.last_odometer,
                 'unit': self.unit,
                 'fuel_receipt': self.fuel_receipt,
@@ -115,6 +117,8 @@ class DriverVehicleHistoryWizard(models.TransientModel):
     vehicle_list = fields.Many2many('fleet.vehicle', string="Vehicle")
     driver_name = fields.Many2many('hr.employee', string='Driver Name')
     requested = fields.Boolean('Request ?')
+    currency_symbol = fields.Char(
+        string='Currency Symbol', default=lambda self: self.env.company.currency_id.symbol, readonly=True, )
 
     vehicle_category = fields.Selection([
         ('car', 'Car'),
@@ -136,6 +140,7 @@ class DriverVehicleHistoryWizard(models.TransientModel):
             'e_date': self.end_date,
             'vehicle_ids': self.vehicle_list.ids,
             'driver_ids': self.driver_name.ids,
+            'currency_symbol': self.currency_symbol,
             'form': {
                 'start_date': self.start_date,
                 'end_date': self.end_date,

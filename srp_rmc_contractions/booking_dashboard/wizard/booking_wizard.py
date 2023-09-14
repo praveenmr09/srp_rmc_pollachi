@@ -77,7 +77,7 @@ class QuickBooking(models.TransientModel):
             rental = self.env['car.rental.contract'].sudo().create({
                 'customer_id': self.customer_id.id,
                 'rent_start_date': self.rent_start_date,
-                'rent_end_date': self.rent_start_date,
+                'rent_end_date': self.rent_end_date,
                 'from_date': self.from_date,
                 'to_date': self.to_date,
                 'name_of_rental_purpose': self.name_of_rental_purpose,

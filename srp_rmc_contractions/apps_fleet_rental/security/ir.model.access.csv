@@ -28,6 +28,7 @@ access_empty_trip_details,empty.trip.details,model_empty_trip_details,,1,1,1,1
 access_vehicle_registration_info_wizard,vehicle.registration.info.wizard,model_vehicle_registration_info_wizard,,1,1,1,1
 access_rent_invoice_options,rent.invoice.options,model_rent_invoice_options,,1,1,1,1
 access_rent_budgets_info,rent.budgets.info,model_rent_budgets_info,,1,1,1,1
+access_fleet_toll_entry_wizard,fleet.toll.entry.wizard,model_fleet_toll_entry_wizard,,1,1,1,1
 
 
 

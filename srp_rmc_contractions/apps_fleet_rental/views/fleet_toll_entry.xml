@@ -47,6 +47,8 @@
                                 <group string="Vehicle Details">
                                     <field name="vehicle_id"/>
                                     <field name="purchaser_id"/>
+                                    <field name="driver_id"
+                                           options="{'no_open': True,'no_create':True, 'no_edit':True}"/>
 
                                     <separator string="Additional Details"/>
 

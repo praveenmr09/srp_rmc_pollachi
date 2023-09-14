@@ -13,6 +13,7 @@ class DriverVehicleHistoryWizardParser(models.AbstractModel):
         # driver_name_ids = data['driver_ids']
         vehicle_name_ids = data.get('vehicle_ids') or []
         driver_name_ids = data.get('driver_ids') or []
+        currency_symbol = data.get('currency_symbol') or []
 
         # Initialize an empty list for domain conditions
         domain_conditions = []
@@ -39,6 +40,8 @@ class DriverVehicleHistoryWizardParser(models.AbstractModel):
             ],
             order='date_start asc'
         )
+
+        symbol = vehicle_history.vehicle_id.company_id.currency_id.symbol
 
         total_subtotal = 0.00
         report_data = []

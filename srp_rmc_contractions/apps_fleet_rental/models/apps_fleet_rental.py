@@ -168,7 +168,7 @@ class FleetRentalContract(models.Model):
             'domain': [('rent_contract_ref', '=', self.name)],
         }
 
-    # OPEN WIZARD FORM ADD FUEL
+    # OPEN WIZARD FORM ADD FUEL IN RENTAL CONTRACT
     def add_fuel_history_details(self):
         view_id = self.env['add.fuel.history.wizard']
         return {
@@ -185,6 +185,7 @@ class FleetRentalContract(models.Model):
                 'default_vehicle_id': self.vehicle_id.id,
                 'default_hide_status': 'hide_in_car_rental',
                 'default_last_odometer': self.starting_km,
+                'default_fueled_by_driver': self.driver_id.id,
             },
 
         }
@@ -263,6 +264,7 @@ class FleetRentalContract(models.Model):
     rental_duration_days = fields.Char(string='NO of Days')
     name_of_goods = fields.Text(string='Name of Goods')
     rate_per_km = fields.Float(string='Rate/Km')
+    rate_per_total_km = fields.Float(string='Rate/ Total Km')
     name_of_rental_purpose = fields.Char(string='Purpose of Rental Contract')
     customer_type = fields.Selection([
         ('walk_in', 'New Customer'),
@@ -1147,6 +1149,7 @@ class FleetVehicle(models.Model):
             else:
                 record.total_filling_fuel = 0.0
 
+    # OPEN WIARD FORM ADD FUEL IN FLEET VEHICLE
     def add_fuel_history_details(self):
         view_id = self.env['add.fuel.history.wizard']
         return {
@@ -1186,6 +1189,8 @@ class FuelHistory(models.Model):
     fleet_vehicle_id = fields.Many2one('fleet.vehicle', string='Fuel Vehicle id')
     filling_date = fields.Date(string='Filling Date')
     fueled_by = fields.Many2one('res.users', string='Fueled By')
+    fueled_by_driver = fields.Many2one('hr.employee', string='Fueled By',
+                                       domain="[('fleet_rental_driver', '=', True)]")
     last_odometer = fields.Float(string='Last Odometer')
     unit = fields.Selection([
         ('km', 'km'),

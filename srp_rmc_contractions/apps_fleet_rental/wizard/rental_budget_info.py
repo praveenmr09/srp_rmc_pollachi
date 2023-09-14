@@ -27,13 +27,27 @@ class RentalBudgetsInfo(models.TransientModel):
         ("lpg", "Liquid Petroleum Gas (LPG)"),
         ("others", "Others"),
     ], string='Content', default="diesel")
-    toll_expense = fields.Float(string='Toll Expense')
     export_import_commission = fields.Float(string='Export Import Commission')
+
+    # DRIVER EXPENSE
     beta_expense = fields.Float(string='Beta Expense')
+    food_charges = fields.Float(string='Food Expense')
+    spl_allowance = fields.Float(string='Special Allowance')
+
+    # VEHICLE EXPENSE
+    fuel_charges = fields.Float(string='Fuel Charges')
+    toll_expense = fields.Float(string='Toll Expense')
+    maintenance_and_service = fields.Float(string='Maintenance & Service')
+    fright_charges_rental = fields.Float(string='Fright Charge/Rental')
+
+    # ADMINISTRATION EXPENSE
+    other_charges = fields.Float(string='Other Expense')
+    loading_unloading = fields.Float(string='Loading/Unloading')
+    pc_rto = fields.Float(string='Pc/Rto')
+    commission = fields.Float(string='Commission')
+
     broker_charges = fields.Float(string='Broker Expense')
     commissions = fields.Float(string='Commissions')
-    other_charges = fields.Float(string='Other Expense')
-    food_charges = fields.Float(string='Food Expense')
     existing_expense = fields.Float(string='Existing Expense')
     srp_income = fields.Float(string='SRP Expense')
     rental_income = fields.Float(string='Rental Expense')
@@ -47,19 +61,36 @@ class RentalBudgetsInfo(models.TransientModel):
     vehicle_image = fields.Binary(string='Vehicle Image', related='vehicle_id.image_128')
     driver_image = fields.Binary(string='Driver Image', related='driver_id.image_1920')
 
+    # def add_budget_in_rental_contract(self):
+    #     if self.driver_id:
+    #         existing_record = self.driver_id.contract_id
+    #         existing_record.write({
+    #             'beta_expense': existing_record.beta_expense + self.beta_expense,
+    #             'broker_charges': existing_record.broker_charges + self.broker_charges,
+    #             'commissions': existing_record.commissions + self.commissions,
+    #             'other_charges': existing_record.other_charges + self.other_charges,
+    #             'food_charges': existing_record.food_charges + self.food_charges,
+    #             'existing_expense': existing_record.existing_expense + self.existing_expense,
+    #             'srp_income': existing_record.srp_income + self.srp_income,
+    #             'rental_income': existing_record.rental_income + self.rental_income,
+    #             'spend_expense': existing_record.spend_expense + self.spend_expense,
+    #             'expenditure_balance': existing_record.expenditure_balance + self.expenditure_balance,
+    #             'total_spend_expense': existing_record.total_spend_expense + self.total_spend_expense,
+    #         })
+
     def add_budget_in_rental_contract(self):
         if self.driver_id:
             existing_record = self.driver_id.contract_id
             existing_record.write({
                 'beta_expense': existing_record.beta_expense + self.beta_expense,
-                'broker_charges': existing_record.broker_charges + self.broker_charges,
-                'commissions': existing_record.commissions + self.commissions,
-                'other_charges': existing_record.other_charges + self.other_charges,
                 'food_charges': existing_record.food_charges + self.food_charges,
-                'existing_expense': existing_record.existing_expense + self.existing_expense,
-                'srp_income': existing_record.srp_income + self.srp_income,
-                'rental_income': existing_record.rental_income + self.rental_income,
-                'spend_expense': existing_record.spend_expense + self.spend_expense,
-                'expenditure_balance': existing_record.expenditure_balance + self.expenditure_balance,
-                'total_spend_expense': existing_record.total_spend_expense + self.total_spend_expense,
+                'spl_allowance': existing_record.spl_allowance + self.spl_allowance,
+                'fuel_charges': existing_record.fuel_charges + self.fuel_charges,
+                'toll_expense': existing_record.toll_expense + self.toll_expense,
+                'maintenance_and_service': existing_record.maintenance_and_service + self.maintenance_and_service,
+                'fright_charges_rental': existing_record.fright_charges_rental + self.fright_charges_rental,
+                'other_charges': existing_record.other_charges + self.other_charges,
+                'loading_unloading': existing_record.loading_unloading + self.loading_unloading,
+                'pc_rto': existing_record.pc_rto + self.pc_rto,
+                'commission': existing_record.commission + self.commission,
             })

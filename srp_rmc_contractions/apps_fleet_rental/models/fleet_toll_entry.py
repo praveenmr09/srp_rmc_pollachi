@@ -17,6 +17,8 @@ class FleetTollEntry(models.Model):
     tid = fields.Char("Transaction ID")
     vendor_id = fields.Many2one('res.partner', "Vendor")
     purchaser_id = fields.Many2one('res.partner', "Driver")
+    driver_id = fields.Many2one('hr.employee', string='Driver',
+                                domain="[('fleet_rental_driver', '=', True)]")
     rent_contract_ref = fields.Char(string="Reference")
     # provider = fields.Many2one('tls.toll.provider', "Module",
     #                            index=True, help="Information-providing module")

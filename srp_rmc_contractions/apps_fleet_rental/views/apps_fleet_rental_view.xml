@@ -176,7 +176,8 @@
                         <tree editable="bottom" create="0" delete="0">
                             <field name="reference" readonly="1" force_save="1"/>
                             <field name="filling_date" readonly="1" force_save="1"/>
-                            <field name="fueled_by" readonly="1" force_save="1"/>
+                            <field name="fueled_by" readonly="1" invisible="1" force_save="1"/>
+                            <field name="fueled_by_driver" readonly="1" force_save="1"/>
                             <field name="last_odometer" readonly="1" force_save="1"/>
                             <field name="unit" readonly="1" force_save="1"/>
                             <field name="fuel" readonly="1" force_save="1" sum="fuel"/>
@@ -455,6 +456,7 @@
                                 <!--                                <span>/ Kms</span>-->
                             </div>
                             <field name="rate_per_km"/>
+                            <field name="rate_per_total_km"/>
                             <separator string="Fleet Rental Invoice Information" colspan="4" invisible="1"/>
                             <field name="total_rent" invisible="1"/>
                             <field name="r_rent" invisible="1"/>
@@ -744,7 +746,6 @@
             </xpath>
         </field>
     </record>
-
 
 
     <!--                  INHERIT DRIVER HISTORY LOG VIEW ACTION -->
