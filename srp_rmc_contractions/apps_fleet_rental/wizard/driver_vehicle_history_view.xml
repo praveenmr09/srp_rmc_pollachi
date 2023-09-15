@@ -102,7 +102,7 @@
                             <field name="fueled_by" invisible="1"/>
                             <field name="fueled_by_driver" required="1"
                                    options="{'no_open': True,'no_create':True, 'no_edit':True}"/>
-                            <field name="filling_date" readonly="1"/>
+                            <field name="filling_date" readonly="0"/>
                         </group>
                     </group>
                     <footer>
