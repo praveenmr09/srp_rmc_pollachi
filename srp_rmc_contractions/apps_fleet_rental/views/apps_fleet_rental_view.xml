@@ -455,8 +455,10 @@
                                 <field name="total_km" class="oe_inline" readonly="1" force_save="1"/>
                                 <!--                                <span>/ Kms</span>-->
                             </div>
-                            <field name="rate_per_km"/>
-                            <field name="rate_per_total_km"/>
+                            <field name="select_total_km" widget="radio" options="{'horizontal': true}"/>
+                            <field name="rate_per_km" attrs="{'invisible': [('select_total_km','!=','per_km')]}"/>
+                            <field name="rate_per_total_km"
+                                   attrs="{'invisible': [('select_total_km','!=','per_total_km')]}"/>
                             <separator string="Fleet Rental Invoice Information" colspan="4" invisible="1"/>
                             <field name="total_rent" invisible="1"/>
                             <field name="r_rent" invisible="1"/>

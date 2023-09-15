@@ -34,7 +34,7 @@ class RentalInvoiceOption(models.TransientModel):
             if self.tax_options == 'exclude_tax':
                 # Call the method to create an invoice (assuming it's defined on the car.rental.contract model)
                 rental_contract.create_invoice()
-            elif self.tax_options == 'include_tax':
+            if self.tax_options == 'include_tax':
                 # Call the method to create a tax-inclusive invoice (assuming it's defined on the car.rental.contract
                 # model)
                 rental_contract.create_tax_invoice()

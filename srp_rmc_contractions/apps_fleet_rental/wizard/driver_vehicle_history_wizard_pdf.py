@@ -41,7 +41,7 @@ class DriverVehicleHistoryWizardParser(models.AbstractModel):
             order='date_start asc'
         )
 
-        symbol = vehicle_history.vehicle_id.company_id.currency_id.symbol
+        # symbol = vehicle_history.vehicle_id.company_id.currency_id.symbol
 
         total_subtotal = 0.00
         report_data = []

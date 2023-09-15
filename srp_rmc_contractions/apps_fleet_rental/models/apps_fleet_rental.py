@@ -263,6 +263,10 @@ class FleetRentalContract(models.Model):
     rental_duration = fields.Float(string='Duration Hrs', compute='_compute_duration_travel')
     rental_duration_days = fields.Char(string='NO of Days')
     name_of_goods = fields.Text(string='Name of Goods')
+    select_total_km = fields.Selection([
+        ('per_km', 'Rate/km'),
+        ('per_total_km', 'Rate/ Total Km')],
+        'Select Km Type', )
     rate_per_km = fields.Float(string='Rate/Km')
     rate_per_total_km = fields.Float(string='Rate/ Total Km')
     name_of_rental_purpose = fields.Char(string='Purpose of Rental Contract')
@@ -372,16 +376,32 @@ class FleetRentalContract(models.Model):
                 rec.rental_duration = 0.0
 
     # BUTTON FUNCTION TO GENERATE THE RENTAL INVOICE
+    # @api.constrains('select_total_km', 'rate_per_km')
     def create_invoice(self):
         # if not self.rate_per_km and self.total_km:
         #     raise ValidationError("Alert, Mr. %s.\nThe Rental Rate Per KM & Total Km is Zero. it should be Greater "
         #                           "than Zero, Kindly Check it" % self.env.user.name)
-        if self.rate_per_km <= 0.00:
-            raise ValidationError("Alert, Mr. %s.\nThe Rental Rate Per KM, it should be Greater "
-                                  "than Zero, Kindly Check it" % self.env.user.name)
-        if self.total_km <= 0.00:
-            raise ValidationError("Alert, Mr. %s.\nThe Rental Total Km is Zero. it should be Greater "
-                                  "than Zero Or Starting KM, Kindly Check it" % self.env.user.name)
+        # if self.rate_per_km or self.rate_per_total_km <= 0.00:
+        #     raise ValidationError("Alert, Mr. %s.\nThe Rental Rate Per Total KM, it should be Greater "
+        #                           "than Zero, Kindly Check it" % self.env.user.name)
+
+        for record in self:
+            if record.select_total_km == 'per_km':
+                if record.rate_per_km <= 0.00:
+                    raise ValidationError(
+                        _("Alert, Mr. %s.\nThe Rental Rate Per KM "
+                          "should be Greater than Zero. Kindly Check it") % self.env.user.name)
+
+            elif record.select_total_km == 'per_total_km':
+                if record.rate_per_total_km <= 0.00:
+                    raise ValidationError(
+                        _("Alert, Mr. %s.\nThe Rental Rate Per Total KM "
+                          "should be Greater than Zero. Kindly Check it") % self.env.user.name)
+
+
+        # if self.total_km <= 0.00:
+        #     raise ValidationError("Alert, Mr. %s.\nThe Rental Total Km is Zero. it should be Greater "
+        #                           "than Zero Or Starting KM, Kindly Check it" % self.env.user.name)
 
         else:
             account_move = self.env["account.move"]
@@ -394,10 +414,11 @@ class FleetRentalContract(models.Model):
                     'trips_starts_from': rent.trips_starts_from,
                     'trips_ends_at': rent.trips_ends_at,
                     'duration': rent.duration,
-                    'quantity': rent.rent_contract_id.total_km,
+                    'quantity': rent.rent_contract_id.total_km if rent.rent_contract_id.rate_per_km else 1,
                     'account_id': 39,
                     'tax_ids': False,
-                    'price_unit': rent.rent_contract_id.rate_per_km,
+                    'price_unit': rent.rent_contract_id.rate_per_km
+                    if rent.rent_contract_id.rate_per_km else rent.rent_contract_id.rate_per_total_km,
                 }))
             account_move.sudo().create({
                 'move_type': 'out_invoice',
@@ -420,12 +441,22 @@ class FleetRentalContract(models.Model):
 
     # BUTTON FUNCTION TO GENERATE THE RENTAL taz INVOICE
     def create_tax_invoice(self):
-        # if not self.rate_per_km and self.total_km:
-        #     raise ValidationError("Alert, Mr. %s.\nThe Rental Rate Per KM & Total Km is Zero. it should be Greater "
+        for record in self:
+            if record.select_total_km == 'per_km':
+                if record.rate_per_km <= 0.00:
+                    raise ValidationError(
+                        _("Alert, Mr. %s.\nThe Rental Rate Per KM "
+                          "should be Greater than Zero. Kindly Check it") % self.env.user.name)
+
+            elif record.select_total_km == 'per_total_km':
+                if record.rate_per_total_km <= 0.00:
+                    raise ValidationError(
+                        _("Alert, Mr. %s.\nThe Rental Rate Per Total KM "
+                          "should be Greater than Zero. Kindly Check it") % self.env.user.name)
+
+        # if self.rate_per_km and self.rate_per_total_km <= 0.00:
+        #     raise ValidationError("Alert, Mr. %s.\nThe Rental Rate Per KM, it should be Greater "
         #                           "than Zero, Kindly Check it" % self.env.user.name)
-        if self.rate_per_km <= 0.00:
-            raise ValidationError("Alert, Mr. %s.\nThe Rental Rate Per KM, it should be Greater "
-                                  "than Zero, Kindly Check it" % self.env.user.name)
         if self.total_km <= 0.00:
             raise ValidationError("Alert, Mr. %s.\nThe Rental Total Km is Zero. it should be Greater "
                                   "than Zero Or Starting KM, Kindly Check it" % self.env.user.name)

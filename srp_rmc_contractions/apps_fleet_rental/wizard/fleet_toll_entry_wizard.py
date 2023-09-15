@@ -97,8 +97,8 @@ class FleetTollEntryWizardParser(models.AbstractModel):
             for i in toll_details:
                 toll.append(i)
 
-        cols_heads = ['S.No', 'Reference', 'Start of journey', 'Entry station', 'Exit Station', 'Distance/km',
-                      'Cost Amount', 'Vehicle', 'Driver', 'Vendor', 'Vendor Bill']
+        cols_heads = ['S.No', 'Reference', 'Start journey', 'Entry station', 'Exit Station', 'Distance/km',
+                      'Cost', 'Vehicle', 'Driver', 'Vendor']
 
         return {
             'doc_ids': docids,
@@ -107,13 +107,3 @@ class FleetTollEntryWizardParser(models.AbstractModel):
             'cols_heads': cols_heads,
             'local_timezone': local_timezone,
         }
-
-# toll_details = self.env['fleet.toll.entry'].search([
-#             ('entry_date', '>=', start_date),
-#             ('entry_date', '<=', end_date),
-#
-#         ], order='entry_date asc')
-#
-#         toll = []
-#         for i in toll_details:
-#             toll.append(i)
