@@ -541,7 +541,8 @@
             <tree string="car_contract_result" decoration-info="state == 'draft'">
                 <field name="name"/>
                 <field name="customer_id" string="Customer"/>
-                <field name="vehicle_id"/>
+                <field name="vehicle_id" invisible="1"/>
+                <field name="license_plate"/>
                 <field name="cost"/>
                 <field name="car_brand"/>
                 <field name="car_color"/>

@@ -128,6 +128,7 @@ class FleetRentalContract(models.Model):
     toll_entry_count = fields.Integer(string="Toll Entry",
                                       compute='_compute_toll_entry_count')
     exact_starting_km = fields.Float(string='S.Kms')
+    license_plate = fields.Char(string='Vehicle List', related='vehicle_id.license_plate')
 
     # OPEN FORM - ODOMETER WIZARD
     def add_odometer_details(self):
