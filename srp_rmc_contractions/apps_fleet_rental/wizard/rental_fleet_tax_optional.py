@@ -15,8 +15,8 @@ class RentalInvoiceOption(models.TransientModel):
     mobile = fields.Char(string="Mobile")
     partner_id = fields.Many2one('res.partner', string="Reference")
     tax_options = fields.Selection([
-        ('include_tax', 'Include Tax'),
-        ('exclude_tax', 'Exclude Tax'),
+        ('include_tax', 'Inclusive Tax'),
+        ('exclude_tax', 'Exclusive Tax'),
     ], string='Unit', default='Create Invoice with?')
     journal_id = fields.Many2one('account.journal', string='Journal')
 

@@ -10,7 +10,8 @@ class FleetTollEntry(models.Model):
     _description = "Fleet Toll Entry"
 
     name = fields.Char("Entry Name")
-    vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle')
+    vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle', related='car_rental_id.vehicle_id', readonly=False,
+                                 store=True)
     exit_date = fields.Date("Exit Date")
     cost_amount = fields.Float("Cost Amount")
     notes = fields.Text("Notes")
@@ -18,8 +19,9 @@ class FleetTollEntry(models.Model):
     vendor_id = fields.Many2one('res.partner', "Vendor")
     purchaser_id = fields.Many2one('res.partner', "Driver")
     driver_id = fields.Many2one('hr.employee', string='Driver',
-                                domain="[('fleet_rental_driver', '=', True)]")
-    rent_contract_ref = fields.Char(string="Reference")
+                                domain="[('fleet_rental_driver', '=', True)]", related='car_rental_id.driver_id',
+                                readonly=False, store=True)
+    rent_contract_ref = fields.Char(string="Reference", related='car_rental_id.name', readonly=False, store=True)
     # provider = fields.Many2one('tls.toll.provider', "Module",
     #                            index=True, help="Information-providing module")
     inv_ref = fields.Many2one('account.move', "Vendor Bill",
@@ -42,6 +44,31 @@ class FleetTollEntry(models.Model):
     job_id = fields.Char()
     department_id = fields.Char()
     car_rental_id = fields.Many2one('car.rental.contract', string='Rental Contract Id')
+    state = fields.Selection(
+        [('draft', 'Draft'), ('generated', 'Expense Generated'), ], string="State",
+        default="draft", copy=False, )
+    travel_details = fields.Char(string='Description', compute='_onchange_travel_details')
+
+    @api.depends('entry_name', 'exit_name', )
+    def _onchange_travel_details(self):
+        if self.entry_name and self.exit_name:
+            note_text = (self.entry_name + " to " + self.exit_name + " Toll ")
+
+            self.travel_details = note_text
+        else:
+            self.travel_details = False
+
+    def generate_expense(self):
+        self.write({
+            'state': 'generated',
+        })
+        self.env['hr.expense'].create({
+            'name': self.travel_details,
+            'product_id': 8,
+            'vehicle_id': self.vehicle_id.id,
+            'driver_id': self.driver_id.id,
+            'reference': self.rent_contract_ref,
+        })
 
     # INHERITS
 

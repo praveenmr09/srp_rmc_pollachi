@@ -35,6 +35,7 @@ class AddFuelHistoryWizard(models.TransientModel):
         ('m', 'm'),
     ], string='Unit', default='km')
     filling_date = fields.Date(string='Filling Date', default=fields.Date.today())
+    vehicle_tank_capacity = fields.Float(string='Vehicle Tank Capacity', related='vehicle_id.tank_capacity')
     fuel = fields.Float(string='Fuel')
     fuel_receipt = fields.Binary(string="Fuel receipt")
     fuel_cost = fields.Float(string='Fuel Cost')
@@ -57,6 +58,10 @@ class AddFuelHistoryWizard(models.TransientModel):
         if self.fuel <= 0.00:
             raise ValidationError("Alert, Mr. %s.\nThe Fuel should "
                                   "not be Zero, Kindly Check it" % self.env.user.name)
+        if self.vehicle_tank_capacity:
+            if self.fuel > self.vehicle_tank_capacity:
+                raise ValidationError("Alert, Mr. %s.\nThe Fuel should "
+                                      "not be Greater than Fuel Tank Capacity, Kindly Check it" % self.env.user.name)
         if self.fuel_cost <= 0.00:
             raise ValidationError("Alert, Mr. %s.\nThe Fuel Cost should "
                                   "not be Zero, Kindly Check it" % self.env.user.name)
@@ -77,6 +82,26 @@ class AddFuelHistoryWizard(models.TransientModel):
                 update_fuel.write({'fuel_history_ids': [(4, fuel_history.id)]})
 
     def add_fuel_in_rental_contract(self):
+        if self.last_odometer <= 0.00:
+            raise ValidationError("Alert, Mr. %s.\nThe Last Odometer should "
+                                  "not be Zero, Kindly Check it" % self.env.user.name)
+        if self.fuel <= 0.00:
+            raise ValidationError("Alert, Mr. %s.\nThe Fuel should "
+                                  "not be Zero, Kindly Check it" % self.env.user.name)
+        if self.vehicle_tank_capacity:
+            if self.fuel > self.vehicle_tank_capacity:
+                raise ValidationError("Alert, Mr. %s.\nThe Fuel should "
+                                      "not be Greater than Fuel Tank Capacity, Kindly Check it" % self.env.user.name)
+        if self.fuel_cost <= 0.00:
+            raise ValidationError("Alert, Mr. %s.\nThe Fuel Cost should "
+                                  "not be Zero, Kindly Check it" % self.env.user.name)
+
+        self.env['hr.expense'].create({
+            'total_amount': self.fuel_cost,
+            'product_id': 9,
+            'name': self.rent_contract_ref
+        })
+
         self.vehicle_id.write({
             'fuel': self.fuel,
             'fuel_cost': self.fuel_cost,

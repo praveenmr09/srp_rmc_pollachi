@@ -265,6 +265,7 @@
                                 type="object">
                             <field name="create_payment_count" widget="statinfo"/>
                         </button>
+
                         <button name="rental_driver_history_record"
                                 class="oe_stat_button"
                                 icon="fa-book"
@@ -272,6 +273,16 @@
                             <field name="rental_driver_history_count" widget="statinfo"
                                    options="{'reload_on_button': true}"/>
                         </button>
+
+                        <button name="get_expense_count_details"
+                                class="oe_stat_button"
+                                icon="fa-money"
+                                type="object">
+                            <field name="expense_count" widget="statinfo"
+                                   options="{'reload_on_button': true}"/>
+                        </button>
+
+
                         <button name="get_invoice_details"
                                 class="oe_stat_info"
                                 icon="fa-list-alt"

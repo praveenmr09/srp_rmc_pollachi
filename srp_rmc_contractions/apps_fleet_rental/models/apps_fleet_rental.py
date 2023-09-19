@@ -129,6 +129,26 @@ class FleetRentalContract(models.Model):
                                       compute='_compute_toll_entry_count')
     exact_starting_km = fields.Float(string='S.Kms')
     license_plate = fields.Char(string='Vehicle List', related='vehicle_id.license_plate')
+    expense_count = fields.Integer(string='Expense', compute='_compute_expense_count')
+
+    # COMPUTE FUNCTION FOR EXPENSE COUNT
+    def _compute_expense_count(self):
+        self.expense_count = self.env['hr.expense'].sudo().search_count(
+            [('reference', '=', self.name)])
+
+    # FUNCTION TO VIEW EXPENSE COUNT THROUGH SMART BUTTON
+    def get_expense_count_details(self):
+        self.sudo().ensure_one()
+        form_view = self.sudo().env.ref('hr_expense.hr_expense_view_form')
+        tree_view = self.sudo().env.ref('hr_expense.view_my_expenses_tree')
+        return {
+            'name': _('Expense Count'),
+            'res_model': 'hr.expense',
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,form',
+            'views': [(tree_view.id, 'tree'), (form_view.id, 'form')],
+            'domain': [('reference', '=', self.name)],
+        }
 
     # OPEN FORM - ODOMETER WIZARD
     def add_odometer_details(self):

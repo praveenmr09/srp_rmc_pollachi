@@ -86,6 +86,11 @@
                                 <field name="last_odometer" readonly="1" class="oe_inline"/>
                                 <field name="unit" class="oe_inline"/>
                             </div>
+                            <label for="vehicle_tank_capacity" string="Vehicle Tank Capacity"/>
+                            <div>
+                                <field name="vehicle_tank_capacity" readonly="1" class="oe_inline"/>
+                                <span>Litres</span>
+                            </div>
                             <label for="fuel" string="Fuel"/>
                             <div>
                                 <field name="fuel" class="oe_inline"/>

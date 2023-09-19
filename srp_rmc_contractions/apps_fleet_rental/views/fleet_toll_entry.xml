@@ -9,13 +9,19 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Fleet Toll Entry">
+                    <header>
+                        <button name="generate_expense" string="Generate Expense" type="object"
+                                attrs="{'invisible': [('state', '=', 'generated')]}" class="oe_highlight"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
                     <sheet>
                         <group>
                             <group string="Fleet Toll Details">
-                                <field name="rent_contract_ref"/>
+                                <field name="rent_contract_ref" force_save="1"/>
                                 <field name="entry_date"/>
-                                <field name="entry_name"/>
-                                <field name="exit_name"/>
+                                <field name="entry_name" required="1"/>
+                                <field name="exit_name" required="1"/>
+                                <field name="travel_details" force_save="1"/>
                                 <!--                                <label for="entry_lat" string="" invisible="1"/>-->
                                 <!--                                <div class="row pr-4 oe_edit_only">-->
                                 <!--                                    <label for="entry_lat" string="Lat"-->
@@ -45,9 +51,9 @@
                             </group>
                             <group class="m-0">
                                 <group string="Vehicle Details">
-                                    <field name="vehicle_id"/>
-                                    <field name="purchaser_id"/>
-                                    <field name="driver_id"
+                                    <field name="vehicle_id" force_save="1"/>
+                                    <field name="purchaser_id" invisible="1"/>
+                                    <field name="driver_id" force_save="1"
                                            options="{'no_open': True,'no_create':True, 'no_edit':True}"/>
 
                                     <separator string="Additional Details"/>
