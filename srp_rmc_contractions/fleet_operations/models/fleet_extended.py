@@ -413,7 +413,7 @@ class FleetOperations(models.Model):
     )
     state = fields.Selection(
         [
-            ("inspection", "Draft"),
+            ("inspection", "Register"),
             ("in_progress", "In Service"),
             ("contract", "On Contract"),
             ("rent", "On Rent"),

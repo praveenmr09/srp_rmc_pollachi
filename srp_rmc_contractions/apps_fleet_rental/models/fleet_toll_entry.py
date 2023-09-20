@@ -68,6 +68,7 @@ class FleetTollEntry(models.Model):
             'vehicle_id': self.vehicle_id.id,
             'driver_id': self.driver_id.id,
             'reference': self.rent_contract_ref,
+            'total_amount': self.cost_amount,
         })
 
     # INHERITS

@@ -14,12 +14,10 @@
                             <field name="vehicle_no"/>
                             <field name="vehicle_image" widget="image" style='height:70px;width:70px;'/>
                             <field name="vehicle_departure"/>
-                            <field name="vehicle_departure"/>
                             <field name="vehicle_destination"/>
                             <field name="starting_km"/>
                             <field name="closing_km"/>
-                            <field name="total_km"/>
-                            <field name="total_km"/>
+                            <field name="total_km" string="Total Km"/>
                         </group>
                         <group>
                             <field name="partner_id"/>
@@ -28,7 +26,6 @@
                             <field name="driver_image" widget="image" style='height:70px;width:70px;'/>
                             <field name="date"/>
                             <field name="expense_detail"/>
-                            <field name="expense_detail"/>
                             <field name="content"/>
                             <field name="export_import_commission"/>
                             <field name="toll_expense" invisible="1"/>
@@ -36,21 +33,21 @@
                         <group string="Driver Expense">
                             <field name="beta_expense"/>
                             <field name="food_charges"/>
-                            <field name="spl_allowance"/>
+                            <field name="spl_allowance" invisible="1"/>
                             <field name="broker_charges" invisible="1"/>
                             <field name="commissions" invisible="1"/>
                             <field name="other_charges" invisible="1"/>
                             <separator string="Administration Expense"/>
                             <field name="loading_unloading"/>
-                            <field name="other_charges"/>
+                            <field name="other_charges" invisible="1"/>
                             <field name="pc_rto"/>
                             <field name="commission"/>
                         </group>
                         <group string="Vehicle Expense">
-                            <field name="fuel_charges"/>
-                            <field name="toll_expense"/>
+                            <field name="fuel_charges" invisible="1"/>
+                            <field name="toll_expense" invisible="1"/>
                             <field name="maintenance_and_service"/>
-                            <field name="fright_charges_rental"/>
+                            <field name="fright_charges_rental" invisible="1"/>
                             <field name="existing_expense" invisible="1"/>
                             <field name="srp_income" invisible="1"/>
                             <field name="rental_income" invisible="1"/>

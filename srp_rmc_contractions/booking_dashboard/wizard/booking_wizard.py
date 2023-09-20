@@ -10,7 +10,8 @@ class QuickBooking(models.TransientModel):
 
     date = fields.Date(string="Date")
     vehicle = fields.Many2one('fleet.vehicle')
-    driver_id = fields.Many2one('hr.employee', string='Driver')
+    driver_id = fields.Many2one('hr.employee', string='Driver',
+                                domain="[('fleet_rental_driver', '=', True),('driver_state', '=', 'un_reserved')]")
     rent_start_date = fields.Date(string="Rent Start Date", required=False,
                                   default=lambda self: fields.Datetime.now(timedelta(hours=5, minutes=30)),
                                   help="Start date of contract")
@@ -113,5 +114,3 @@ class QuickBooking(models.TransientModel):
             res.update({"vehicle": int(self._context["vehicle_id"])})
 
         return res
-
-

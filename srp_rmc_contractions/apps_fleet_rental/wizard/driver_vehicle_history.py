@@ -99,7 +99,8 @@ class AddFuelHistoryWizard(models.TransientModel):
         self.env['hr.expense'].create({
             'total_amount': self.fuel_cost,
             'product_id': 9,
-            'name': self.rent_contract_ref
+            'reference': self.rent_contract_ref,
+            'name': "Fuel for Vehicle",
         })
 
         self.vehicle_id.write({

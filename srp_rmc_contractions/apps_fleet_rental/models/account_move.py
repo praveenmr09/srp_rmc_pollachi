@@ -30,9 +30,16 @@ class AccountMoveLine(models.Model):
     duration = fields.Float(string="Duration")
     rent_date = fields.Date(string="Rent Date")
     start_date = fields.Date(string="Start Date")
-    trip_alter_charges = fields.Float(string='Rental Halter Charges')
+    trip_alter_charges = fields.Float(string='Halter Charges')
     trip_alter_charges_remarks = fields.Text(string='Halter Charges Remarks',
                                              placeholder='Halter Charges Remarks')
     rate_per_km = fields.Float(string='Rate/Km')
     end_date = fields.Date(string="End Date")
     name_of_goods = fields.Text(string='Name of Goods')
+    price_subtotal = fields.Monetary(string='Subtotal', compute='_compute_price_subtotal_with_charges')
+
+    @api.depends('price_unit', 'quantity', 'trip_alter_charges')
+    @api.onchange('price_unit', 'quantity', 'trip_alter_charges')
+    def _compute_price_subtotal_with_charges(self):
+        for line in self:
+            line.price_subtotal = (line.price_unit * line.quantity) + line.trip_alter_charges

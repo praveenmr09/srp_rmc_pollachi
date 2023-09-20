@@ -287,7 +287,7 @@ class FleetRentalContract(models.Model):
     select_total_km = fields.Selection([
         ('per_km', 'Rate/km'),
         ('per_total_km', 'Rate/ Total Km')],
-        'Select Km Type', )
+        'Select Km Type', default='per_km')
     rate_per_km = fields.Float(string='Rate/Km')
     rate_per_total_km = fields.Float(string='Rate/ Total Km')
     name_of_rental_purpose = fields.Char(string='Purpose of Rental Contract')
@@ -405,7 +405,9 @@ class FleetRentalContract(models.Model):
         # if self.rate_per_km or self.rate_per_total_km <= 0.00:
         #     raise ValidationError("Alert, Mr. %s.\nThe Rental Rate Per Total KM, it should be Greater "
         #                           "than Zero, Kindly Check it" % self.env.user.name)
-
+        if self.total_km <= 0.00:
+            raise ValidationError("Alert, Mr. %s.\nThe Rental Total Km is Zero. it should be Greater "
+                                  "than Zero Or Starting KM, Kindly Check it" % self.env.user.name)
         for record in self:
             if record.select_total_km == 'per_km':
                 if record.rate_per_km <= 0.00:
@@ -419,11 +421,6 @@ class FleetRentalContract(models.Model):
                         _("Alert, Mr. %s.\nThe Rental Rate Per Total KM "
                           "should be Greater than Zero. Kindly Check it") % self.env.user.name)
 
-
-        # if self.total_km <= 0.00:
-        #     raise ValidationError("Alert, Mr. %s.\nThe Rental Total Km is Zero. it should be Greater "
-        #                           "than Zero Or Starting KM, Kindly Check it" % self.env.user.name)
-
         else:
             account_move = self.env["account.move"]
             order_line = [(5, 0, 0)]
@@ -434,6 +431,7 @@ class FleetRentalContract(models.Model):
                     # 'name': f"{self.name_of_rental_purpose + self.name_of_goods}",
                     'trips_starts_from': rent.trips_starts_from,
                     'trips_ends_at': rent.trips_ends_at,
+                    'trip_alter_charges': rent.trip_alter_charges,
                     'duration': rent.duration,
                     'quantity': rent.rent_contract_id.total_km if rent.rent_contract_id.rate_per_km else 1,
                     'account_id': 39,
@@ -462,6 +460,9 @@ class FleetRentalContract(models.Model):
 
     # BUTTON FUNCTION TO GENERATE THE RENTAL taz INVOICE
     def create_tax_invoice(self):
+        if self.total_km <= 0.00:
+            raise ValidationError("Alert, Mr. %s.\nThe Rental Total Km is Zero. it should be Greater "
+                                  "than Zero Or Starting KM, Kindly Check it" % self.env.user.name)
         for record in self:
             if record.select_total_km == 'per_km':
                 if record.rate_per_km <= 0.00:
@@ -478,9 +479,6 @@ class FleetRentalContract(models.Model):
         # if self.rate_per_km and self.rate_per_total_km <= 0.00:
         #     raise ValidationError("Alert, Mr. %s.\nThe Rental Rate Per KM, it should be Greater "
         #                           "than Zero, Kindly Check it" % self.env.user.name)
-        if self.total_km <= 0.00:
-            raise ValidationError("Alert, Mr. %s.\nThe Rental Total Km is Zero. it should be Greater "
-                                  "than Zero Or Starting KM, Kindly Check it" % self.env.user.name)
 
         else:
             account_move = self.env["account.move"]
@@ -492,6 +490,7 @@ class FleetRentalContract(models.Model):
                     # 'name': f"{self.name_of_rental_purpose + self.name_of_goods}",
                     'trips_starts_from': rent.trips_starts_from,
                     'trips_ends_at': rent.trips_ends_at,
+                    'trip_alter_charges': rent.trip_alter_charges,
                     'duration': rent.duration,
                     'quantity': rent.rent_contract_id.total_km,
                     'account_id': 39,
@@ -586,7 +585,7 @@ class FleetRentalContract(models.Model):
             'default_vehicle_id': self.vehicle_id.id,
             'default_partner_id': self.customer_id.id,
             'default_mobile': self.customer_contact,
-            'default_starting_km': self.starting_km,
+            'default_starting_km': self.exact_starting_km,
             'default_closing_km': self.ending_km,
             'default_total_km': self.total_km,
             'default_driver_id': self.driver_id.id,

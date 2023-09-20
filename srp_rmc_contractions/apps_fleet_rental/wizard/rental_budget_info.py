@@ -12,7 +12,7 @@ class RentalBudgetsInfo(models.TransientModel):
     _description = 'Rental Budgets Info'
 
     vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle No')
-    vehicle_no = fields.Char(string='Vehicle No', related='vehicle_id.license_plate')
+    vehicle_no = fields.Char(string='License Plate', related='vehicle_id.license_plate')
     vehicle_departure = fields.Char(string='Vehicle Departure')
     vehicle_destination = fields.Char(string='Vehicle Destination')
     starting_km = fields.Float(string='Starting KM')
