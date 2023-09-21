@@ -120,9 +120,11 @@ class HRPayrollYears(models.Model):
                         saturdays = len(
                             [1 for i in calendar.monthcalendar(selected_month_year.year, selected_month_year.month) if
                              i[5] != 0])
-                        line.number_of_days = days_in_selected_month - (sundays + saturdays + line.public_holiday_count)
+                        # line.number_of_days = days_in_selected_month - (sundays + saturdays +
+                        # line.public_holiday_count)
+                        line.number_of_days = days_in_selected_month
                         line.total_number_of_days = days_in_selected_month
-                        line.sunday = sundays + saturdays
+                        # line.sunday = sundays + saturdays
                 except ValueError:
                     continue
 

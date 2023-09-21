@@ -167,8 +167,10 @@ class HrPayslip(models.Model):
                 lop_days_amount = total_wage_contract * self.employee_loptotal_days
                 self.employee_one_day_salary = round(total_wage_contract)
                 total_unpaid_amount = (self.employee_balance_days + self.employee_loptotal_days) * total_wage_contract
-                self.employee_final_lop_total_days = self.employee_balance_days + self.employee_loptotal_days
-                self.employee_final_present_days = self.employee_present_days + self.number_of_leave
+                self.employee_loptotal_days = self.number_working_of_days - self.employee_final_present_days
+                # self.employee_final_lop_total_days = self.employee_balance_days + self.employee_loptotal_days
+                self.employee_final_present_days = self.employee_present_days
+                # self.employee_final_present_days = self.employee_present_days + self.number_of_leave
                 self.total_amount = self.employee_final_present_days * self.employee_one_day_salary
                 try:
                     profitpercentday = (employee_contract.wage / 30)
@@ -215,6 +217,9 @@ class HrPayslip(models.Model):
                             line.write({
                                 'amount': employee_contract.food_charges
                             })
+                        if line.code == 'UPA':
+                            line.write({
+                                'amount': self.allowance_amount_deduction})
         import calendar
         import datetime
         date = datetime.datetime.now()
@@ -276,7 +281,6 @@ class HrPayslip(models.Model):
                         'amount': net
                     })
 
-
     def compute_sheet(self):
         for payslip in self:
             number = payslip.number or self.env['ir.sequence'].next_by_code('salary.slip')
@@ -288,7 +292,7 @@ class HrPayslip(models.Model):
                                                                         payslip.date_to)
             if not contract_ids:
                 raise ValidationError(
-                    _("No running contract found for the employee: %s or no contract in the given period" % payslip.employee_id.name))
+                    _("Alert!, No running contract found for the employee: %s or no contract in the given period" % payslip.employee_id.name))
             # Filter and add only lines with amount > 0 to the payslip
             lines = [(0, 0, line) for line in self._get_payslip_lines(contract_ids, payslip.id) if
                      line.get('amount', 0) > 0]
