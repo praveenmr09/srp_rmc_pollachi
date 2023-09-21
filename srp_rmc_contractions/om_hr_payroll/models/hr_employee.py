@@ -11,6 +11,7 @@ class HrEmployee(models.Model):
     payslip_count = fields.Integer(compute='_compute_payslip_count', string='Payslip Count',
                                    groups="om_om_hr_payroll.group_hr_payroll_user")
     date_of_joining = fields.Date(string='Date Of Joining', required=True)
+    work_permit_name = fields.Text(string='Work Permit')
 
     def _compute_payslip_count(self):
         for employee in self:

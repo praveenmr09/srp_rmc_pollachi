@@ -16,7 +16,7 @@
                 <field name="trips_starts_from"/>
                 <field name="trips_ends_at"/>
                 <field name="duration"/>
-                <field name="trip_alter_charges"/>
+<!--                <field name="trip_alter_charges"/>-->
                 <!--                <field name="rate_per_km"/>-->
             </xpath>
 

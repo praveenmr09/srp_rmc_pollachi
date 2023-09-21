@@ -439,6 +439,11 @@ class FleetRentalContract(models.Model):
                     'price_unit': rent.rent_contract_id.rate_per_km
                     if rent.rent_contract_id.rate_per_km else rent.rent_contract_id.rate_per_total_km,
                 }))
+                order_line.append((0, 0, {
+                    'product_id': 8,
+                    'account_id': 39,
+                    'price_unit': rent.trip_alter_charges,
+                }))
             account_move.sudo().create({
                 'move_type': 'out_invoice',
                 'ref': self.name,
@@ -495,6 +500,11 @@ class FleetRentalContract(models.Model):
                     'quantity': rent.rent_contract_id.total_km,
                     'account_id': 39,
                     'price_unit': rent.rent_contract_id.rate_per_km,
+                }))
+                order_line.append((0, 0, {
+                    'product_id': 8,
+                    'account_id': 39,
+                    'price_unit': rent.trip_alter_charges,
                 }))
             account_move.sudo().create({
                 'move_type': 'out_invoice',
