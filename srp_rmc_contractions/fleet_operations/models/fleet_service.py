@@ -582,7 +582,7 @@ class FleetVehicleLogServices(models.Model):
         if self.vehicle_id:
             self.odometer = self.vehicle_id.odometer
             self.odometer_unit = self.vehicle_id.odometer_unit
-            self.purchaser_id = self.vehicle_id.driver_id.id
+            # self.purchaser_id = self.vehicle_id.driver_id.id
 
     @api.constrains("date", "date_complete")
     def check_complete_date(self):
@@ -597,7 +597,7 @@ class FleetVehicleLogServices(models.Model):
     # purchaser_id = fields.Many2one(
     #     "res.partner", "Purchaser", related="vehicle_id.driver_id"
     # )
-    purchaser_id = fields.Many2one('hr.employee', string='Driver',
+    purchaser_id = fields.Many2one('hr.employee', string='Driver', default=1,
                                    domain="[('fleet_rental_driver', '=', True),('driver_state', '=', 'un_reserved')]")
     name = fields.Char(
         "Work Order", readonly=True, translate=True, copy=False, default="New"
@@ -706,6 +706,7 @@ class FleetVehicleLogServices(models.Model):
         "account.move", "vehicle_service_id", "Service Refund Invoice"
     )
     deposit_receive = fields.Boolean("Deposit Received?")
+    service_type_id = fields.Many2one('fleet.service.type', default=1)
 
     def _compute_invoice_receive(self):
         """Method used to check amount received."""

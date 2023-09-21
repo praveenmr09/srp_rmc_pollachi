@@ -160,14 +160,14 @@
                         options="{'no_open': True, 'create': false, 'create_edit': false}"
                 />
                 <field
-                        name="purchaser_id"
+                        name="purchaser_id" invisible="1"
                         string="Driver"
                         force_save="1"
                         options="{'no_open': True,'no_create':True, 'no_edit':True}"
                         attrs="{'readonly':[('state','=','done')]}"
                 />
                 <field
-                        name="service_type_id" required="1"
+                        name="service_type_id" invisible="1"
                         string="Service Type"
                         options="{'no_open': True, 'create': false, 'create_edit': false}"
                         attrs="{'readonly':[('state','=','done')],'required':[('state','in',('confirm'))]}"
