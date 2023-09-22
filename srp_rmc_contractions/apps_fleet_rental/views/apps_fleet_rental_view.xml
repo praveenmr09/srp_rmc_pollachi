@@ -513,9 +513,10 @@
                                     <field name="distance"/>
                                     <field name="cost_amount"/>
                                     <field name="vehicle_id"/>
-                                    <field name="purchaser_id"/>
-                                    <field name="vendor_id"/>
-                                    <field name="inv_ref"/>
+                                    <field name="driver_id"/>
+                                    <field name="purchaser_id" invisible="1"/>
+                                    <field name="vendor_id" invisible="1"/>
+                                    <field name="inv_ref" invisible="1"/>
                                 </tree>
                             </field>
                         </page>

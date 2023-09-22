@@ -33,6 +33,19 @@
                             invisible="1"
                             string="From Migration"
                     />
+
+                    <button
+                            name="update_engine"
+                            type="object"
+                            string="Update Engine"
+                            context="{'history':'engine'}"
+                            icon="fa-gears"
+                            class="oe_stat_button oe_highlight"
+                            groups="fleet.fleet_group_manager"
+                            attrs="{'invisible':[('state','in',('write-off'))]}"
+                    />
+
+
                     <button
                             name="action_create_invoice"
                             string="Create Invoice"
@@ -232,18 +245,18 @@
                         />
                         <field
                                 name="date_open"
-                                readonly="True"
+                                readonly="0"
                                 string="Service Start Date"
                         />
                         <field
                                 name="date_close"
-                                readonly="True"
+                                readonly="0"
                                 string="Service Close Date"
                         />
                         <field
                                 name="closed_by"
                                 string="Closed By"
-                                readonly="True"
+                                readonly="0"
                                 options="{'no_open': True, 'create': false, 'create_edit': false}"
                                 can_create="true"
                                 can_write="true"

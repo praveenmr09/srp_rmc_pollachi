@@ -83,8 +83,9 @@ class FleetRentalContract(models.Model):
                                     'Driver State', tracking=True, related='driver_id.driver_state')
     remarks = fields.Text(string='Remarks')
     state = fields.Selection(
-        [('draft', 'Draft'), ('reserved', 'Reserved'), ('running', 'Rent Scheduled'), ('cancel', 'Cancel'),
-         ('checking', 'Checking'), ('invoice', 'Invoiced'), ('done', 'Done')], string="State",
+        [('draft', 'Trip Not Started'), ('reserved', 'Reserved'), ('running', 'Trip Scheduled'),
+         ('cancel', 'Trip Cancelled'),
+         ('checking', 'Checking'), ('invoice', 'Trip Invoiced'), ('done', 'Trip Completed')], string="State",
         default="draft", copy=False, track_visibility='onchange')
     notes = fields.Text(string="Details & Notes")
     cost_generated = fields.Float(string='Recurring Cost',
@@ -921,12 +922,10 @@ class FleetRentalContract(models.Model):
     # BUTTON (CANCEL) TO CHANGE THE STATE INTO "CANCEL"
     def action_cancel(self):
         self.state = "cancel"
+        self.driver_id.driver_state = 'un_reserved'
+        self.vehicle_id.vehicle_state = 'un_reserved'
         if self.reserved_fleet_id:
             self.reserved_fleet_id.unlink()
-
-    #
-    # def force_checking(self):
-    #     self.state = "checking"
 
 
 # CLASS FLEET RENTAL LINE

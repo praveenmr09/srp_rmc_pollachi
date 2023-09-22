@@ -36,6 +36,19 @@ class FleetVehicleLogServices(models.Model):
     _order = "id desc"
     _rec_name = "name"
 
+    def update_engine(self):
+        if self.env.context.get('active_model') == 'fleet.vehicle':
+            active_id = self.env.context.get('active_id', False)
+            rental_contract = self.env['fleet.vehicle'].search([('id', '=', active_id)])
+            rental_contract.update_history()
+
+
+
+
+
+
+
+
     @api.ondelete(at_uninstall=False)
     def _unlink_if_state_draft(self):
         if any(state not in "draft " for state in self.mapped("state")):
