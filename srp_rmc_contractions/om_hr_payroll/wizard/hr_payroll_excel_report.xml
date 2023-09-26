@@ -9,32 +9,27 @@
                 <form string="Hr Payroll Excel Report">
                     <group attrs="{'invisible':[('report_printed','=',True)]}">
                         <group>
-                            <label for="by_date_range_year_month"></label>
+                            <label for="by_date_range_year_month"/>
                             <div class="o_row" widget="radio" options="{'horizontal': true}">
                                 <field name="by_date_range_year_month" widget="radio" options="{'horizontal': true}"
                                        readonly="0"/>
-                                <!--                                <field name="by_month_year"/>-->
-                                <!--                                <field name="by_date_range"/>-->
                             </div>
-                            <!--                            <field name="by_month_year" widget='radio' options="{'horizontal': true}"/>-->
-                            <!--                            <field name="by_date_range" widget='radio' options="{'horizontal': true}"/>-->
 
                             <label for="selct_month"
-                                   attrs="{'invisible':[('by_date_range_year_month','!=','by_month_year')]}"></label>
+                                   attrs="{'invisible':[('by_date_range_year_month','!=','by_month_year')]}"/>
                             <div class="o_row" name="selct_month"
                                  attrs="{'invisible':[('by_date_range_year_month','!=','by_month_year')],
                                                              'required':[('by_date_range_year_month','==','by_month_year')]}">
                                 <field name="selct_month"/>
                                 <field name="year_master" options="{'no_open': True, 'no_create': True}"/>
                             </div>
-                            <!--                            <field name="selct_month" required="1"/>-->
+
                             <field name="start_date" required="0" invisible="0"
                                    attrs="{'invisible':[('by_date_range_year_month','==','by_month_year')] ,
                                    'required':[('by_date_range_year_month','!=','by_month_year')]}"/>
                             <field name="end_date" invisible="0"
                                    attrs="{'invisible':[('by_date_range_year_month','==','by_month_year')] ,
                                    'required':[('by_date_range_year_month','!=','by_month_year')]}"/>
-                            <!--                            attrs="{'invisible':[('condition_select','!=','range')], 'required':[('condition_select','=','range')]}"-->
                             <field name="employee_boolean"/>
                             <field name="employee_id" widget="many2many_tags"
                                    attrs="{'invisible': [('employee_boolean', '=', True)]}"
@@ -46,7 +41,7 @@
                             <field name="department_id" widget="many2many_tags"
                                    options='{"no_open": False, "no_create": True}'
                                    attrs="{'invisible': [('employee_boolean', '=', True)]}"/>
-                            <field name="salary_strut_id" options='{"no_open": False, "no_create": True}'
+                            <field name="salary_strut_id" invisible="1" options='{"no_open": False, "no_create": True}'
                                    attrs="{'invisible': [('employee_boolean', '=', True)]}"/>
                         </group>
                     </group>

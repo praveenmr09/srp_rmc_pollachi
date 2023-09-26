@@ -13,7 +13,8 @@
     'depends': ['base', 'stock', ],
     'data': [
         'security/ir.model.access.csv',
-        'wizard/vehicle_registration_info_pdf_report.xml',
+        'wizard/stock_scrap_report_view.xml.xml',
+        'wizard/stock_scrap_pdf_report.xml',
     ],
     'demo': [
     ],
