@@ -66,6 +66,12 @@ class HrPayslip(models.Model):
     total_amount = fields.Float(string='Total Amount')
     amount_words = fields.Char(string='Amount in Words', compute='_compute_num2words')
 
+    @api.onchange('employee_present_days')
+    def employee_present_days_restriction(self):
+        if self.employee_present_days > self.number_working_of_days:
+            raise ValidationError("Alert, Mr. %s.\nThe Employee Present Days should not be Greater "
+                                  "than Number of Working Days, Kindly Check it" % self.env.user.name)
+
     def select_month_to_number(self, month):
         months_dict = {
             'January': 1,

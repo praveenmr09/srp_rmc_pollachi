@@ -473,7 +473,7 @@
                             <separator string="Fleet Rental Invoice Information" colspan="4" invisible="1"/>
                             <field name="total_rent" invisible="1"/>
                             <field name="r_rent" invisible="1"/>
-                            <field name="mode_of_payment" placeholder="Select Payment Mode" required="0"
+                            <field name="mode_of_payment" placeholder="Select Payment Mode" required="0" invisible="1"
                                    options="{'no_create': True}"/>
                             <field name="date_of_received" invisible="1"/>
                             <field name="first_invoice_created" invisible="1"/>
@@ -555,13 +555,17 @@
                 <field name="customer_id" string="Customer"/>
                 <field name="vehicle_id" invisible="1"/>
                 <field name="license_plate"/>
-                <field name="cost"/>
+                <field name="cost" invisible="1"/>
                 <field name="car_brand"/>
-                <field name="car_color"/>
+                <field name="car_color" invisible="1"/>
                 <field name="rent_start_date"/>
                 <field name="rent_end_date"/>
-                <field name="state"/>
                 <field name="delivery_status"/>
+                <field name="state" decoration-success="(state in ('done'))"
+                       decoration-danger="(state in ('cancel'))"
+                       decoration-primary="(state in ('draft'))"
+                       decoration-warning="(state in ('running','checking'))"
+                       decoration-info="(state in ('invoice','reserved'))" widget="badge"/>
             </tree>
         </field>
     </record>

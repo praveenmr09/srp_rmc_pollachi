@@ -200,7 +200,7 @@ class HrPayRollExcelReport(models.TransientModel):
             col_1 += 1
             worksheet1.write(rows, col_1, _('DATE OF JOINING'), design_13)
             col_1 += 1
-            worksheet1.write(rows, col_1, _('HAND CASH'), design_13)
+            worksheet1.write(rows, col_1, _('DEPARTMENT'), design_13)
             col_1 += 1
             worksheet1.write(rows, col_1, _('WORKING DAYS'), design_13)
             col_1 += 1
@@ -252,8 +252,8 @@ class HrPayRollExcelReport(models.TransientModel):
                                 worksheet1.write(row_pq, 3, str(record.employee_id.date_of_joining), design_16)
                             else:
                                 worksheet1.write(row_pq, 3, '-', design_7)
-                            if record.employee_id.contract_id.on_hand:
-                                worksheet1.write(row_pq, 4, record.employee_id.contract_id.on_hand, design_8)
+                            if record.employee_id.department_id.name:
+                                worksheet1.write(row_pq, 4, record.employee_id.department_id.name, design_8)
                             else:
                                 worksheet1.write(row_pq, 4, '-', design_7)
                             if record.employee_final_present_days:
@@ -360,7 +360,7 @@ class HrPayRollExcelReport(models.TransientModel):
             col_1 += 1
             worksheet1.write(rows, col_1, _('DATE OF JOINING'), design_13)
             col_1 += 1
-            worksheet1.write(rows, col_1, _('HAND CASH'), design_13)
+            worksheet1.write(rows, col_1, _('DEPARTMENT'), design_13)
             col_1 += 1
             worksheet1.write(rows, col_1, _('WORKING DAYS'), design_13)
             col_1 += 1
@@ -412,8 +412,8 @@ class HrPayRollExcelReport(models.TransientModel):
                                 worksheet1.write(row_pq, 3, str(record.employee_id.date_of_joining), design_16)
                             else:
                                 worksheet1.write(row_pq, 3, '-', design_7)
-                            if record.employee_id.contract_id.on_hand:
-                                worksheet1.write(row_pq, 4, record.employee_id.contract_id.on_hand, design_8)
+                            if record.employee_id.department_id.name:
+                                worksheet1.write(row_pq, 4, record.employee_id.department_id.name, design_8)
                             else:
                                 worksheet1.write(row_pq, 4, '-', design_7)
                             if record.employee_final_present_days:

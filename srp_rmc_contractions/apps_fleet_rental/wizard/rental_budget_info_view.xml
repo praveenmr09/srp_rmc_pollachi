@@ -13,8 +13,8 @@
                             <field name="vehicle_id"/>
                             <field name="vehicle_no"/>
                             <field name="vehicle_image" widget="image" style='height:70px;width:70px;'/>
-                            <field name="vehicle_departure"/>
-                            <field name="vehicle_destination"/>
+                            <field name="vehicle_departure" invisible="1"/>
+                            <field name="vehicle_destination" invisible="1"/>
                             <field name="starting_km"/>
                             <field name="closing_km"/>
                             <field name="total_km" string="Total Km"/>
@@ -25,9 +25,9 @@
                             <field name="driver_id"/>
                             <field name="driver_image" widget="image" style='height:70px;width:70px;'/>
                             <field name="date"/>
-                            <field name="expense_detail"/>
+                            <field name="expense_detail" invisible="1"/>
                             <field name="content"/>
-                            <field name="export_import_commission"/>
+                            <field name="export_import_commission" invisible="1"/>
                             <field name="toll_expense" invisible="1"/>
                         </group>
                         <group string="Driver Expense">
