@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <!--        PETTY CASH REQUEST FORM SEQUENCE-->
+        <record id="seq_petty_cash_request" model="ir.sequence">
+            <field name="name">petty.cash.request.sequence</field>
+            <field name="code">petty.cash.request</field>
+            <field name="prefix">PREQ/</field>
+            <field name="padding">3</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+            <field name="implementation">standard</field>
+        </record>
+
+
+        <!--       PETTY CASH REQUEST FORM VIEW-->
+        <record id="view_petty_cash_request_form_view" model="ir.ui.view">
+            <field name="name">petty.cash.request.form</field>
+            <field name="model">petty.cash.request</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="request_cash" type="object" string="Request Cash"
+                                class="oe_highlight" states="draft"
+                        />
+
+                        <button name="approve_request" type="object" string="Approve Request"
+                                class="oe_highlight"
+                                states="request"/>
+
+                        <button name="reject_request" type="object" string="Reject"
+                                class="oe_highlight"
+                                states="request"/>
+
+                        <button name="reset_to_draft" type="object" string="Reset To Draft"
+                                class="oe_highlight"
+                                states="request,reject"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,request,approved"/>
+                    </header>
+                    <sheet>
+                        <widget name="web_ribbon" title="Requested" bg_color="bg-info" states="request"/>
+                        <widget name="web_ribbon" title="Approved" bg_color="bg-success" states="approved"/>
+                        <widget name="web_ribbon" title="Rejected" bg_color="bg-danger" states="reject"/>
+                        <div>
+                            <h1>
+                                <field name="name" readonly="1" force_save="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                        </group>
+                        <group>
+                        </group>
+                        <group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="user_id" options="{'no_create':True, 'no_edit':True}"
+                                       attrs="{'readonly': [('state','not in','draft')]}"/>
+                                <field name="payment_reference" options="{'no_create':True, 'no_edit':True}"
+                                       attrs="{'readonly': [('state','not in','draft')]}"/>
+                                <field name="petty_cash_journal" options="{'no_create':True, 'no_edit':True}"
+                                       placeholder="Select Petty Cash Journal" readonly="1"
+                                       attrs="{'readonly': [('state','not in','draft')]}"/>
+                            </group>
+                            <group>
+                                <field name="cash_request_date" attrs="{'readonly': [('state','not in','draft')]}"/>
+                                <label for="request_amount" string="Request Amount"/>
+                                <div class="o_row">
+                                    <field name="request_amount" widget="monetary" class="oe_inline" required="1"
+                                           attrs="{'readonly': [('state','not in','draft')]}"/>
+                                    <field name="currency_id" class="oe_inline"
+                                           options="{'no_open':True,'no_create':True, 'no_edit':True}"/>
+                                </div>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="petty_cash_lines" string="Petty Cash Lines">
+                                <separator string="Petty Cash Request Lines"/>
+                                <field name="line_ids" colspan="2" col="4" nolabel="1">
+                                    <tree editable="bottom" delete="False">
+                                        <field name="s_no" width="1%" align="center"/>
+                                        <field name="employee_id"/>
+                                        <field name="partner_id"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="amount"/>
+                                        <field name="given_amount"/>
+                                        <field name="payment_date"/>
+                                        <field name="status"/>
+                                        <field name="payment_reference"/>
+                                        <button name="generate_petty_cash" type="object" string="Generate Petty Cash"
+                                                class="oe_highlight"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <!--        PETTY CASH REQUEST TREE VIEW-->
+        <record model="ir.ui.view" id="view_petty_cash_request_tree_view">
+            <field name="name">petty.cash.request.tree</field>
+            <field name="model">petty.cash.request</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="cash_request_date"/>
+                    <field name="petty_cash_journal"/>
+                    <field name="request_amount" widget="monetary"/>
+                    <field name="currency_id" invisible="1"
+                           options="{'no_open':True,'no_create':True, 'no_edit':True}"/>
+                    <field name="state" decoration-success="(state in ('approved'))"
+                           decoration-info="(state in ('request'))"
+                           decoration-danger="(state in ('reject'))"
+                           decoration-warning="(state in ('draft'))" widget="badge"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <!--                   ACTION FOR PETTY CASH REQUEST-->
+        <record id="petty_cash_request_action" model="ir.actions.act_window">
+            <field name="name">Petty Cash Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">petty.cash.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_no content_smiling_face">
+                    Create a New Petty Cash Request
+                </p>
+            </field>
+        </record>
+
+        <!--        MENU ITEM FOR PETTY CASH-->
+        <menuitem id="view_petty_cash_menu"
+                  name="Petty Cash"
+                  parent="account.menu_finance"/>
+
+        <menuitem id="view_petty_cash_request_sub_menu"
+                  name="Petty Cash Request"
+                  parent="view_petty_cash_menu"
+                  action="petty_cash_request_action"/>
+
+    </data>
+</odoo>

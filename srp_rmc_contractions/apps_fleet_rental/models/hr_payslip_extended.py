@@ -226,6 +226,7 @@ class HrPayslip(models.Model):
                         if line.code == 'UPA':
                             line.write({
                                 'amount': self.allowance_amount_deduction})
+
         import calendar
         import datetime
         date = datetime.datetime.now()

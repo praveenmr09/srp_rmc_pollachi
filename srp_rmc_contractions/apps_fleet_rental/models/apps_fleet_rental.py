@@ -335,7 +335,7 @@ class FleetRentalContract(models.Model):
                     else:
                         order.delivery_status = '🚚 Trip Schedule Cancelled'
             else:
-                order.delivery_status = '🚚No Trip Scheduled'
+                order.delivery_status = '🚚 No Trip Scheduled'
 
     # COMPUTE FUNCTION FOR RENTAL DRIVER HISTORY COUNT
     def rental_driver_history_count_record(self):
