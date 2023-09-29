@@ -83,6 +83,10 @@ class PettyCashRequest(models.Model):
         self.write({'state': 'request'})
 
     def approve_request(self):
+        if not self.select_month or not self.select_year:
+            raise ValidationError("Alert, Mr. %s.\nSelect Month and Year to Approve Petty Cash "
+                                  "Kindly Check it" % self.env.user.name)
+
         self.write({'state': 'approved'})
 
     def reject_request(self):
@@ -147,13 +151,28 @@ class PettyCashDetails(models.Model):
         if self.given_amount <= 0.00:
             raise ValidationError("Alert, Mr. %s.\nThe Amount "
                                   "Should not be Zero, Kindly Check it" % self.env.user.name)
-        # RETURN PROCESS
-        payment = self.create_account_payment(self.amount)
-        self.payment_reference = payment.name
-        self.payment_date = payment.date
-        self.given_amount = payment.amount
-        self.status = 'paid'
-        self.employee_id.contract_id.on_hand += self.given_amount
+        if self.given_amount > self.amount:
+            raise ValidationError("Alert, Mr. %s.\nThe Approved Amount "
+                                  "Should be greater-than Request Amount, Kindly Check it" % self.env.user.name)
+
+        if self.petty_cash_request_id.state == 'approved':
+            if not self.employee_id.contract_id:
+                raise ValidationError("Alert, Mr. %s.\nThis Specific Employee Contract is not configured "
+                                      "Without Contract Setup Petty cash cannot be Assigned, Kindly Check it" % self.env.user.name)
+            else:
+                payment = self.create_account_payment(self.amount)
+                self.payment_reference = payment.name
+                self.payment_date = payment.date
+                self.given_amount = payment.amount
+                self.status = 'paid'
+                if self.employee_id.contract_id:
+                    self.employee_id.contract_id.on_hand += self.given_amount
+                else:
+                    raise ValidationError("Alert, Mr. %s.\nThis Specific Employee Contract is not configured "
+                                          "Without Contract Setup Petty cash cannot be Assigned, Kindly Check it" % self.env.user.name)
+        else:
+            raise ValidationError("Alert, Mr. %s.\nThe Petty Cash Not Approved "
+                                  "Without Approval Petty cash cannot be assigned, Kindly Check it" % self.env.user.name)
 
     # FUNCTION FOR GENERATING SERIAL NUMBER
     @api.depends('petty_cash_request_id.line_ids')
