@@ -1,6 +1,7 @@
 from odoo import models, fields, api, _
 from datetime import date
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from odoo.exceptions import ValidationError
 
 
@@ -11,19 +12,62 @@ class PettyCashRequest(models.Model):
 
     name = fields.Char("Reference", default='New')
     petty_cash_journal = fields.Many2one('account.journal', string='Petty Cash Journal', default=10)
-    cash_request_date = fields.Date(string='Date', default=fields.Date.today())
     request_amount = fields.Monetary("Request Amount", store=True, currency_field='currency_id', tracking=True)
     currency_id = fields.Many2one('res.currency', string='Currency', readonly=True,
                                   default=lambda self: self.env.company.currency_id)
     user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user)
-    payment_reference = fields.Many2one('account.payment', string='Payment Reference')
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('request', 'Requested'),
         ('approved', 'Approved'),
-        ('reject', 'Rejected'),
     ], string='State', default='draft', tracking=True)
     line_ids = fields.One2many('petty.cash.details', 'petty_cash_request_id', string='Petty Cash Details')
+    select_year = fields.Many2one('hr.payroll.year', string='Year')
+    select_month = fields.Selection([
+        ('January', 'January'),
+        ('February', 'February'),
+        ('March', 'March'),
+        ('April', 'April'),
+        ('May', 'May'),
+        ('June', 'June'),
+        ('July', 'July'),
+        ('August', 'August'),
+        ('September', 'September'),
+        ('October', 'October'),
+        ('November', 'November'),
+        ('December', 'December'),
+    ], string="Month/Year")
+    date_from = fields.Date(string='From')
+    date_to = fields.Date(string='To')
+
+    def select_month_to_number(self, month):
+        months_dict = {
+            'January': 1,
+            'February': 2,
+            'March': 3,
+            'April': 4,
+            'May': 5,
+            'June': 6,
+            'July': 7,
+            'August': 8,
+            'September': 9,
+            'October': 10,
+            'November': 11,
+            'December': 12,
+        }
+        return months_dict.get(month, 1)
+
+    @api.onchange('select_year', 'select_month')
+    def _onchange_select_year_month(self):
+        if self.select_year and self.select_month:
+            year = self.select_year.name
+            month = self.select_month
+            last_day_of_month = (
+                    datetime(int(year), self.select_month_to_number(month), 1) + relativedelta(day=31)).date()
+            self.date_from = datetime(int(year), self.select_month_to_number(month), 1).date()
+            self.date_to = last_day_of_month
+        else:
+            self.date_from = fields.Date.to_string(datetime.today().replace(day=1))
+            self.date_to = fields.Date.to_string((datetime.now() + relativedelta(months=+1, day=1, days=-1)).date())
 
     # FUNCTION FOR CREATING SEQUENCE (REFERENCE ID)
     @api.model
@@ -71,7 +115,6 @@ class PettyCashDetails(models.Model):
     petty_cash_request_id = fields.Many2one('petty.cash.request', string='Petty Cash')
     s_no = fields.Integer(string='S.No', compute='_compute_serial_number')
     employee_id = fields.Many2one('hr.employee', string='Employee')
-    partner_id = fields.Many2one('res.partner', string='Partner')
     amount = fields.Monetary("Requested Amount", store=True, currency_field='currency_id', tracking=True)
     given_amount = fields.Monetary("Approved Amount", store=True, currency_field='currency_id', tracking=True)
     currency_id = fields.Many2one('res.currency', string='Currency', readonly=True,
@@ -110,6 +153,7 @@ class PettyCashDetails(models.Model):
         self.payment_date = payment.date
         self.given_amount = payment.amount
         self.status = 'paid'
+        self.employee_id.contract_id.on_hand += self.given_amount
 
     # FUNCTION FOR GENERATING SERIAL NUMBER
     @api.depends('petty_cash_request_id.line_ids')

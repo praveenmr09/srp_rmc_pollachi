@@ -21,28 +21,15 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <button name="request_cash" type="object" string="Request Cash"
-                                class="oe_highlight" states="draft"
-                        />
 
-                        <button name="approve_request" type="object" string="Approve Request"
+                        <button name="approve_request" type="object" string="Approve Petty Cash"
                                 class="oe_highlight"
-                                states="request"/>
-
-                        <button name="reject_request" type="object" string="Reject"
-                                class="oe_highlight"
-                                states="request"/>
-
-                        <button name="reset_to_draft" type="object" string="Reset To Draft"
-                                class="oe_highlight"
-                                states="request,reject"/>
+                                states="draft"/>
                         <field name="state" widget="statusbar"
-                               statusbar_visible="draft,request,approved"/>
+                               statusbar_visible="draft,approved"/>
                     </header>
                     <sheet>
-                        <widget name="web_ribbon" title="Requested" bg_color="bg-info" states="request"/>
                         <widget name="web_ribbon" title="Approved" bg_color="bg-success" states="approved"/>
-                        <widget name="web_ribbon" title="Rejected" bg_color="bg-danger" states="reject"/>
                         <div>
                             <h1>
                                 <field name="name" readonly="1" force_save="1"/>
@@ -58,39 +45,44 @@
                             <group>
                                 <field name="user_id" options="{'no_create':True, 'no_edit':True}"
                                        attrs="{'readonly': [('state','not in','draft')]}"/>
-                                <field name="payment_reference" options="{'no_create':True, 'no_edit':True}"
-                                       attrs="{'readonly': [('state','not in','draft')]}"/>
                                 <field name="petty_cash_journal" options="{'no_create':True, 'no_edit':True}"
                                        placeholder="Select Petty Cash Journal" readonly="1"
                                        attrs="{'readonly': [('state','not in','draft')]}"/>
+
                             </group>
                             <group>
-                                <field name="cash_request_date" attrs="{'readonly': [('state','not in','draft')]}"/>
-                                <label for="request_amount" string="Request Amount"/>
-                                <div class="o_row">
-                                    <field name="request_amount" widget="monetary" class="oe_inline" required="1"
-                                           attrs="{'readonly': [('state','not in','draft')]}"/>
-                                    <field name="currency_id" class="oe_inline"
-                                           options="{'no_open':True,'no_create':True, 'no_edit':True}"/>
+                                <label for="select_month" string="Period"/>
+                                <div>
+                                    <div class="row" name="select_month">
+                                        <field name="select_month" placeholder="Month" class="oe_inline" required="1"/>
+                                        <field name="select_year" placeholder="Year" class="oe_inline" required="1"
+                                               options="{'no_open': True,'no_create':True, 'no_edit':True}"/>
+                                    </div>
+
+                                    <div class="o_row">
+                                        <field name="date_from" class="oe_inline"
+                                               attrs="{'invisible': ['|',('select_month','=',False), ('select_year','=',False)]}"/>
+                                        <field name="date_to" class="oe_inline"
+                                               attrs="{'invisible': ['|',('select_month','=',False), ('select_year','=',False)]}"/>
+                                    </div>
                                 </div>
                             </group>
                         </group>
                         <notebook>
-                            <page name="petty_cash_lines" string="Petty Cash Lines">
-                                <separator string="Petty Cash Request Lines"/>
+                            <page name="petty_cash_lines" string="Petty Cash">
                                 <field name="line_ids" colspan="2" col="4" nolabel="1">
                                     <tree editable="bottom" delete="False">
                                         <field name="s_no" width="1%" align="center"/>
                                         <field name="employee_id"/>
-                                        <field name="partner_id"/>
                                         <field name="currency_id" invisible="1"/>
                                         <field name="amount"/>
                                         <field name="given_amount"/>
                                         <field name="payment_date"/>
-                                        <field name="status"/>
+                                        <field name="status" decoration-success="(status in ('paid'))"
+                                               decoration-danger="(status in ('unpaid'))" widget="badge"/>
                                         <field name="payment_reference"/>
                                         <button name="generate_petty_cash" type="object" string="Generate Petty Cash"
-                                                class="oe_highlight"/>
+                                                class="oe_highlight" attrs="{'invisible': [('status','in','paid')]}"/>
                                     </tree>
                                 </field>
                             </page>
@@ -109,14 +101,8 @@
             <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>
-                    <field name="cash_request_date"/>
                     <field name="petty_cash_journal"/>
-                    <field name="request_amount" widget="monetary"/>
-                    <field name="currency_id" invisible="1"
-                           options="{'no_open':True,'no_create':True, 'no_edit':True}"/>
                     <field name="state" decoration-success="(state in ('approved'))"
-                           decoration-info="(state in ('request'))"
-                           decoration-danger="(state in ('reject'))"
                            decoration-warning="(state in ('draft'))" widget="badge"/>
                 </tree>
             </field>
